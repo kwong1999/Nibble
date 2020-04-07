@@ -15,6 +15,7 @@
     "expo": "^37.0.5",
     "expo-location": "~8.1.0",
     "expo-permissions": "~8.1.0",
+    "firebase": "7.9.0",
     "opencage-api-client": "^0.7.1",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
