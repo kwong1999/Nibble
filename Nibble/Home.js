@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 
-import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
@@ -37,7 +37,7 @@ export default class Menu extends React.Component{
       //this.storeRestaurant();
       this.state = {places: []};
       this.state = {TIMES: []};
-      //this.initTimes();
+      this.initTimes();
       this.getTimes();
       
   }
@@ -66,6 +66,7 @@ export default class Menu extends React.Component{
     
   }
 
+
   getTimes = () => {
       var hours = new Date().getHours(); 
       firestoreDB.collection("restaurants").get().then((querySnapshot) => {
@@ -88,26 +89,16 @@ export default class Menu extends React.Component{
               var a4 = data.image;
               var a5 = data.lat;
               var a6 = data.lon;
-              var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6 };
+              var a7 = data.tag0;
+              var a8 = data.tag1;
+              var a9 = data.watchers;
+              var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6, tag0: a7, tag1: a8, watchers: a9};
               tempArray[i].restaurants.push(rest);
               this.setState({TIMES: tempArray});
               found =1;
             }
           }
-          if(found ==0)
-          {
-            var arr = this.state.TIMES;
-            var a1 = data.name;
-            var a2 = data.id;
-            var a3 = data.description;
-            var a4 = data.image;
-            var a5 = data.lat;
-            var a6 = data.lon;
-            var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6 };
-            var time1 = {id: i, time: t, restaurants:[rest]};
-            arr.push(time1);
-            this.setState({TIMES: arr}); 
-         }
+          
         });
       });
     }
@@ -139,7 +130,7 @@ export default class Menu extends React.Component{
         text = JSON.stringify(this.state.location);
       }
       const {address} = this.state;
-
+      let timeR = this.state.TIMES.filter(item => item.restaurants.length > 0);
 
     return( 
       <View style = {{flex:1}}>
@@ -148,7 +139,7 @@ export default class Menu extends React.Component{
         </View>
         <SafeAreaView style = {{flex: 20}}>
           <FlatList style = {{flex: 1}}
-            data={this.state.TIMES}
+            data={timeR}
             renderItem={({ item }) => <TimeSlot time={item.time} dealsList={item.restaurants}/>}
             keyExtractor={timeSlot => timeSlot.id}
             showsVerticalScrollIndicator={false}
@@ -161,18 +152,32 @@ export default class Menu extends React.Component{
 
 //time slot component
 function TimeSlot({ time, dealsList }) {
+  var hours = new Date().getHours(); 
+  var min = new Date().getMinutes();
+  var rHours= time.substr(0, time.indexOf(':')); 
+  var integer = parseInt(rHours, 10);
+  var h = Math.abs(hours - rHours-1);
+  var m = 60-min;
+  var liveString = "live in " + h + " h, " + m + " minutes";
   return (
     <View>
+    <View style={styles.container1}>
+    <View style={styles.item5}>
       <Text style={styles.timeHeader}>{time}</Text>
-      
+      </View>
+      <View style={styles.item6}>
+      <Text style= {styles.watch}>{liveString}</Text>
+      </View>
+      </View>
       <SafeAreaView>
         <FlatList style = {{flex: 1}}
           data={dealsList}
-          renderItem={({ item }) => <DealCard restaurant={item.name} itemName={item.description} tags={item.description}/>}
+          renderItem={({ item }) => <DealCard restaurant={item.name} itemImage={item.image} tag0={item.tag0} tag1={item.tag1} watch={item.watchers}/>}
           keyExtractor={timeSlot => timeSlot.id}
           showsVerticalScrollIndicator={false}
         />
       </SafeAreaView>
+      <Text>{"\n"}</Text>
     </View>
     // <View style={styles.box}>
     //   <Text style={styles.title}>{title}</Text>
@@ -182,11 +187,34 @@ function TimeSlot({ time, dealsList }) {
 }
 
 //deal component
-function DealCard({restaurant, itemName, tags}){
+function DealCard({restaurant, itemImage, tag0, tag1, watch}){
+  var wString = watch + " biters watching";
   return(
   <View style = {styles.box}>
-    <Text style = {styles.restaurantName}>{restaurant}</Text>
-    <Text>{itemName}</Text>
+    <View style={styles.container1}>
+      <View style={styles.item1}>
+        <Text style = {styles.restaurantName}>{restaurant}</Text>
+        <Text>{"\n"}</Text>
+        <View style={styles.container1}> 
+          <View style={styles.item2}>
+              <Text>{tag0}</Text>
+            </View>
+            <View style={styles.item4}>
+            </View>
+           <View style={styles.item2}>
+              <Text>{tag1}</Text>
+            </View>
+            <View style={styles.item4}>
+            </View>
+        </View>
+      </View>
+      <View style={styles.item3}>
+        <Image source = {{uri:itemImage}}
+        style = {{ width: 120, height: 120 }}
+        />
+      </View>
+    </View>
+    <Text style={styles.watch}>{wString}</Text>
   </View>);
 }
 
@@ -240,11 +268,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18
   },
+  watch:{
+    fontSize: 12
+  },
   container: {
     flex: 1,
   },
   box: {
-    backgroundColor: '#f9c2ff',
+    backgroundColor: '#E8E8E8',
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
@@ -255,5 +286,34 @@ const styles = StyleSheet.create({
   },
   item:{
     fontSize: 12
+  },
+  container1: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start' // if you want to fill rows left to right
+  },
+  item1: {
+    width: '65%' // is 50% of container width
+  },
+  item2: {
+    width: '40%',
+    backgroundColor: '#FFFFFF',
+    height: 25,
+    justifyContent: 'center', 
+    alignItems: 'center' 
+     // is 50% of container width
+  },
+  item3: {
+    width: '35%' // is 50% of container width
+  },
+  item4: {
+    width: '10%' // is 50% of container width
+  },
+  item5: {
+    width: '65%' // is 50% of container width
+  },
+  item6: {
+    width: '35%' // is 50% of container width
   }
 });
