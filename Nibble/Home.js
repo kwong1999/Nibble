@@ -34,18 +34,98 @@ export default class Menu extends React.Component{
       this.state = {location: null, address: ''};
       this.state = {lat: 0, lon: 0};
       this._getLocationAsync();
-      this.storeRestaurant();
+      //this.storeRestaurant();
+      this.state = {places: []};
+      this.state = {TIMES: [
+          {
+            id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+            time: 'LIVE',
+            restaurants: []
+          },
+          /*{
+            id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+            time: '21:00',
+            restaurants: []
+          },
+          {
+            id: '58694a0f-3da1-471f-bd96-145571e29d72',
+            time: '22:00',
+            restaurants: []
+          },*/
+        ],
+      };
+      this.initTimes();
+      this.getTimes();
+      
   }
 
+  initTimes = () => {
+    var hours = new Date().getHours(); 
+    var thours = hours+1;
+    var tarray = this.state.TIMES;
+    for(var i=0; i < 24; i++)
+    { 
+      var t = thours + ':00';
+      console.log(t);
+      var time1 = {id: i, time: t, restaurants:[]};
+      tarray.push(time1);
+      //this.setState({TIMES: this.state.TIMES.concat(time1)});
+      if(thours == 24)
+      {
+        thours = 0;
+      }
+      else
+      {
+        thours++;
+      }
+    }
+    this.setState({TIMES: tarray});
+    
+  }
+
+  getTimes = () => {
+      var hours = new Date().getHours(); 
+          firestoreDB.collection("restaurants").get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            var data = doc.data();
+            var t = data.time;
+            if(t == hours)
+            {
+              t = 'LIVE';
+            }
+              for(var i =0; i < this.state.TIMES.length; i++)
+              {
+                if(t.localeCompare(this.state.TIMES[i].time) ==0)
+                {
+                  var tempArray = this.state.TIMES;
+                  var a1 = data.name;
+                  var a2 = data.id;
+                  var a3 = data.description;
+                  var a4 = data.image;
+                  var a5 = data.lat;
+                  var a6 = data.lon;
+                  var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6 };
+                  tempArray[i].restaurants.push(rest);
+                  this.setState({TIMES: tempArray});
+                }
+              }
+            });
+      });
+    }
+
+    
+
+
+
   //firebase ADD
-  storeRestaurant = () => {
+  /*storeRestaurant = () => {
     firestoreDB.collection("restaurants").doc("Dulce").set({
       lat: 0,
       long: 0,
       description: "We serve the finest specialty coffees & teas, along with fresh salads, sandwiches and baked goods made in-house daily!",
       image: "placeholder"
     })
-  }
+  }*/
 
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -67,21 +147,23 @@ export default class Menu extends React.Component{
   };
 
   render(){
+    //Getting the location
      let text = 'Waiting..';
      if (this.state.location) {
         text = JSON.stringify(this.state.location);
       }
       const {address} = this.state;
 
-    return(
+
+    return( 
       <View style = {{flex:1}}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Text>{address}</Text>
         </View>
         <SafeAreaView style = {{flex: 20}}>
           <FlatList style = {{flex: 1}}
-            data={TIMES}
-            renderItem={({ item }) => <TimeSlot time={item.time} dealsList={item.dealsList}/>}
+            data={this.state.TIMES}
+            renderItem={({ item }) => <TimeSlot time={item.time} dealsList={item.restaurants}/>}
             keyExtractor={timeSlot => timeSlot.id}
             showsVerticalScrollIndicator={false}
           />
@@ -96,10 +178,11 @@ function TimeSlot({ time, dealsList }) {
   return (
     <View>
       <Text style={styles.timeHeader}>{time}</Text>
+      
       <SafeAreaView>
         <FlatList style = {{flex: 1}}
-          data={DEALS}
-          renderItem={({ item }) => <DealCard restaurant={item.restaurant} itemName={item.itemName} tags={item.tags}/>}
+          data={dealsList}
+          renderItem={({ item }) => <DealCard restaurant={item.name} itemName={item.description} tags={item.description}/>}
           keyExtractor={timeSlot => timeSlot.id}
           showsVerticalScrollIndicator={false}
         />
