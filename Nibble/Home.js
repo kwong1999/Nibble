@@ -48,12 +48,12 @@ export default class Menu extends React.Component{
   }
 
   _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        location: 'Permission to access location was denied',
-      });
-    }
+    // let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    // if (status !== 'granted') {
+    //   this.setState({
+    //     location: 'Permission to access location was denied',
+    //   });
+    // }
 
     let location = await Location.getCurrentPositionAsync({});
     const key = '5c3d93713edb442c825f89b7bc7d3aa4';
@@ -143,16 +143,19 @@ const TIMES = [
 //temporary deals list, need to make a separate list for every time slot
 const DEALS = [
   {
+    id: '1',
     restaurant: 'Dulce',
     itemName: 'Glazed Donut',
     tags: ["pastries", "desserts"]
   },
   {
+    id: '2',
     restaurant: 'Honeybird',
     itemName: 'Tonkatsu Ramen',
     tags: ["savory, japanese"]
   },
   {
+    id: '3',
     restaurant: 'Cava',
     itemName: 'Salad',
     tags: ["healthy, greens"]
