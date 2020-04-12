@@ -36,25 +36,8 @@ export default class Menu extends React.Component{
       this._getLocationAsync();
       //this.storeRestaurant();
       this.state = {places: []};
-      this.state = {TIMES: [
-          {
-            id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-            time: 'LIVE',
-            restaurants: []
-          },
-          /*{
-            id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-            time: '21:00',
-            restaurants: []
-          },
-          {
-            id: '58694a0f-3da1-471f-bd96-145571e29d72',
-            time: '22:00',
-            restaurants: []
-          },*/
-        ],
-      };
-      this.initTimes();
+      this.state = {TIMES: []};
+      //this.initTimes();
       this.getTimes();
       
   }
@@ -85,47 +68,50 @@ export default class Menu extends React.Component{
 
   getTimes = () => {
       var hours = new Date().getHours(); 
-          firestoreDB.collection("restaurants").get().then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            var data = doc.data();
-            var t = data.time;
-            if(t == hours)
+      firestoreDB.collection("restaurants").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        var data = doc.data();
+        var t = data.time;
+        if(t == hours)
+        {
+          t = 'LIVE';
+        }
+        var found =0;
+          for(var i =0; i < this.state.TIMES.length; i++)
+          {
+            if(t.localeCompare(this.state.TIMES[i].time) ==0)
             {
-              t = 'LIVE';
+              var tempArray = this.state.TIMES;
+              var a1 = data.name;
+              var a2 = data.id;
+              var a3 = data.description;
+              var a4 = data.image;
+              var a5 = data.lat;
+              var a6 = data.lon;
+              var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6 };
+              tempArray[i].restaurants.push(rest);
+              this.setState({TIMES: tempArray});
+              found =1;
             }
-              for(var i =0; i < this.state.TIMES.length; i++)
-              {
-                if(t.localeCompare(this.state.TIMES[i].time) ==0)
-                {
-                  var tempArray = this.state.TIMES;
-                  var a1 = data.name;
-                  var a2 = data.id;
-                  var a3 = data.description;
-                  var a4 = data.image;
-                  var a5 = data.lat;
-                  var a6 = data.lon;
-                  var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6 };
-                  tempArray[i].restaurants.push(rest);
-                  this.setState({TIMES: tempArray});
-                }
-              }
-            });
+          }
+          if(found ==0)
+          {
+            var arr = this.state.TIMES;
+            var a1 = data.name;
+            var a2 = data.id;
+            var a3 = data.description;
+            var a4 = data.image;
+            var a5 = data.lat;
+            var a6 = data.lon;
+            var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6 };
+            var time1 = {id: i, time: t, restaurants:[rest]};
+            arr.push(time1);
+            this.setState({TIMES: arr}); 
+         }
+        });
       });
     }
 
-    
-
-
-
-  //firebase ADD
-  /*storeRestaurant = () => {
-    firestoreDB.collection("restaurants").doc("Dulce").set({
-      lat: 0,
-      long: 0,
-      description: "We serve the finest specialty coffees & teas, along with fresh salads, sandwiches and baked goods made in-house daily!",
-      image: "placeholder"
-    })
-  }*/
 
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -145,7 +131,7 @@ export default class Menu extends React.Component{
             this.setState({address: (result.formatted).substring(0,(result.formatted).indexOf(','))});
           });
   };
-
+ 
   render(){
     //Getting the location
      let text = 'Waiting..';
