@@ -37,20 +37,23 @@ export default class Menu extends React.Component{
       //this.storeRestaurant();
       this.state = {places: []};
       this.state = {TIMES: []};
-      this.initTimes();
-      this.getTimes();
+      //this.initTimes();
+      //this.getTimes();
       
   }
 
   initTimes = () => {
     var hours = new Date().getHours(); 
+
     var thours = hours+1;
     var tarray = this.state.TIMES;
-    for(var i=0; i < 24; i++)
+    var liveT = {id: '0', time: 'LIVE', restaurants:[]};
+    tarray.push(liveT);
+    for(var i=1; i < 24; i++)
     { 
       var t = thours + ':00';
       console.log(t);
-      var time1 = {id: i, time: t, restaurants:[]};
+      var time1 = {id: i.toString(), time: t, restaurants:[]};
       tarray.push(time1);
       //this.setState({TIMES: this.state.TIMES.concat(time1)});
       if(thours == 24)
@@ -101,6 +104,10 @@ export default class Menu extends React.Component{
           
         });
       });
+    }
+    componentDidMount() {
+      this.initTimes();
+      this.getTimes();
     }
 
 
