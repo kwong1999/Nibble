@@ -2,7 +2,8 @@ import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 
-import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import Modal from 'react-native-modalbox';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
@@ -36,6 +37,7 @@ export default class Menu extends React.Component{
       this._getLocationAsync();
       //this.storeRestaurant();
       this.state = {places: []};
+      this.refs = React.createRef();
       this.state = {TIMES: [
           {
             id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
@@ -56,15 +58,15 @@ export default class Menu extends React.Component{
       };
       this.initTimes();
       this.getTimes();
-      
+
   }
 
   initTimes = () => {
-    var hours = new Date().getHours(); 
+    var hours = new Date().getHours();
     var thours = hours+1;
     var tarray = this.state.TIMES;
     for(var i=0; i < 24; i++)
-    { 
+    {
       var t = thours + ':00';
       console.log(t);
       var time1 = {id: i, time: t, restaurants:[]};
@@ -80,11 +82,11 @@ export default class Menu extends React.Component{
       }
     }
     this.setState({TIMES: tarray});
-    
+
   }
 
   getTimes = () => {
-      var hours = new Date().getHours(); 
+      var hours = new Date().getHours();
           firestoreDB.collection("restaurants").get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
             var data = doc.data();
@@ -113,7 +115,7 @@ export default class Menu extends React.Component{
       });
     }
 
-    
+
 
 
 
@@ -155,7 +157,7 @@ export default class Menu extends React.Component{
       const {address} = this.state;
 
 
-    return( 
+    return(
       <View style = {{flex:1}}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Text>{address}</Text>
@@ -168,9 +170,11 @@ export default class Menu extends React.Component{
             showsVerticalScrollIndicator={false}
           />
         </SafeAreaView>
+
       </View>
       );
   }
+
 }
 
 //time slot component
@@ -178,7 +182,7 @@ function TimeSlot({ time, dealsList }) {
   return (
     <View>
       <Text style={styles.timeHeader}>{time}</Text>
-      
+
       <SafeAreaView>
         <FlatList style = {{flex: 1}}
           data={dealsList}
@@ -198,10 +202,23 @@ function TimeSlot({ time, dealsList }) {
 //deal component
 function DealCard({restaurant, itemName, tags}){
   return(
-  <View style = {styles.box}>
-    <Text style = {styles.restaurantName}>{restaurant}</Text>
-    <Text>{itemName}</Text>
-  </View>);
+    <View>
+    <TouchableOpacity onPress={() => this.refs.modal1.open()} style = {styles.box}>
+      <Text style = {styles.restaurantName}>{restaurant}</Text>
+      <Text>{itemName}</Text>
+    </TouchableOpacity>
+    </View>
+
+    // <Modal
+    //   style={[styles.modal, styles.modal1]}
+    //   ref={"modal1"}
+    //   swipeToClose="true"
+    //   onClosed={this.onClose}
+    //   onOpened={this.onOpen}
+    //   onClosingState={this.onClosingState}>
+    //     <Text style={styles.text}>Basic modal</Text>>
+    // </Modal>
+  );
 }
 
 //each of these will pass in a time and list of deals that start at this time
