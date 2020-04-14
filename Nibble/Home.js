@@ -1,15 +1,14 @@
 import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
-
-import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import Modal from 'react-native-modalbox';
+import Modal from 'react-native-modal';
+import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import opencage from 'opencage-api-client';
-
+import RestCard from './TimeSlot'
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
@@ -34,28 +33,12 @@ export default class Menu extends React.Component{
       super(props);
       this.state = {location: null, address: ''};
       this.state = {lat: 0, lon: 0};
+      this.state = {openModal: false}
       this._getLocationAsync();
       //this.storeRestaurant();
       this.state = {places: []};
-      this.refs = React.createRef();
-      this.state = {TIMES: [
-          {
-            id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-            time: 'LIVE',
-            restaurants: []
-          },
-          /*{
-            id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-            time: '21:00',
-            restaurants: []
-          },
-          {
-            id: '58694a0f-3da1-471f-bd96-145571e29d72',
-            time: '22:00',
-            restaurants: []
-          },*/
-        ],
-      };
+      this.state = {modalRest: "", modalImage: null, modalAddress: "", modalWatching: "", modalTime: ""};
+      this.state = {TIMES: []};
       this.initTimes();
       this.getTimes();
 
@@ -85,49 +68,44 @@ export default class Menu extends React.Component{
 
   }
 
+
   getTimes = () => {
       var hours = new Date().getHours();
-          firestoreDB.collection("restaurants").get().then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            var data = doc.data();
-            var t = data.time;
-            if(t == hours)
+      firestoreDB.collection("restaurants").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        var data = doc.data();
+        var t = data.time;
+        if(t == hours)
+        {
+          t = 'LIVE';
+        }
+        var found =0;
+          for(var i =0; i < this.state.TIMES.length; i++)
+          {
+            if(t.localeCompare(this.state.TIMES[i].time) ==0)
             {
-              t = 'LIVE';
+              var tempArray = this.state.TIMES;
+              var a1 = data.name;
+              var a2 = data.id;
+              var a3 = data.description;
+              var a4 = data.image;
+              var a5 = data.lat;
+              var a6 = data.lon;
+              var a7 = data.tag0;
+              var a8 = data.tag1;
+              var a9 = data.watchers;
+              var a10 = data.address;
+              var a11 = data.time;
+              var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6, tag0: a7, tag1: a8, watchers: a9, address: a10, time: a11};
+              tempArray[i].restaurants.push(rest);
+              this.setState({TIMES: tempArray});
+              found =1;
             }
-              for(var i =0; i < this.state.TIMES.length; i++)
-              {
-                if(t.localeCompare(this.state.TIMES[i].time) ==0)
-                {
-                  var tempArray = this.state.TIMES;
-                  var a1 = data.name;
-                  var a2 = data.id;
-                  var a3 = data.description;
-                  var a4 = data.image;
-                  var a5 = data.lat;
-                  var a6 = data.lon;
-                  var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6 };
-                  tempArray[i].restaurants.push(rest);
-                  this.setState({TIMES: tempArray});
-                }
-              }
-            });
+          }
+
+        });
       });
     }
-
-
-
-
-
-  //firebase ADD
-  /*storeRestaurant = () => {
-    firestoreDB.collection("restaurants").doc("Dulce").set({
-      lat: 0,
-      long: 0,
-      description: "We serve the finest specialty coffees & teas, along with fresh salads, sandwiches and baked goods made in-house daily!",
-      image: "placeholder"
-    })
-  }*/
 
   _getLocationAsync = async () => {
     // let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -155,17 +133,47 @@ export default class Menu extends React.Component{
         text = JSON.stringify(this.state.location);
       }
       const {address} = this.state;
-
+      let timeR = this.state.TIMES.filter(item => item.restaurants.length > 0);
 
     return(
       <View style = {{flex:1}}>
+        <Modal
+          isVisible = {this.state.openModal}
+          onSwipeComplete={this.turnModalOff}
+          onBackdropPress={this.turnModalOff}
+          swipeDirection={['down']}
+          backdropColor ={"black"}
+          swipeThreshold={50}
+          backdropOpacity = {0.5}
+          >
+            <View style={styles.modalCard}>
+              <Image source = {{uri: this.state.modalImage}}
+                style = {styles.modalImage}
+              />
+              <View style = {{flex: 1,flexDirection: 'row'}}>
+                <View style = {{flex: 4}}>
+                  <Text style={{fontSize: 32, fontWeight: "bold", marginLeft: "4%", marginTop: "3%"}}>{this.state.modalRest}</Text>
+                  <Text style={{fontSize: 13, marginLeft: "4%", marginTop: "2%"}}>{this.state.modalAddress}</Text>
+                  <View style = {{flexDirection: "row"}}>
+                    <Image source = {require('./watchIcon.png')}
+                      style = {{marginLeft: "4%", marginTop: "2.5%"}}
+                    />
+                    <Text style={{fontSize: 13, marginLeft: "1.2%", marginTop: "2%"}}>{this.state.modalWatching}</Text>
+                  </View>
+                </View>
+                <View style = {{flex:1}}>
+                  <Text style={{fontSize: 18, fontWeight: "bold", marginLeft: "4%", marginTop: "22%"}}>{this.state.modalTime}</Text>
+                </View>
+              </View>
+            </View>
+        </Modal>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Text>{address}</Text>
         </View>
         <SafeAreaView style = {{flex: 20}}>
           <FlatList style = {{flex: 1}}
-            data={this.state.TIMES}
-            renderItem={({ item }) => <TimeSlot time={item.time} dealsList={item.restaurants}/>}
+            data={timeR}
+            renderItem={this.renderTimes}
             keyExtractor={timeSlot => timeSlot.id}
             showsVerticalScrollIndicator={false}
           />
@@ -175,92 +183,82 @@ export default class Menu extends React.Component{
       );
   }
 
+  renderTimes = ({item}) => {
+    var hours = new Date().getHours();
+    var min = new Date().getMinutes();
+    var rHours= item.time.substr(0, item.time.indexOf(':'));
+    var integer = parseInt(rHours, 10);
+    var h = Math.abs(hours - rHours-1);
+    var m = 60-min;
+    var liveString = "live in " + h + " h, " + m + " minutes";
+    return (
+      <View>
+      <View style={styles.container1}>
+      <View style={styles.item5}>
+        <Text style={styles.timeHeader}>{item.time}</Text>
+        </View>
+        <View style={styles.item6}>
+        <Text style= {styles.watch}>{liveString}</Text>
+        </View>
+        </View>
+        <SafeAreaView>
+          <FlatList style = {{flex: 1}}
+            data={item.restaurants}
+            renderItem={this.renderRestaurants}
+            keyExtractor={timeSlot => timeSlot.id}
+            showsVerticalScrollIndicator={false}
+          />
+        </SafeAreaView>
+        <Text>{"\n"}</Text>
+      </View>);
+  };
+
+  renderRestaurants = ({item}) => {
+    var wString = item.watchers + " biters watching";
+    return(
+      // <View>
+      // <TouchableOpacity onPress={() => this.refs.modal1.open()} style = {styles.box}>
+      //   <Text style = {styles.restaurantName}>{restaurant}</Text>
+      //   <Text>{itemName}</Text>
+      // </TouchableOpacity>
+      // </View>
+      <View>
+        <TouchableOpacity style = {styles.box} onPress={() => this.turnModalOn(item.name, item.image, item.address, item.watchers, item.time)}>
+          <View style={styles.container1}>
+            <View style={styles.item1}>
+              <Text style = {styles.restaurantName}>{item.name}</Text>
+              <Text>{"\n"}</Text>
+              <View style={styles.container1}>
+                  <View style={styles.item2}>
+                    <Text>{item.tag0}</Text>
+                  </View>
+                  <View style={styles.item4}></View>
+                  <View style={styles.item2}>
+                    <Text>{item.tag1}</Text>
+                  </View>
+                  <View style={styles.item4}></View>
+              </View>
+            </View>
+            <View style={styles.item3}>
+              <Image source = {{uri:item.image}}
+                style = {{ width: 120, height: 120 }}
+              />
+            </View>
+          </View>
+          <Text style={styles.watch}>{wString}</Text>
+        </TouchableOpacity>
+      </View>);
+
+  };
+
+  turnModalOn = (name, image, address, watchers, time) =>{
+    this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time});
+  }
+
+  turnModalOff = () =>{
+    this.setState({openModal:false});
+  }
 }
-
-//time slot component
-function TimeSlot({ time, dealsList }) {
-  return (
-    <View>
-      <Text style={styles.timeHeader}>{time}</Text>
-
-      <SafeAreaView>
-        <FlatList style = {{flex: 1}}
-          data={dealsList}
-          renderItem={({ item }) => <DealCard restaurant={item.name} itemName={item.description} tags={item.description}/>}
-          keyExtractor={timeSlot => timeSlot.id}
-          showsVerticalScrollIndicator={false}
-        />
-      </SafeAreaView>
-    </View>
-    // <View style={styles.box}>
-    //   <Text style={styles.title}>{title}</Text>
-    //   <Text style={styles.item}>{menuItem}</Text>
-    // </View>
-  );
-}
-
-//deal component
-function DealCard({restaurant, itemName, tags}){
-  return(
-    <View>
-    <TouchableOpacity onPress={() => this.refs.modal1.open()} style = {styles.box}>
-      <Text style = {styles.restaurantName}>{restaurant}</Text>
-      <Text>{itemName}</Text>
-    </TouchableOpacity>
-    </View>
-
-    // <Modal
-    //   style={[styles.modal, styles.modal1]}
-    //   ref={"modal1"}
-    //   swipeToClose="true"
-    //   onClosed={this.onClose}
-    //   onOpened={this.onOpen}
-    //   onClosingState={this.onClosingState}>
-    //     <Text style={styles.text}>Basic modal</Text>>
-    // </Modal>
-  );
-}
-
-//each of these will pass in a time and list of deals that start at this time
-const TIMES = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    time: 'LIVE',
-    dealsList: 'Glazed Donut'
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    time: '8:30',
-    dealsList: 'Tonkatsu Ramen'
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    time: '9:00',
-    dealsList: 'Flaming Hot Chicken'
-  },
-];
-
-//temporary deals list, need to make a separate list for every time slot
-const DEALS = [
-  {
-    id: '1',
-    restaurant: 'Dulce',
-    itemName: 'Glazed Donut',
-    tags: ["pastries", "desserts"]
-  },
-  {
-    id: '2',
-    restaurant: 'Honeybird',
-    itemName: 'Tonkatsu Ramen',
-    tags: ["savory, japanese"]
-  },
-  {
-    id: '3',
-    restaurant: 'Cava',
-    itemName: 'Salad',
-    tags: ["healthy, greens"]
-  },
-];
 
 const styles = StyleSheet.create({
   timeHeader: {
@@ -274,11 +272,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18
   },
+  watch:{
+    fontSize: 12
+  },
   container: {
     flex: 1,
   },
   box: {
-    backgroundColor: '#f9c2ff',
+    backgroundColor: '#E8E8E8',
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
@@ -289,5 +290,55 @@ const styles = StyleSheet.create({
   },
   item:{
     fontSize: 12
+  },
+  container1: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start' // if you want to fill rows left to right
+  },
+  item1: {
+    width: '65%' // is 50% of container width
+  },
+  item2: {
+    width: '40%',
+    backgroundColor: '#FFFFFF',
+    height: 25,
+    justifyContent: 'center',
+    alignItems: 'center'
+     // is 50% of container width
+  },
+  item3: {
+    width: '35%' // is 50% of container width
+  },
+  item4: {
+    width: '10%' // is 50% of container width
+  },
+  item5: {
+    width: '65%' // is 50% of container width
+  },
+  item6: {
+    width: '35%' // is 50% of container width
+  },
+  modal:{
+    flex: 1,
+    height: '50%'
+  },
+  modalCard:{
+    marginLeft: -0.05*screenWidth,
+    height: '100%',
+    width: screenWidth,
+    marginTop: 0.2 * screenHeight,
+    backgroundColor: '#FFFFFF',
+
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50
+  },
+  modalImage:{
+    width: screenWidth,
+    height: 120,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50
   }
+
 });
