@@ -8,7 +8,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import opencage from 'opencage-api-client';
-import RestCard from './TimeSlot'
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
@@ -33,14 +32,16 @@ export default class Menu extends React.Component{
       super(props);
       this.state = {location: null, address: ''};
       this.state = {lat: 0, lon: 0};
-      this.state = {openModal: false}
+      this.state = {openModal: false};
       this._getLocationAsync();
+      this.state = {distance: ''};
       //this.storeRestaurant();
       this.state = {places: []};
       this.state = {modalRest: "", modalImage: null, modalAddress: "", modalWatching: "", modalTime: ""};
       this.state = {TIMES: []};
-      this.initTimes();
-      this.getTimes();
+      //this.initTimes();
+      //this.getTimes();
+    }
 
   initTimes = () => {
     var hours = new Date().getHours(); 
@@ -68,6 +69,31 @@ export default class Menu extends React.Component{
     this.setState({TIMES: tarray});
 
   }
+  distance(lat1, lon1)
+  {
+    var lat2 = this.state.lat;
+    var lon2 = this.state.lon;
+    if ((lat1 == lat2) && (lon1 == lon2)) {
+      this.setState({distance: 0});
+    }
+    else {
+      var radlat1 = Math.PI * lat1/180;
+      var radlat2 = Math.PI * lat2/180;
+      var theta = lon1-lon2;
+      var radtheta = Math.PI * theta/180;
+      var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+      if (dist > 1) {
+        dist = 1;
+      }
+      dist = Math.acos(dist);
+      dist = dist * 180/Math.PI;
+      dist = dist * 60 * 1.1515;
+      var fixed = dist.toFixed(1);
+      this.setState({distance: fixed});
+    }
+
+  }
+  
 
 
   getTimes = () => {
@@ -85,6 +111,7 @@ export default class Menu extends React.Component{
           {
             if(t.localeCompare(this.state.TIMES[i].time) ==0)
             {
+              this.distance(data.lat, data.lon);
               var tempArray = this.state.TIMES;
               var a1 = data.name;
               var a2 = data.id;
@@ -97,7 +124,7 @@ export default class Menu extends React.Component{
               var a9 = data.watchers;
               var a10 = data.address;
               var a11 = data.time;
-              var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6, tag0: a7, tag1: a8, watchers: a9, address: a10, time: a11};
+              var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6, tag0: a7, tag1: a8, watchers: a9, address: a10, time: a11, dist: this.state.distance};
               tempArray[i].restaurants.push(rest);
               this.setState({TIMES: tempArray});
               found =1;
@@ -124,6 +151,8 @@ export default class Menu extends React.Component{
     const key = '5c3d93713edb442c825f89b7bc7d3aa4';
     const { latitude , longitude } = location.coords;
     this.setState({ location: {latitude, longitude}});
+    this.setState({lat: latitude});
+    this.setState({lon: longitude});
     const coords = latitude + ", " + longitude;
           opencage.geocode({ key, q: coords }).then(response => {
             result = response.results[0];
@@ -158,7 +187,7 @@ export default class Menu extends React.Component{
               <View style = {{flex: 1,flexDirection: 'row'}}>
                 <View style = {{flex: 4}}>
                   <Text style={{fontSize: 32, fontWeight: "bold", marginLeft: "4%", marginTop: "3%"}}>{this.state.modalRest}</Text>
-                  <Text style={{fontSize: 13, marginLeft: "4%", marginTop: "2%"}}>{this.state.modalAddress}</Text>
+                  <Text style={{fontSize: 13, marginLeft: "4%", marginTop: "2%"}}>{this.state.modalAddress}  •  {this.state.modalDist} miles</Text>
                   <View style = {{flexDirection: "row"}}>
                     <Image source = {require('./watchIcon.png')}
                       style = {{marginLeft: "4%", marginTop: "2.5%"}}
@@ -228,7 +257,7 @@ export default class Menu extends React.Component{
       // </TouchableOpacity>
       // </View>
       <View>
-        <TouchableOpacity style = {styles.box} onPress={() => this.turnModalOn(item.name, item.image, item.address, item.watchers, item.time)}>
+        <TouchableOpacity style = {styles.box} onPress={() => this.turnModalOn(item.name, item.image, item.address, item.watchers, item.time, item.dist)}>
           <View style={styles.container1}>
             <View style={styles.item1}>
               <Text style = {styles.restaurantName}>{item.name}</Text>
@@ -256,8 +285,8 @@ export default class Menu extends React.Component{
 
   };
 
-  turnModalOn = (name, image, address, watchers, time) =>{
-    this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time});
+  turnModalOn = (name, image, address, watchers, time, dist) =>{
+    this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist});
   }
 
   turnModalOff = () =>{
