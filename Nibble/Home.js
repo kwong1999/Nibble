@@ -8,7 +8,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import opencage from 'opencage-api-client';
-import RestCard from './TimeSlot'
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
