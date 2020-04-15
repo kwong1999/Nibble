@@ -102,10 +102,12 @@ export default class Menu extends React.Component{
       querySnapshot.forEach((doc) => {
         var data = doc.data();
         var t = data.time;
-        if(t == hours)
+        var rHours= t.substr(0, t.indexOf(':'));
+        if(rHours == hours)
         {
           t = 'LIVE';
         }
+        console.log(t);
         var found =0;
           for(var i =0; i < this.state.TIMES.length; i++)
           {
@@ -123,7 +125,7 @@ export default class Menu extends React.Component{
               var a8 = data.tag1;
               var a9 = data.watchers;
               var a10 = data.address;
-              var a11 = data.time;
+              var a11 = t;
               var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6, tag0: a7, tag1: a8, watchers: a9, address: a10, time: a11, dist: this.state.distance};
               tempArray[i].restaurants.push(rest);
               this.setState({TIMES: tempArray});
@@ -225,6 +227,10 @@ export default class Menu extends React.Component{
     var h = Math.abs(hours - rHours-1);
     var m = 60-min;
     var liveString = "live in " + h + " h, " + m + " minutes";
+    if(item.time == 'LIVE')
+    {
+      liveString = "";
+    }
     return (
       <View>
       <View style={styles.container1}>
