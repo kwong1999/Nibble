@@ -38,7 +38,9 @@ export default class Menu extends React.Component{
       //this.storeRestaurant();
       this.state = {places: []};
       this.state = {modalRest: "", modalImage: null, modalAddress: "", modalWatching: "", modalTime: ""};
+      this.state = {ITEMS: []};
       this.state = {TIMES: []};
+      //
       //this.initTimes();
       //this.getTimes();
     }
@@ -50,7 +52,7 @@ export default class Menu extends React.Component{
     var tarray = this.state.TIMES;
     var liveT = {id: '0', time: 'LIVE', restaurants:[]};
     tarray.push(liveT);
-    for(var i=1; i < 24; i++)
+    for(var i=1; i < 25; i++)
     { 
       var t = thours + ':00';
       console.log(t);
@@ -107,7 +109,7 @@ export default class Menu extends React.Component{
         {
           t = 'LIVE';
         }
-        console.log(t);
+        console.log(data);
         var found =0;
           for(var i =0; i < this.state.TIMES.length; i++)
           {
@@ -129,6 +131,7 @@ export default class Menu extends React.Component{
               var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6, tag0: a7, tag1: a8, watchers: a9, address: a10, time: a11, dist: this.state.distance};
               tempArray[i].restaurants.push(rest);
               this.setState({TIMES: tempArray});
+              
               found =1;
             }
           }
@@ -136,6 +139,30 @@ export default class Menu extends React.Component{
         });
       });
     }
+
+
+    getItems(restName) {
+      var tempArray = [];
+      firestoreDB.collection("restaurants").doc(restName).collection("deals").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        var data = doc.data();
+        var a1 = data.name;
+        var a2 = data.id;
+        var a3 = data.description;
+        var a4 = data.image;
+        var a5 = data.newPrice;
+        var a6 = data.originalPrice;
+        var item = {name: a1, id: a2, description: a3, image: a4, newPrice: a5, originalPrice: a6};
+        tempArray.push(item);
+        console.log(item);
+        this.setState({ITEMS: tempArray});
+        
+
+        });
+      });
+    }
+
+
     componentDidMount() {
       this.initTimes();
       this.getTimes();
@@ -223,9 +250,38 @@ export default class Menu extends React.Component{
     var hours = new Date().getHours();
     var min = new Date().getMinutes();
     var rHours= item.time.substr(0, item.time.indexOf(':'));
-    var integer = parseInt(rHours, 10);
-    var h = Math.abs(hours - rHours-1);
-    var m = 60-min;
+    var int = parseInt(rHours, 10);
+    var h =0;
+    var m =0;
+    if(int > hours)
+    {
+      if(min ==0)
+      {
+        h = int - hours;
+        m = 0;
+      }
+      else
+      {
+        h = int - hours - 1;
+        m = 60 - min;
+      }
+    }
+    else
+    {
+      if(min ==0)
+      {
+        h = (24 - hours + int);
+        m =0;
+      }
+      else 
+      {
+        h = (24 - hours + int - 1);
+        m = 60-min;
+      }
+    }
+
+
+    
     var liveString = "live in " + h + " h, " + m + " minutes";
     if(item.time == 'LIVE')
     {
@@ -293,6 +349,7 @@ export default class Menu extends React.Component{
 
   turnModalOn = (name, image, address, watchers, time, dist) =>{
     this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist});
+    this.getItems(name);
   }
 
   turnModalOff = () =>{
