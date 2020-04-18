@@ -37,23 +37,21 @@ export default class Menu extends React.Component{
       this.state = {distance: ''};
       //this.storeRestaurant();
       this.state = {places: []};
-      this.state = {modalRest: "", modalImage: null, modalAddress: "", modalWatching: "", modalTime: ""};
+      this.state = {modalRest: "", modalImage: null, modalAddress: "", modalWatching: "", modalTime: "", modalDeals: null};
       this.state = {ITEMS: []};
       this.state = {TIMES: []};
-      //
-      //this.initTimes();
-      //this.getTimes();
     }
 
   initTimes = () => {
-    var hours = new Date().getHours(); 
+    var hours = new Date().getHours();
 
     var thours = hours+1;
     var tarray = this.state.TIMES;
     var liveT = {id: '0', time: 'LIVE', restaurants:[]};
     tarray.push(liveT);
+
     for(var i=1; i < 25; i++)
-    { 
+    {
       var t = thours + ':00';
       console.log(t);
       var time1 = {id: i.toString(), time: t, restaurants:[]};
@@ -95,7 +93,7 @@ export default class Menu extends React.Component{
     }
 
   }
-  
+
 
 
   getTimes = () => {
@@ -131,7 +129,7 @@ export default class Menu extends React.Component{
               var rest = {name: a1, id: a2, description: a3, image: a4, lat: a5, lon:a6, tag0: a7, tag1: a8, watchers: a9, address: a10, time: a11, dist: this.state.distance};
               tempArray[i].restaurants.push(rest);
               this.setState({TIMES: tempArray});
-              
+
               found =1;
             }
           }
@@ -141,7 +139,7 @@ export default class Menu extends React.Component{
     }
 
 
-    getItems(restName) {
+  getItems(restName) {
       var tempArray = [];
       firestoreDB.collection("restaurants").doc(restName).collection("deals").get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
@@ -150,13 +148,13 @@ export default class Menu extends React.Component{
         var a2 = data.id;
         var a3 = data.description;
         var a4 = data.image;
-        var a5 = data.newPrice;
-        var a6 = data.originalPrice;
+        var a5 = "$"+data.newPrice.toFixed(2);
+        var a6 = "$"+data.originalPrice.toFixed(2);
         var item = {name: a1, id: a2, description: a3, image: a4, newPrice: a5, originalPrice: a6};
         tempArray.push(item);
         console.log(item);
         this.setState({ITEMS: tempArray});
-        
+
 
         });
       });
@@ -228,6 +226,15 @@ export default class Menu extends React.Component{
                   <Text style={{fontSize: 18, fontWeight: "bold", marginLeft: "4%", marginTop: "22%"}}>{this.state.modalTime}</Text>
                 </View>
               </View>
+              <SafeAreaView style = {{flex: 5.5}}>
+                <FlatList style = {{flex: 1}}
+                  data={this.state.ITEMS}
+                  renderItem={this.renderDeals}
+                  keyExtractor={timeSlot => timeSlot.id}
+                  showsVerticalScrollIndicator={false}
+                />
+              </SafeAreaView>
+
             </View>
         </Modal>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -273,7 +280,7 @@ export default class Menu extends React.Component{
         h = (24 - hours + int);
         m =0;
       }
-      else 
+      else
       {
         h = (24 - hours + int - 1);
         m = 60-min;
@@ -281,8 +288,8 @@ export default class Menu extends React.Component{
     }
 
 
-    
-    var liveString = "live in " + h + " h, " + m + " minutes";
+
+    var liveString = "live in " + h + " hr(s), " + m + " min";
     if(item.time == 'LIVE')
     {
       liveString = "";
@@ -311,6 +318,7 @@ export default class Menu extends React.Component{
 
   renderRestaurants = ({item}) => {
     var wString = item.watchers + " biters watching";
+
     return(
       // <View>
       // <TouchableOpacity onPress={() => this.refs.modal1.open()} style = {styles.box}>
@@ -323,21 +331,20 @@ export default class Menu extends React.Component{
           <View style={styles.container1}>
             <View style={styles.item1}>
               <Text style = {styles.restaurantName}>{item.name}</Text>
-              <Text>{"\n"}</Text>
-              <View style={styles.container1}>
+              <View style={styles.tagContainer}>
                   <View style={styles.item2}>
-                    <Text>{item.tag0}</Text>
+                    <Text style={{color: '#330382'}}>{item.tag0}</Text>
                   </View>
                   <View style={styles.item4}></View>
                   <View style={styles.item2}>
-                    <Text>{item.tag1}</Text>
+                    <Text style={{color: '#330382'}}>{item.tag1}</Text>
                   </View>
                   <View style={styles.item4}></View>
               </View>
             </View>
             <View style={styles.item3}>
               <Image source = {{uri:item.image}}
-                style = {{ width: 120, height: 120 }}
+                style = {{ width: 117, height: 117, borderRadius: 12 }}
               />
             </View>
           </View>
@@ -347,9 +354,34 @@ export default class Menu extends React.Component{
 
   };
 
+  renderDeals = ({item}) => {
+    return(
+      <View>
+        <TouchableOpacity style = {styles.dealBox}>
+          <View>
+            <View style={{width: '70%'}}>
+              <Text style = {styles.restaurantName}>{item.name}</Text>
+              <View style={styles.dealDesc}>
+                <Text style={{fontSize: 12}}>{item.description}</Text>
+              </View>
+              <View style={styles.dealPrice}>
+                <Text style={{textDecorationLine: "line-through"}}>{item.originalPrice}  > </Text>
+                <Text>{item.newPrice}</Text>
+              </View>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   turnModalOn = (name, image, address, watchers, time, dist) =>{
-    this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist});
+    if (name == "Dulce Cafe")
+      name = "Dulce"
+
     this.getItems(name);
+
+    this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist});
   }
 
   turnModalOff = () =>{
@@ -370,17 +402,31 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   watch:{
-    fontSize: 12
+    fontSize: 10,
+    fontStyle: 'italic',
   },
   container: {
     flex: 1,
   },
   box: {
+    backgroundColor: '#FFFFFF',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    width: 0.9 * screenWidth,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#EDE1FF'
+  },
+  liveBox:{
     backgroundColor: '#E8E8E8',
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
-    width: 0.9 * screenWidth
+    width: 0.9 * screenWidth,
+    borderRadius: 12,
+    borderWidth: 5,
+    borderColor: '#8134FF'
   },
   title: {
     fontSize: 16
@@ -394,28 +440,38 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'flex-start' // if you want to fill rows left to right
   },
+  tagContainer:{
+    flex: 1,
+    marginTop: 15,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start'
+  },
   item1: {
-    width: '65%' // is 50% of container width
+    width: '62%' // is 50% of container width
   },
   item2: {
     width: '40%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F4EDFF',
+    borderRadius: 4,
     height: 25,
     justifyContent: 'center',
     alignItems: 'center'
      // is 50% of container width
   },
   item3: {
-    width: '35%' // is 50% of container width
+    width: '32%', // is 50% of container width
   },
   item4: {
-    width: '10%' // is 50% of container width
+    width: '5%' // is 50% of container width
   },
   item5: {
-    width: '65%' // is 50% of container width
+    width: '60%' // is 50% of container width
   },
   item6: {
-    width: '35%' // is 50% of container width
+    width: '35%', // is 50% of container width
+    paddingTop: 6,
+    justifyContent: 'center'
   },
   modal:{
     flex: 1,
@@ -436,6 +492,25 @@ const styles = StyleSheet.create({
     height: 120,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50
+  },
+  dealDesc:{
+    marginTop: 8,
+    fontSize: 2,
+    flexWrap: 'wrap',
+    alignItems: 'flex-start'
+  },
+  dealBox:{
+    height: 110,
+    paddingTop: 8,
+    paddingLeft: 10,
+    backgroundColor: '#E8E8E8',
+    marginVertical: 8,
+    marginHorizontal: 16,
+    width: 0.9 * screenWidth,
+  },
+  dealPrice:{
+    marginTop: 14,
+    flexDirection: "row",
   }
 
 });
