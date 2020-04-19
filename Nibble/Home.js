@@ -308,9 +308,13 @@ export default class Menu extends React.Component{
               </View>
             </View>
         </Modal>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text>{address}</Text>
-        </View>
+        <View style={styles.container1}>
+        <View style={styles.sideSpace}></View>
+        <View style={styles.sidebar}></View>
+        <View style={styles.mainMenu}>
+	        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+	          <Text>{address}</Text>
+	        </View>
         <SafeAreaView style = {{flex: 20}}>
           <FlatList style = {{flex: 1}}
             data={timeR}
@@ -319,7 +323,8 @@ export default class Menu extends React.Component{
             showsVerticalScrollIndicator={false}
           />
         </SafeAreaView>
-
+        </View>
+        </View>
       </View>
       );
   }
@@ -371,22 +376,28 @@ export default class Menu extends React.Component{
     }
     return (
       <View>
-      <View style={styles.container1}>
-      <View style={styles.timeBox}>
-        <Text style={timeStyle}>{item.time}</Text>
+       		<View style={styles.container1}>
+       		<View style={styles.sideBox}></View>
+       		<View style={styles.mainMenu}>
+	      	<View style={styles.container1}>
+		      	<View style={styles.timeBox}>
+		        	<Text style={timeStyle}>{item.time}</Text>
+		        </View>
+		        <View style={styles.lBox}>
+		        	<Text style= {styles.watch}>{liveString}</Text>
+		        </View>
+        	</View>
+	        <SafeAreaView>
+	          <FlatList style = {{flex: 1}}
+	            data={item.restaurants}
+	            renderItem={this.renderRestaurants}
+	            keyExtractor={timeSlot => timeSlot.id}
+	            showsVerticalScrollIndicator={false}
+	          />
+	        </SafeAreaView>
+	        </View>
         </View>
-        <View style={styles.lBox}>
-        <Text style= {styles.watch}>{liveString}</Text>
-        </View>
-        </View>
-        <SafeAreaView>
-          <FlatList style = {{flex: 1}}
-            data={item.restaurants}
-            renderItem={this.renderRestaurants}
-            keyExtractor={timeSlot => timeSlot.id}
-            showsVerticalScrollIndicator={false}
-          />
-        </SafeAreaView>
+
         <Text>{"\n"}</Text>
       </View>);
   };
@@ -444,7 +455,7 @@ export default class Menu extends React.Component{
     {
       sBox = styles.dealBoxPressed;
     }
-    for(var i=0; i < this.state.order; i++)
+    for(var i=0; i < this.state.order.length; i++)
     {
       if(itemName == this.state.order[i].name)
       {
@@ -475,8 +486,8 @@ export default class Menu extends React.Component{
               <View style={styles.emptySideQuantity}>
               </View>
 
-              <TouchableOpacity style={styles.signPlus} onPress={() => this.setState({currentOrderQuantity: (this.state.currentOrderQuantity + 1)})}>
-                <Text style={styles.signText}>+</Text>
+              <TouchableOpacity style={styles.signMinus} onPress={() => this.setState({currentOrderQuantity: (this.state.currentOrderQuantity > 0) ? (this.state.currentOrderQuantity - 1) : 0})}>
+                <Text style={styles.signText}>-</Text>
               </TouchableOpacity>
               <View style={styles.quantityNumberBox}>
                 <Text style={styles.quantityNumberText}> {this.state.currentOrderQuantity} </Text>
@@ -484,8 +495,8 @@ export default class Menu extends React.Component{
                     <Text style={{fontSize: 11, fontWeight: 'bold', color: '#FFFFFF', marginTop: 60}}>ADD   </Text>
                 </TouchableOpacity>
               </View>
-               <TouchableOpacity style={styles.signMinus} onPress={() => this.setState({currentOrderQuantity: (this.state.currentOrderQuantity > 0) ? (this.state.currentOrderQuantity - 1) : 0})}>
-                <Text style={styles.signText}>-</Text>
+               <TouchableOpacity style={styles.signPlus} onPress={() => this.setState({currentOrderQuantity: this.state.currentOrderQuantity +1})}>
+                <Text style={styles.signText}>+</Text>
               </TouchableOpacity>
 
           </View>
@@ -786,12 +797,12 @@ const styles = StyleSheet.create({
   {
     width: '73%'
   },
-  signPlus:
+  signMinus:
   {
     width: '7%',
 
   },
-  signMinus:
+  signPlus:
   {
     width: '10%',
 
@@ -857,5 +868,30 @@ const styles = StyleSheet.create({
   {
     marginTop: 25,
     flexDirection:'row'
+  },
+  sidebar:
+  {
+  	width: '1%',
+  	backgroundColor: '#EDE1FF',
+  	height: .9*screenHeight,
+  	position: 'absolute',
+  	left: 12
+  },
+  sideSpace:
+  {
+  	width: '3%',
+
+  },
+  mainMenu:
+  {
+  	width: '96%',
+  },
+  sideBox:
+  {
+  	width: '1.5%',
+  	backgroundColor: '#8134FF',
+  	height: 10,
+  	position: 'absolute',
+  	left: 0,
   }
 });
