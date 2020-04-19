@@ -48,7 +48,7 @@ export default class Menu extends React.Component{
         ITEMS: [],
         TIMES: [],
         order: [],
-        currentOrderQuantity: 0,
+        currentOrderQuantity: 1,
         username: 'Rikki',
         checkoutButtonOpacity: 0,
         openCheckout: false,
