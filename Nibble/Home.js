@@ -295,7 +295,7 @@ export default class Menu extends React.Component{
                     <Text style = {{fontSize: 12}}>{"$" + (this.state.orderTotal*0.08).toFixed(2)}</Text>
                     <Text>{'\n\n'}</Text>
                   </View>
-                  <TouchableOpacity onPress = {() => this.setState({placeOrderColor: '#5ED634', placeOrderText:'\u2705\tSuccess'})}style={{backgroundColor:this.state.placeOrderColor, borderRadius: 12, width: 260, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
+                  <TouchableOpacity onPress = {this.purchase} style={{backgroundColor:this.state.placeOrderColor, borderRadius: 12, width: 260, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>{this.state.placeOrderText}</Text>
                   </TouchableOpacity>
                   <Text>{'\n'}</Text>
@@ -545,7 +545,8 @@ export default class Menu extends React.Component{
   }
   purchase = () => {
   	console.log('buy');
-  	/*for(var i=0; i < this.state.order.length; i++)
+  	this.setState({placeOrderColor: '#5ED634', placeOrderText:'\u2705\tSuccess'});
+  	for(var i=0; i < this.state.order.length; i++)
   	{
 	  	firestoreDB.collection("restaurants").doc(this.state.order[i].restName).collection("orders").add({
 		   	itemName: this.state.order[i].name,
@@ -557,9 +558,9 @@ export default class Menu extends React.Component{
 		   	itemName: this.state.order[i].name,
 	  		quantity: this.state.order[i].quantity,
 	  		fulfilled: false,
-	  		restaurant: '',
+	  		restaurant: this.state.order[i].restName,
 		});
-  	}*/
+  	}
   }
 
   turnModalOn = (name, image, address, watchers, time, dist) =>{
