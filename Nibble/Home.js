@@ -444,7 +444,7 @@ export default class Menu extends React.Component{
     {
       sBox = styles.dealBoxPressed;
     }
-    for(var i=0; i < this.state.order; i++)
+    for(var i=0; i < this.state.order.length; i++)
     {
       if(itemName == this.state.order[i].name)
       {
@@ -547,7 +547,7 @@ export default class Menu extends React.Component{
 
     this.getItems(name);
 
-    this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist, checkoutOpacity: 0, openCheckout: false});
+    this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist, checkoutOpacity: 0, openCheckout: false, checkoutButtonOpacity: 0, placeOrderColor: '#8134FF', totalSavings: 0, orderTotal: 0});
     this.setState({order: []});
   }
 
@@ -559,14 +559,14 @@ export default class Menu extends React.Component{
 const styles = StyleSheet.create({
   timeHeader: {
     marginLeft: 0.05 * screenWidth,
-    fontSize: 20,
+    fontSize: 18,
     // fontFamily: 'Roboto',
     fontStyle: 'normal',
     fontWeight: 'bold',
   },
   timeHeaderLive: {
     marginLeft: 0.05 * screenWidth,
-    fontSize: 20,
+    fontSize: 18,
     // fontFamily: 'Roboto',
     fontStyle: 'normal',
     fontWeight: 'bold',
@@ -703,7 +703,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
     borderColor: '#8134FF',
-    borderWidth: 2,
+    borderWidth: 4,
     zIndex: 1,
   },
   quantityBox:

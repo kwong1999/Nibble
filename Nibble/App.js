@@ -12,7 +12,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Menu">
-        <Stack.Screen name="Menu" component={Menu} options={{ title: 'nibble', headerTintColor: '#330382' }}/>
+        <Stack.Screen name="Menu" component={Menu} options={{ title: 'nibble', headerTintColor: '#330382'}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
