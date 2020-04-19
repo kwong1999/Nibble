@@ -49,7 +49,7 @@ export default class Menu extends React.Component{
         TIMES: [],
         order: [],
         currentOrderQuantity: 1,
-        username: 'Rikki',
+        username: 'ezhan',
         checkoutButtonOpacity: 0,
         openCheckout: false,
         orderTotal: 0,
@@ -288,14 +288,14 @@ export default class Menu extends React.Component{
                     <Text style = {{width: '55%', fontSize: 12}}>Tax</Text>
                     <Text style = {{fontSize: 12}}>{"$" + (this.state.orderTotal*0.08).toFixed(2)}</Text>
                   </View>
-                  <TouchableOpacity style={{backgroundColor:'#8134FF', borderRadius: 12, width: 260, height:35, flexDirection:'row', marginTop: 45, marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
+                  <TouchableOpacity style={{backgroundColor:'#8134FF', borderRadius: 12, width: 260, height:35, flexDirection:'row', marginTop: 45, marginBottom: 20, alignItems: 'center', justifyContent: 'center'}} onPress={this.purchase}>
                     <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>{"$" + (this.state.orderTotal).toFixed(2)}</Text>
                     <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF', marginLeft: 60}}>Place Order</Text>
                   </TouchableOpacity>
                 </View>
               </Modal>
               <View style = {[styles.checkOutButton, {opacity: this.state.checkoutButtonOpacity}]}>
-                <TouchableOpacity onPress = {() => this.setState({openCheckout: true})}>
+                <TouchableOpacity onPress = {this.checkout}>
                   <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Check Out</Text>
                 </TouchableOpacity>
               </View>
@@ -527,6 +527,27 @@ export default class Menu extends React.Component{
     }
     this.setState({orderTotal: totalCost});
 
+  }
+  checkout = () => {
+  	this.setState({openCheckout: true});
+  }
+  purchase = () => {
+  	console.log('buy');
+  	/*for(var i=0; i < this.state.order.length; i++)
+  	{
+	  	firestoreDB.collection("restaurants").doc(this.state.order[i].restName).collection("orders").add({
+		   	itemName: this.state.order[i].name,
+	  		quantity: this.state.order[i].quantity,
+	  		fulfilled: false,
+	  		username: this.state.username,
+		});
+		firestoreDB.collection("users").doc(this.state.username).collection("orders").add({
+		   	itemName: this.state.order[i].name,
+	  		quantity: this.state.order[i].quantity,
+	  		fulfilled: false,
+	  		restaurant: '',
+		});
+  	}*/
   }
 
   turnModalOn = (name, image, address, watchers, time, dist) =>{
