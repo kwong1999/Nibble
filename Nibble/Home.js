@@ -30,19 +30,44 @@ const firestoreDB = firebase.firestore();
 export default class Menu extends React.Component{
   constructor(props) {
       super(props);
-      this.state = {location: null, address: ''};
-      this.state = {lat: 0, lon: 0};
-      this.state = {openModal: false};
+      this.state = {
+        location: null,
+        address: '',
+        lat: 0,
+        lon: 0,
+        itemPressed: '',
+        openModal: false,
+        distance: '',
+        places: [],
+        modalRest: "", 
+        modalImage: null, 
+        modalAddress: "", 
+        modalWatching: "", 
+        modalTime: "", 
+        modalDeals: null,
+        ITEMS: [],
+        TIMES: [],
+        order: [],
+        currentOrderQuantity: 1,
+        username: 'Rikki',
+
+      };
       this._getLocationAsync();
-      this.state = {distance: ''};
-      //this.storeRestaurant();
-      this.state = {places: []};
-      this.state = {modalRest: "", modalImage: null, modalAddress: "", modalWatching: "", modalTime: "", modalDeals: null};
-      this.state = {ITEMS: []};
-      this.state = {TIMES: []};
+
+      this.renderDeals = this.renderDeals.bind(this);
+      this.initTimes = this.initTimes.bind(this);
+      this.distance = this.distance.bind(this);
+      this.getTimes = this.getTimes.bind(this);
+
+      this.getItems = this.getItems.bind(this);
+      this.renderTimes = this.renderTimes.bind(this);
+      this._getLocationAsync = this._getLocationAsync.bind(this);
+      this.renderRestaurants = this.renderRestaurants.bind(this);
+
     }
 
   initTimes = () => {
+
     var hours = new Date().getHours();
 
     var thours = hours+1;
@@ -53,7 +78,6 @@ export default class Menu extends React.Component{
     for(var i=1; i < 25; i++)
     {
       var t = thours + ':00';
-      console.log(t);
       var time1 = {id: i.toString(), time: t, restaurants:[]};
       tarray.push(time1);
       //this.setState({TIMES: this.state.TIMES.concat(time1)});
@@ -107,7 +131,6 @@ export default class Menu extends React.Component{
         {
           t = 'LIVE';
         }
-        console.log(data);
         var found =0;
           for(var i =0; i < this.state.TIMES.length; i++)
           {
@@ -152,7 +175,6 @@ export default class Menu extends React.Component{
         var a6 = "$"+data.originalPrice.toFixed(2);
         var item = {name: a1, id: a2, description: a3, image: a4, newPrice: a5, originalPrice: a6};
         tempArray.push(item);
-        console.log(item);
         this.setState({ITEMS: tempArray});
 
 
@@ -195,6 +217,11 @@ export default class Menu extends React.Component{
       }
       const {address} = this.state;
       let timeR = this.state.TIMES.filter(item => item.restaurants.length > 0);
+      var modalTimeStyle = styles.modalTime;
+      if(this.state.modalTime.localeCompare('LIVE') ==0)
+      {
+        modalTimeStyle = styles.modalTimeLive;
+      }
 
     return(
       <View style = {{flex:1}}>
@@ -223,7 +250,7 @@ export default class Menu extends React.Component{
                   </View>
                 </View>
                 <View style = {{flex:1}}>
-                  <Text style={{fontSize: 18, fontWeight: "bold", marginLeft: "4%", marginTop: "22%"}}>{this.state.modalTime}</Text>
+                  <Text style={modalTimeStyle}>{this.state.modalTime}</Text>
                 </View>
               </View>
               <SafeAreaView style = {{flex: 5.5}}>
@@ -287,7 +314,11 @@ export default class Menu extends React.Component{
       }
     }
 
-
+    var timeStyle = styles.timeHeader;
+    if(item.time == 'LIVE')
+    {
+      timeStyle = styles.timeHeaderLive;
+    }
 
     var liveString = "live in " + h + " hr(s), " + m + " min";
     if(item.time == 'LIVE')
@@ -297,10 +328,10 @@ export default class Menu extends React.Component{
     return (
       <View>
       <View style={styles.container1}>
-      <View style={styles.item5}>
-        <Text style={styles.timeHeader}>{item.time}</Text>
+      <View style={styles.timeBox}>
+        <Text style={timeStyle}>{item.time}</Text>
         </View>
-        <View style={styles.item6}>
+        <View style={styles.lBox}>
         <Text style= {styles.watch}>{liveString}</Text>
         </View>
         </View>
@@ -318,6 +349,11 @@ export default class Menu extends React.Component{
 
   renderRestaurants = ({item}) => {
     var wString = item.watchers + " biters watching";
+    var sBox = styles.box;
+    if(item.time.localeCompare('LIVE') == 0)
+    {
+      sBox = styles.liveBox;
+    }
 
     return(
       // <View>
@@ -327,22 +363,22 @@ export default class Menu extends React.Component{
       // </TouchableOpacity>
       // </View>
       <View>
-        <TouchableOpacity style = {styles.box} onPress={() => this.turnModalOn(item.name, item.image, item.address, item.watchers, item.time, item.dist)}>
+        <TouchableOpacity style = {sBox} onPress={() => this.turnModalOn(item.name, item.image, item.address, item.watchers, item.time, item.dist)}>
           <View style={styles.container1}>
-            <View style={styles.item1}>
+            <View style={styles.restTitle}>
               <Text style = {styles.restaurantName}>{item.name}</Text>
               <View style={styles.tagContainer}>
-                  <View style={styles.item2}>
+                  <View style={styles.tagBox}>
                     <Text style={{color: '#330382'}}>{item.tag0}</Text>
                   </View>
-                  <View style={styles.item4}></View>
-                  <View style={styles.item2}>
+                  <View style={styles.spacer1}></View>
+                  <View style={styles.tagBox}>
                     <Text style={{color: '#330382'}}>{item.tag1}</Text>
                   </View>
-                  <View style={styles.item4}></View>
+                  <View style={styles.spacer1}></View>
               </View>
             </View>
-            <View style={styles.item3}>
+            <View style={styles.imageBox}>
               <Image source = {{uri:item.image}}
                 style = {{ width: 117, height: 117, borderRadius: 12 }}
               />
@@ -355,9 +391,25 @@ export default class Menu extends React.Component{
   };
 
   renderDeals = ({item}) => {
+
+    var sBox = styles.dealBoxNotPressed;
+    let {itemPressed} = this.state;
+    var itemName = item.name;
+    if(itemPressed.localeCompare(itemName) == 0)
+    {
+      sBox = styles.dealBoxPressed;
+    }
+    for(var i=0; i < this.state.order; i++)
+    {
+      if(itemName == this.state.order[i].name)
+      {
+        sBox = styles.dealBoxOrdered;
+      }
+    }
+    
     return(
       <View>
-        <TouchableOpacity style = {styles.dealBox}>
+        <TouchableOpacity style = {sBox} onPress={() => this.setState({itemPressed: itemName, currentOrderQuantity: 1})}>
           <View>
             <View style={{width: '70%'}}>
               <Text style = {styles.restaurantName}>{item.name}</Text>
@@ -371,6 +423,27 @@ export default class Menu extends React.Component{
             </View>
           </View>
         </TouchableOpacity>
+        
+        <View style={styles.quantityBox}>
+          <View style={styles.container1}>
+              <View style={styles.emptySideQuantity}>
+              </View>
+
+              <TouchableOpacity style={styles.signPlus} onPress={() => this.setState({currentOrderQuantity: (this.state.currentOrderQuantity + 1)})}>
+                <Text style={styles.signText}>+</Text>
+              </TouchableOpacity>
+              <View style={styles.quantityNumberBox}>
+                <Text style={styles.quantityNumberText}> {this.state.currentOrderQuantity} </Text>
+                <TouchableOpacity> 
+                    <Text style={styles.addText}>ADD   </Text>
+                </TouchableOpacity>
+              </View>
+               <TouchableOpacity style={styles.signMinus} onPress={() => this.setState({currentOrderQuantity: (this.state.currentOrderQuantity > 0) ? (this.state.currentOrderQuantity - 1) : 0})}>
+                <Text style={styles.signText}>-</Text>
+              </TouchableOpacity>
+
+          </View>
+        </View>
       </View>
     );
   };
@@ -382,6 +455,7 @@ export default class Menu extends React.Component{
     this.getItems(name);
 
     this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist});
+    this.setState({order: []});
   }
 
   turnModalOff = () =>{
@@ -396,6 +470,14 @@ const styles = StyleSheet.create({
     // fontFamily: 'Roboto',
     fontStyle: 'normal',
     fontWeight: 'bold',
+  },
+  timeHeaderLive: {
+    marginLeft: 0.05 * screenWidth,
+    fontSize: 20,
+    // fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: 'bold',
+    color: '#8134FF'
   },
   restaurantName:{
     fontWeight: 'bold',
@@ -447,10 +529,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'flex-start'
   },
-  item1: {
+  restTitle: {
     width: '62%' // is 50% of container width
   },
-  item2: {
+  tagBox: {
     width: '40%',
     backgroundColor: '#F4EDFF',
     borderRadius: 4,
@@ -459,16 +541,16 @@ const styles = StyleSheet.create({
     alignItems: 'center'
      // is 50% of container width
   },
-  item3: {
+  imageBox: {
     width: '32%', // is 50% of container width
   },
-  item4: {
+  spacer1: {
     width: '5%' // is 50% of container width
   },
-  item5: {
+  timeBox: {
     width: '60%' // is 50% of container width
   },
-  item6: {
+  lBox: {
     width: '35%', // is 50% of container width
     paddingTop: 6,
     justifyContent: 'center'
@@ -499,18 +581,133 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'flex-start'
   },
-  dealBox:{
+  dealBoxNotPressed:{
     height: 110,
     paddingTop: 8,
     paddingLeft: 10,
-    backgroundColor: '#E8E8E8',
+    backgroundColor: '#FFFFFF',
     marginVertical: 8,
     marginHorizontal: 16,
     width: 0.9 * screenWidth,
+    borderTopLeftRadius: 15, 
+    borderTopRightRadius: 15,
+    borderBottomLeftRadius: 15, 
+    borderBottomRightRadius: 15,
+    borderColor: '#EDE1FF',
+    borderWidth: 2,
+    zIndex: 1,
+  },
+  dealBoxOrdered:{
+    height: 110,
+    paddingTop: 8,
+    paddingLeft: 10,
+    backgroundColor: '#FFFFFF',
+    marginVertical: 8,
+    marginHorizontal: 16,
+    width: 0.9 * screenWidth,
+    borderTopLeftRadius: 15, 
+    borderTopRightRadius: 15,
+    borderBottomLeftRadius: 15, 
+    borderBottomRightRadius: 15,
+    borderColor: '#8134FF',
+    borderWidth: 2,
+    zIndex: 1,
+  },
+  quantityBox:
+  {
+    height: 110,
+    paddingTop: 8,
+    paddingLeft: 10,
+    backgroundColor: '#8134FF',
+    marginVertical: 8,
+    marginHorizontal: 16,
+    width: 0.9 * screenWidth,
+    position: 'absolute',
+    borderTopLeftRadius: 15, 
+    borderTopRightRadius: 15,
+    borderBottomLeftRadius: 15, 
+    borderBottomRightRadius: 15,
+    top: 0,
+    left: 0,
+
+  },
+ 
+  dealBoxPressed:{
+    height: 110,
+    paddingTop: 8,
+    paddingLeft: 10,
+    backgroundColor: '#FFFFFF',
+    marginVertical: 8,
+    marginHorizontal: 16,
+    width: 0.6 * screenWidth,
+    borderTopLeftRadius: 15, 
+    borderTopRightRadius: 15,
+    borderBottomLeftRadius: 15, 
+    borderBottomRightRadius: 15,
+    borderColor: '#EDE1FF',
+    borderWidth: 2,
+    zIndex: 1,
   },
   dealPrice:{
     marginTop: 14,
     flexDirection: "row",
-  }
+  },
+  modalTime:
+  {
+    fontSize: 18, 
+    fontWeight: "bold", 
+    marginLeft: "4%", 
+    marginTop: "22%"
+  },
+  modalTimeLive:
+  {
+    fontSize: 18, 
+    fontWeight: "bold", 
+    marginLeft: "4%", 
+    marginTop: "22%",
+    color: '#8134FF'
+  },
+  emptySideQuantity:
+  {
+    width: '73%'
+  },
+  signPlus:
+  {
+    width: '7%',
+    
+  },
+  signMinus:
+  {
+    width: '10%',
+    
+  },
+  quantityNumberBox:
+  {
+    width: '10%',
+    
+  },
+  quantityNumberText:
+  {
+    color: '#FFFFFF',
+    fontSize: 20,
+    top: 35,
+    fontWeight: "bold",
+    
+  },
+  signText:
+  {
+    color: '#FFFFFF',
+    fontSize: 18,
+    top: 35,
+  },
+  addText:
+  {
+    fontSize: 11,
+    color: '#FFFFFF',
+    top: 60,
+    fontWeight: "bold",
+
+  },
+
 
 });
