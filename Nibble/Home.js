@@ -130,7 +130,7 @@ export default class Menu extends React.Component{
               tempArray[i].restaurants.push(rest);
               this.setState({TIMES: tempArray});
 
-              found =1;
+              found = 1;
             }
           }
 
