@@ -65,6 +65,8 @@ export default class Menu extends React.Component{
       this.renderTimes = this.renderTimes.bind(this);
       this._getLocationAsync = this._getLocationAsync.bind(this);
       this.renderRestaurants = this.renderRestaurants.bind(this);
+      this.addItem = this.addItem.bind(this);
+      this.renderOrder = this.renderOrder.bind(this);
 
       this.addItem = this.addItem.bind(this);
       this
@@ -380,6 +382,7 @@ export default class Menu extends React.Component{
         <Text>{"\n"}</Text>
       </View>);
   };
+  //get rid of yello
 
   renderRestaurants = ({item}) => {
     var wString = item.watchers + " biters watching";
@@ -423,7 +426,7 @@ export default class Menu extends React.Component{
       </View>);
 
   };
-
+//ugh
   renderDeals = ({item}) => {
 
     var sBox = styles.dealBoxNotPressed;
@@ -469,8 +472,8 @@ export default class Menu extends React.Component{
               </TouchableOpacity>
               <View style={styles.quantityNumberBox}>
                 <Text style={styles.quantityNumberText}> {this.state.currentOrderQuantity} </Text>
-                <TouchableOpacity onPress={() => this.addItem(item.name, this.state.currentOrderQuantity, item.newPrice)}>
-                    <Text style={styles.addText}>ADD   </Text>
+                <TouchableOpacity onPress={() =>this.addItem(item.name, this.state.currentOrderQuantity, item.newPrice)}>
+                    <Text style={{fontSize: 11, fontWeight: 'bold', color: '#FFFFFF', marginTop: 60}}>ADD   </Text>
                 </TouchableOpacity>
               </View>
                <TouchableOpacity style={styles.signMinus} onPress={() => this.setState({currentOrderQuantity: (this.state.currentOrderQuantity > 0) ? (this.state.currentOrderQuantity - 1) : 0})}>
@@ -479,10 +482,11 @@ export default class Menu extends React.Component{
 
           </View>
         </View>
+
       </View>
     );
   };
-
+//sad
   renderOrder = ({item}) => {
     var totalCost = this.state.orderTotal + (item.price*item.quantity);
     return(
@@ -496,7 +500,7 @@ export default class Menu extends React.Component{
   };
 
   addItem = (name, quantity, price) =>{
-
+  	console.log("add");
     price = price.substring(1, price.length);
     var priceNumber = parseInt(price, 10);
     var item = {name: name, quantity: quantity, price: priceNumber};
