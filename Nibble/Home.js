@@ -53,8 +53,6 @@ export default class Menu extends React.Component{
         checkoutButtonOpacity: 0,
         openCheckout: false,
         orderTotal: 0,
-
-
       };
       this._getLocationAsync();
 
@@ -68,6 +66,8 @@ export default class Menu extends React.Component{
       this._getLocationAsync = this._getLocationAsync.bind(this);
       this.renderRestaurants = this.renderRestaurants.bind(this);
 
+      this.addItem = this.addItem.bind(this);
+      this
     }
 
   initTimes = () => {
@@ -180,7 +180,6 @@ export default class Menu extends React.Component{
         var item = {name: a1, id: a2, description: a3, image: a4, newPrice: a5, originalPrice: a6};
         tempArray.push(item);
         this.setState({ITEMS: tempArray});
-
 
         });
       });
@@ -781,7 +780,7 @@ const styles = StyleSheet.create({
   {
     fontSize: 11,
     color: '#FFFFFF',
-    top: 60,
+    marginTop: 60,
     fontWeight: "bold",
 
   },
@@ -818,7 +817,4 @@ const styles = StyleSheet.create({
     marginTop: 25,
     flexDirection:'row'
   }
-
-
-
 });
