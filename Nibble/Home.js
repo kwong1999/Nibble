@@ -39,17 +39,21 @@ export default class Menu extends React.Component{
         openModal: false,
         distance: '',
         places: [],
-        modalRest: "", 
-        modalImage: null, 
-        modalAddress: "", 
-        modalWatching: "", 
-        modalTime: "", 
+        modalRest: "",
+        modalImage: null,
+        modalAddress: "",
+        modalWatching: "",
+        modalTime: "",
         modalDeals: null,
         ITEMS: [],
         TIMES: [],
         order: [],
-        currentOrderQuantity: 1,
+        currentOrderQuantity: 0,
         username: 'Rikki',
+        checkoutButtonOpacity: 0,
+        openCheckout: false,
+        orderTotal: 0,
+
 
       };
       this._getLocationAsync();
@@ -261,7 +265,38 @@ export default class Menu extends React.Component{
                   showsVerticalScrollIndicator={false}
                 />
               </SafeAreaView>
-
+              <Modal
+                isVisible = {this.state.openCheckout}
+                onBackdropPress={this.turnModalOff}
+                backdropColor ={"black"}
+                backdropOpacity = {0.5}
+              >
+                <View style = {styles.checkoutModal}>
+                  <Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16}}>{this.state.modalRest}</Text>
+                  <SafeAreaView style = {{marginLeft: '6%', minHeight: '14%', maxHeight: '30%', marginTop:'12%'}}>
+                    <FlatList
+                      data={this.state.order}
+                      renderItem={this.renderOrder}
+                      keyExtractor={timeSlot => timeSlot.id}
+                      showsVerticalScrollIndicator={false}
+                    />
+                  </SafeAreaView>
+                  <View style = {{backgroundColor: '#EDE1FF', height: 2, width: '80%'}}></View>
+                  <View style = {styles.tax}>
+                    <Text style = {{width: '55%', fontSize: 12}}>Tax</Text>
+                    <Text style = {{fontSize: 12}}>{"$" + (this.state.orderTotal*0.08).toFixed(2)}</Text>
+                  </View>
+                  <TouchableOpacity style={{backgroundColor:'#8134FF', borderRadius: 12, width: 260, height:35, flexDirection:'row', marginTop: 45, marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>{"$" + (this.state.orderTotal).toFixed(2)}</Text>
+                    <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF', marginLeft: 60}}>Place Order</Text>
+                  </TouchableOpacity>
+                </View>
+              </Modal>
+              <View style = {[styles.checkOutButton, {opacity: this.state.checkoutButtonOpacity}]}>
+                <TouchableOpacity onPress = {() => this.setState({openCheckout: true})}>
+                  <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Check Out</Text>
+                </TouchableOpacity>
+              </View>
             </View>
         </Modal>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -406,10 +441,10 @@ export default class Menu extends React.Component{
         sBox = styles.dealBoxOrdered;
       }
     }
-    
+
     return(
       <View>
-        <TouchableOpacity style = {sBox} onPress={() => this.setState({itemPressed: itemName, currentOrderQuantity: 1})}>
+        <TouchableOpacity activeOpacity = {1} style = {sBox} onPress={() => this.setState({itemPressed: itemName, currentOrderQuantity: 1})}>
           <View>
             <View style={{width: '70%'}}>
               <Text style = {styles.restaurantName}>{item.name}</Text>
@@ -422,8 +457,9 @@ export default class Menu extends React.Component{
               </View>
             </View>
           </View>
+
         </TouchableOpacity>
-        
+
         <View style={styles.quantityBox}>
           <View style={styles.container1}>
               <View style={styles.emptySideQuantity}>
@@ -434,7 +470,7 @@ export default class Menu extends React.Component{
               </TouchableOpacity>
               <View style={styles.quantityNumberBox}>
                 <Text style={styles.quantityNumberText}> {this.state.currentOrderQuantity} </Text>
-                <TouchableOpacity> 
+                <TouchableOpacity onPress={() => this.addItem(item.name, this.state.currentOrderQuantity, item.newPrice)}>
                     <Text style={styles.addText}>ADD   </Text>
                 </TouchableOpacity>
               </View>
@@ -448,13 +484,54 @@ export default class Menu extends React.Component{
     );
   };
 
+  renderOrder = ({item}) => {
+    var totalCost = this.state.orderTotal + (item.price*item.quantity);
+    return(
+    <View style = {styles.orderItem}>
+      <View style = {{width: '55%', flexDirection: 'row'}}>
+        <Text style={{fontWeight:'bold'}}>{item.name}</Text>
+        <Text style={{fontSize: 12, paddingTop:1.5}}>   x{item.quantity}</Text>
+      </View>
+      <Text style = {{marginLeft:'20%', fontSize:13}}>{"$"+(item.price*item.quantity).toFixed(2)}</Text>
+    </View>);
+  };
+
+  addItem = (name, quantity, price) =>{
+
+    price = price.substring(1, price.length);
+    var priceNumber = parseInt(price, 10);
+    var item = {name: name, quantity: quantity, price: priceNumber};
+
+    var totalCost = this.state.orderTotal + (priceNumber*quantity);
+
+    //redundancy check total cost is not correct in this case though
+    for(var i=0; i< this.state.order.length; i++)
+    {
+      if(this.state.order[i].name == name)
+      {
+        this.state.order[i].quantity = quantity;
+        return;
+      }
+    }
+
+    this.state.order.push(item);
+    console.log(this.state.order);
+
+    if(this.state.order.length>0)
+    {
+      this.setState({checkoutButtonOpacity: 100});
+    }
+    this.setState({orderTotal: totalCost});
+
+  }
+
   turnModalOn = (name, image, address, watchers, time, dist) =>{
     if (name == "Dulce Cafe")
       name = "Dulce"
 
     this.getItems(name);
 
-    this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist});
+    this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist, checkoutOpacity: 0, openCheckout: false});
     this.setState({order: []});
   }
 
@@ -501,7 +578,7 @@ const styles = StyleSheet.create({
     borderColor: '#EDE1FF'
   },
   liveBox:{
-    backgroundColor: '#E8E8E8',
+    backgroundColor: '#FFFFFF',
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
@@ -589,9 +666,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
     width: 0.9 * screenWidth,
-    borderTopLeftRadius: 15, 
+    borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    borderBottomLeftRadius: 15, 
+    borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
     borderColor: '#EDE1FF',
     borderWidth: 2,
@@ -605,9 +682,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
     width: 0.9 * screenWidth,
-    borderTopLeftRadius: 15, 
+    borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    borderBottomLeftRadius: 15, 
+    borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
     borderColor: '#8134FF',
     borderWidth: 2,
@@ -623,15 +700,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     width: 0.9 * screenWidth,
     position: 'absolute',
-    borderTopLeftRadius: 15, 
+    borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    borderBottomLeftRadius: 15, 
+    borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
     top: 0,
     left: 0,
 
   },
- 
+
   dealBoxPressed:{
     height: 110,
     paddingTop: 8,
@@ -640,9 +717,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
     width: 0.6 * screenWidth,
-    borderTopLeftRadius: 15, 
+    borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    borderBottomLeftRadius: 15, 
+    borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
     borderColor: '#EDE1FF',
     borderWidth: 2,
@@ -654,16 +731,16 @@ const styles = StyleSheet.create({
   },
   modalTime:
   {
-    fontSize: 18, 
-    fontWeight: "bold", 
-    marginLeft: "4%", 
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: "4%",
     marginTop: "22%"
   },
   modalTimeLive:
   {
-    fontSize: 18, 
-    fontWeight: "bold", 
-    marginLeft: "4%", 
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: "4%",
     marginTop: "22%",
     color: '#8134FF'
   },
@@ -674,17 +751,17 @@ const styles = StyleSheet.create({
   signPlus:
   {
     width: '7%',
-    
+
   },
   signMinus:
   {
     width: '10%',
-    
+
   },
   quantityNumberBox:
   {
     width: '10%',
-    
+
   },
   quantityNumberText:
   {
@@ -692,7 +769,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     top: 35,
     fontWeight: "bold",
-    
+
   },
   signText:
   {
@@ -708,6 +785,40 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
 
   },
+  checkOutButton:
+  {
+    fontSize: 20,
+    bottom: '15%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#8134FF',
+    height: 40,
+    width: '80%',
+    marginLeft: '10%',
+    borderRadius: 12
+  },
+  checkoutModal:
+  {
+    position: 'absolute',
+    width: '85%',
+    marginLeft:'7%',
+    height: 285,
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12
+  },
+  orderItem:
+  {
+    flex:2,
+    flexDirection:'row',
+    height: 35,
+  },
+  tax:
+  {
+    marginTop: 25,
+    flexDirection:'row'
+  }
+
 
 
 });
