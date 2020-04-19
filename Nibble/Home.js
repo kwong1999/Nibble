@@ -53,8 +53,9 @@ export default class Menu extends React.Component{
         checkoutButtonOpacity: 0,
         openCheckout: false,
         orderTotal: 0,
-
-
+        totalSavings: 0,
+        placeOrderText: '',
+        placeOrderColor: '#8134FF'
       };
       this._getLocationAsync();
 
@@ -70,6 +71,8 @@ export default class Menu extends React.Component{
       this.addItem = this.addItem.bind(this);
       this.renderOrder = this.renderOrder.bind(this);
 
+      this.addItem = this.addItem.bind(this);
+      this
     }
 
   initTimes = () => {
@@ -183,7 +186,6 @@ export default class Menu extends React.Component{
         tempArray.push(item);
         this.setState({ITEMS: tempArray});
 
-
         });
       });
     }
@@ -275,6 +277,10 @@ export default class Menu extends React.Component{
               >
                 <View style = {styles.checkoutModal}>
                   <Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16}}>{this.state.modalRest}</Text>
+                  <View style = {{backgroundColor: '#EDE1FF', height: 26, width: '100%', alignItems: 'center', justifyContent:'center', marginTop: 10, flexDirection: 'row'}}>
+                    <Text style = {{color: '#330382', fontSize: 12}}>Savings</Text>
+                    <Text style = {{color: '#330382', fontSize: 12, fontWeight: 'bold'}}>       {"$" + this.state.totalSavings.toFixed(2)}</Text>
+                  </View>
                   <SafeAreaView style = {{marginLeft: '6%', minHeight: '14%', maxHeight: '30%', marginTop:'12%'}}>
                     <FlatList
                       data={this.state.order}
@@ -287,11 +293,12 @@ export default class Menu extends React.Component{
                   <View style = {styles.tax}>
                     <Text style = {{width: '55%', fontSize: 12}}>Tax</Text>
                     <Text style = {{fontSize: 12}}>{"$" + (this.state.orderTotal*0.08).toFixed(2)}</Text>
+                    <Text>{'\n\n'}</Text>
                   </View>
-                  <TouchableOpacity style={{backgroundColor:'#8134FF', borderRadius: 12, width: 260, height:35, flexDirection:'row', marginTop: 45, marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>{"$" + (this.state.orderTotal).toFixed(2)}</Text>
-                    <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF', marginLeft: 60}}>Place Order</Text>
+                  <TouchableOpacity onPress = {() => this.setState({placeOrderColor: '#5ED634', placeOrderText:'\u2705\tSuccess'})}style={{backgroundColor:this.state.placeOrderColor, borderRadius: 12, width: 260, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>{this.state.placeOrderText}</Text>
                   </TouchableOpacity>
+                  <Text>{'\n'}</Text>
                 </View>
               </Modal>
               <View style = {[styles.checkOutButton, {opacity: this.state.checkoutButtonOpacity}]}>
@@ -473,7 +480,7 @@ export default class Menu extends React.Component{
               </TouchableOpacity>
               <View style={styles.quantityNumberBox}>
                 <Text style={styles.quantityNumberText}> {this.state.currentOrderQuantity} </Text>
-                <TouchableOpacity onPress={() =>this.addItem(item.name, this.state.currentOrderQuantity, item.newPrice)}>
+                <TouchableOpacity onPress={() =>this.addItem(item.name, this.state.modalRest, this.state.currentOrderQuantity, item.newPrice, item.originalPrice)}>
                     <Text style={{fontSize: 11, fontWeight: 'bold', color: '#FFFFFF', marginTop: 60}}>ADD   </Text>
                 </TouchableOpacity>
               </View>
@@ -500,14 +507,18 @@ export default class Menu extends React.Component{
     </View>);
   };
 
-  addItem = (name, quantity, price) =>{
+  addItem = (name, restName, quantity, price, oldPrice) =>{
   	console.log("add");
     price = price.substring(1, price.length);
     var priceNumber = parseInt(price, 10);
-    var item = {name: name, quantity: quantity, price: priceNumber};
+
+    oldPrice = oldPrice.substring(1, oldPrice.length);
+    var oldPriceNumber = parseInt(oldPrice, 10);
+
+    var item = {name: name, restName: restName, quantity: quantity, price: priceNumber};
 
     var totalCost = this.state.orderTotal + (priceNumber*quantity);
-
+    var totalSavings = this.state.totalSavings + (oldPriceNumber - priceNumber) * quantity;
     //redundancy check total cost is not correct in this case though
     for(var i=0; i< this.state.order.length; i++)
     {
@@ -525,7 +536,8 @@ export default class Menu extends React.Component{
     {
       this.setState({checkoutButtonOpacity: 100});
     }
-    this.setState({orderTotal: totalCost});
+    var placeOrderText = "Place Order\t\t\t\t" + "$" + (totalCost*1.08).toFixed(2);
+    this.setState({orderTotal: totalCost, totalSavings: totalSavings, placeOrderText: placeOrderText, itemPressed:''});
 
   }
 
@@ -785,7 +797,7 @@ const styles = StyleSheet.create({
   {
     fontSize: 11,
     color: '#FFFFFF',
-    top: 60,
+    marginTop: 60,
     fontWeight: "bold",
 
   },
@@ -803,13 +815,15 @@ const styles = StyleSheet.create({
   },
   checkoutModal:
   {
+    flex: 1,
     position: 'absolute',
     width: '85%',
     marginLeft:'7%',
-    height: 285,
     alignItems: 'center',
+    justifyContent: 'flex-start',
     backgroundColor: '#FFFFFF',
-    borderRadius: 12
+    borderRadius: 12,
+    flexGrow: 1
   },
   orderItem:
   {
@@ -822,7 +836,4 @@ const styles = StyleSheet.create({
     marginTop: 25,
     flexDirection:'row'
   }
-
-
-
 });
