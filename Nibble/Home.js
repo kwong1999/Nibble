@@ -57,6 +57,8 @@ export default class Menu extends React.Component{
         placeOrderText: '',
         placeOrderColor: '#8134FF',
         liveBarLength: 0.0,
+        openOrder: false,
+        orderNumb: 0,
       };
       this._getLocationAsync();
 
@@ -231,6 +233,7 @@ export default class Menu extends React.Component{
       {
         modalTimeStyle = styles.modalTimeLive;
       }
+      var hours = new Date().getHours();
 
     return(
       <View style = {{flex:1}}>
@@ -301,6 +304,41 @@ export default class Menu extends React.Component{
                   </TouchableOpacity>
                   <Text>{'\n'}</Text>
                 </View>
+        		  <Modal
+	                isVisible = {this.state.openOrder}
+	                onBackdropPress={this.turnModalOff}
+	                backdropColor ={"black"}
+	                backdropOpacity = {0.5}
+	              >
+	                <View style = {styles.orderModal}>
+                	  <View style= {styles.container1}>
+                	  <View style={{width:'70%'}}>
+	                  	<Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16}}>    {this.state.modalRest}</Text>
+              		  </View>
+              		  <View style={{width:'30%'}}>
+	                  	<Text style = {{color: '#000000', marginTop: '20%', fontSize: 10}}>    Order#{this.state.orderNumb}</Text>
+	                  </View>
+	                  </View>
+	                  <View style = {{backgroundColor: '#FFFCE6', height: 26, width: '100%', alignItems: 'center', justifyContent:'center', marginTop: 10, flexDirection: 'row'}}>
+	                    <Text style = {{color: '#62580E', fontSize: 12}}>       Pick up before {hours}:00</Text>
+	                  </View>
+	                  <SafeAreaView style = {{marginLeft: '6%', minHeight: '14%', maxHeight: '30%', marginTop:'12%'}}>
+	                    <FlatList
+	                      data={this.state.order}
+	                      renderItem={this.renderOrderFinal}
+	                      keyExtractor={timeSlot => timeSlot.id}
+	                      showsVerticalScrollIndicator={false}
+	                    />
+	                  </SafeAreaView>
+	                  <Text>{'\n'}</Text>
+	                  <View style={{alignItems: 'center'}}>
+	                  <TouchableOpacity onPress = {this.turnModalOff} style={{backgroundColor:'#8134FF', borderRadius: 12, width: 260, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
+                    	<Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>Return Home</Text>
+              		  </TouchableOpacity>
+              		  </View>
+              		   <Text>{'\n'}</Text>
+	                  </View>
+	              </Modal>        
               </Modal>
               <View style = {[styles.checkOutButton, {opacity: this.state.checkoutButtonOpacity}]}>
                 <TouchableOpacity onPress = {this.checkout}>
@@ -520,6 +558,16 @@ export default class Menu extends React.Component{
       <Text style = {{marginLeft:'20%', fontSize:13}}>{"$"+(item.price*item.quantity).toFixed(2)}</Text>
     </View>);
   };
+  renderOrderFinal = ({item}) => {
+    var totalCost = this.state.orderTotal + (item.price*item.quantity);
+    return(
+    <View style = {styles.orderItem}>
+      <View style = {{width: '55%', flexDirection: 'row'}}>
+        <Text style={{fontWeight:'bold'}}>{item.name}</Text>
+        <Text style={{fontSize: 12, paddingTop:1.5}}>   x{item.quantity}</Text>
+      </View>
+    </View>);
+  };
 
   addItem = (name, restName, quantity, price, oldPrice) =>{
   	console.log("add");
@@ -559,6 +607,7 @@ export default class Menu extends React.Component{
   }
   purchase = () => {
   	console.log('buy');
+  	this.setState({openOrder: true});
   	this.setState({placeOrderColor: '#5ED634', placeOrderText:'\u2705\tSuccess'});
   	for(var i=0; i < this.state.order.length; i++)
   	{
@@ -582,6 +631,11 @@ export default class Menu extends React.Component{
       name = "Dulce"
 
     this.getItems(name);
+    var sz =0;
+    firestoreDB.collection("restaurants").doc(name).collection("orders").get().then(snap => {
+   		sz = snap.size +1;// will return the collection size
+   		this.setState({orderNumb: sz});
+	});
 
     this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist, checkoutOpacity: 0, openCheckout: false});
     this.setState({order: []});
@@ -856,6 +910,17 @@ const styles = StyleSheet.create({
     width: '85%',
     marginLeft:'7%',
     alignItems: 'center',
+    justifyContent: 'flex-start',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    flexGrow: 1
+  },
+  orderModal:
+  {
+    flex: 1,
+    position: 'absolute',
+    width: '85%',
+    marginLeft:'7%',
     justifyContent: 'flex-start',
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
