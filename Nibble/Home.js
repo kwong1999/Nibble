@@ -55,7 +55,8 @@ export default class Menu extends React.Component{
         orderTotal: 0,
         totalSavings: 0,
         placeOrderText: '',
-        placeOrderColor: '#8134FF'
+        placeOrderColor: '#8134FF',
+        liveBarLength: 0.0,
       };
       this._getLocationAsync();
 
@@ -370,14 +371,16 @@ export default class Menu extends React.Component{
     }
 
     var liveString = "live in " + h + " hr(s), " + m + " min";
+    var length = 10;
     if(item.time == 'LIVE')
     {
       liveString = "";
+      length = ((min/60)*210);
     }
     return (
       <View>
        		<View style={styles.container1}>
-       		<View style={styles.sideBox}></View>
+       		<View style={[styles.sideBox, {height: length}]}></View>
        		<View style={styles.mainMenu}>
 	      	<View style={styles.container1}>
 		      	<View style={styles.timeBox}>
@@ -888,9 +891,8 @@ const styles = StyleSheet.create({
   },
   sideBox:
   {
-  	width: '1.5%',
+  	width: '1.2%',
   	backgroundColor: '#8134FF',
-  	height: 10,
   	position: 'absolute',
   	left: 0,
   }
