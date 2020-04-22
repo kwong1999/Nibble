@@ -338,7 +338,7 @@ export default class Menu extends React.Component{
               		  </View>
               		   <Text>{'\n'}</Text>
 	                  </View>
-	              </Modal>        
+	              </Modal>
               </Modal>
               <View style = {[styles.checkOutButton, {opacity: this.state.checkoutButtonOpacity}]}>
                 <TouchableOpacity onPress = {this.checkout}>
