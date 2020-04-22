@@ -20,7 +20,7 @@ function App() {
               title="Info"
             />
           ),}}/>
-        <Stack.Screen name="Signup" component={Signup} options={{headerShown:true, title: ' ', headerTintColor: '#330382', cardStyle: { backgroundColor: '#FFFFFF' },}}/>
+        <Stack.Screen name="Signup" component={Signup} options={{headerShown:true, title: 'nibble', headerTintColor: '#330382', cardStyle: { backgroundColor: '#FFFFFF' },}}/>
         <Stack.Screen name="Home" component={Home} options={{headerLeft: null, title: 'nibble', headerTintColor: '#330382', cardStyle: { backgroundColor: '#FFFFFF' }, headerRight: () => (
             <Button
               title="Info"
