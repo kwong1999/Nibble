@@ -338,7 +338,7 @@ export default class Menu extends React.Component{
               		  </View>
               		   <Text>{'\n'}</Text>
 	                  </View>
-	              </Modal>        
+	              </Modal>
               </Modal>
               <View style = {[styles.checkOutButton, {opacity: this.state.checkoutButtonOpacity}]}>
                 <TouchableOpacity onPress = {this.checkout}>
@@ -508,8 +508,14 @@ export default class Menu extends React.Component{
       <View>
         <TouchableOpacity activeOpacity = {1} style = {sBox} onPress={() => this.setState({itemPressed: itemName, currentOrderQuantity: 1})}>
           <View>
+            <View style = {{flexDirection: 'row'}}>
+              <Text style = {[styles.restaurantName, {flex:8}]}>{item.name}</Text>
+              <Image source = {require('./purpleCircle.png')}
+                style = {{flex: 3, height: 18, width: 18, position: 'absolute', left: '88%' }}
+              />
+              <Text style = {{flex: 1, fontSize: 12, color: '#FFFFFF'}}>6</Text>
+            </View>
             <View style={{width: '70%'}}>
-              <Text style = {styles.restaurantName}>{item.name}</Text>
               <View style={styles.dealDesc}>
                 <Text style={{fontSize: 12}}>{item.description}</Text>
               </View>
@@ -518,6 +524,7 @@ export default class Menu extends React.Component{
                 <Text>{item.newPrice}</Text>
               </View>
             </View>
+
           </View>
 
         </TouchableOpacity>
@@ -637,7 +644,7 @@ export default class Menu extends React.Component{
    		this.setState({orderNumb: sz});
 	});
 
-    this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist, checkoutOpacity: 0, openCheckout: false});
+    this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist, checkoutOpacity: 0, openCheckout: false, checkoutButtonOpacity: 0, placeOrderColor: '#8134FF', totalSavings: 0, orderTotal: 0});
     this.setState({order: []});
   }
 
@@ -650,14 +657,14 @@ export default class Menu extends React.Component{
 const styles = StyleSheet.create({
   timeHeader: {
     marginLeft: 0.05 * screenWidth,
-    fontSize: 20,
+    fontSize: 18,
     // fontFamily: 'Roboto',
     fontStyle: 'normal',
     fontWeight: 'bold',
   },
   timeHeaderLive: {
     marginLeft: 0.05 * screenWidth,
-    fontSize: 20,
+    fontSize: 18,
     // fontFamily: 'Roboto',
     fontStyle: 'normal',
     fontWeight: 'bold',
@@ -794,7 +801,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
     borderColor: '#8134FF',
-    borderWidth: 2,
+    borderWidth: 4,
     zIndex: 1,
   },
   quantityBox:
