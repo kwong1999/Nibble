@@ -49,7 +49,7 @@ export default class Menu extends React.Component{
         TIMES: [],
         order: [],
         currentOrderQuantity: 1,
-        username: 'Rikki',
+        username: 'ezhan',
         checkoutButtonOpacity: 0,
         openCheckout: false,
         orderTotal: 0,
@@ -295,14 +295,14 @@ export default class Menu extends React.Component{
                     <Text style = {{fontSize: 12}}>{"$" + (this.state.orderTotal*0.08).toFixed(2)}</Text>
                     <Text>{'\n\n'}</Text>
                   </View>
-                  <TouchableOpacity onPress = {() => this.setState({placeOrderColor: '#5ED634', placeOrderText:'\u2705\tSuccess'})}style={{backgroundColor:this.state.placeOrderColor, borderRadius: 12, width: 260, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
+                  <TouchableOpacity onPress = {this.purchase} style={{backgroundColor:this.state.placeOrderColor, borderRadius: 12, width: 260, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>{this.state.placeOrderText}</Text>
                   </TouchableOpacity>
                   <Text>{'\n'}</Text>
                 </View>
               </Modal>
               <View style = {[styles.checkOutButton, {opacity: this.state.checkoutButtonOpacity}]}>
-                <TouchableOpacity onPress = {() => this.setState({openCheckout: true})}>
+                <TouchableOpacity onPress = {this.checkout}>
                   <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Check Out</Text>
                 </TouchableOpacity>
               </View>
@@ -456,8 +456,14 @@ export default class Menu extends React.Component{
       <View>
         <TouchableOpacity activeOpacity = {1} style = {sBox} onPress={() => this.setState({itemPressed: itemName, currentOrderQuantity: 1})}>
           <View>
+            <View style = {{flexDirection: 'row'}}>
+              <Text style = {[styles.restaurantName, {flex:8}]}>{item.name}</Text>
+              <Image source = {require('./purpleCircle.png')}
+                style = {{flex: 3, height: 18, width: 18, position: 'absolute', left: '88%' }}
+              />
+              <Text style = {{flex: 1, fontSize: 12, color: '#FFFFFF'}}>6</Text>
+            </View>
             <View style={{width: '70%'}}>
-              <Text style = {styles.restaurantName}>{item.name}</Text>
               <View style={styles.dealDesc}>
                 <Text style={{fontSize: 12}}>{item.description}</Text>
               </View>
@@ -466,6 +472,7 @@ export default class Menu extends React.Component{
                 <Text>{item.newPrice}</Text>
               </View>
             </View>
+
           </View>
 
         </TouchableOpacity>
@@ -539,6 +546,28 @@ export default class Menu extends React.Component{
     var placeOrderText = "Place Order\t\t\t\t" + "$" + (totalCost*1.08).toFixed(2);
     this.setState({orderTotal: totalCost, totalSavings: totalSavings, placeOrderText: placeOrderText, itemPressed:''});
 
+  }
+  checkout = () => {
+  	this.setState({openCheckout: true});
+  }
+  purchase = () => {
+  	console.log('buy');
+  	this.setState({placeOrderColor: '#5ED634', placeOrderText:'\u2705\tSuccess'});
+  	for(var i=0; i < this.state.order.length; i++)
+  	{
+	  	firestoreDB.collection("restaurants").doc(this.state.order[i].restName).collection("orders").add({
+		   	itemName: this.state.order[i].name,
+	  		quantity: this.state.order[i].quantity,
+	  		fulfilled: false,
+	  		username: this.state.username,
+		});
+		firestoreDB.collection("users").doc(this.state.username).collection("orders").add({
+		   	itemName: this.state.order[i].name,
+	  		quantity: this.state.order[i].quantity,
+	  		fulfilled: false,
+	  		restaurant: this.state.order[i].restName,
+		});
+  	}
   }
 
   turnModalOn = (name, image, address, watchers, time, dist) =>{
