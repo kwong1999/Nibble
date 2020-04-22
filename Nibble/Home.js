@@ -643,6 +643,7 @@ export default class Menu extends React.Component{
 
   turnModalOff = () =>{
     this.setState({openModal:false});
+    this.setState({openOrder: false});
   }
 }
 
