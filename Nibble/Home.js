@@ -285,7 +285,7 @@ export default class Menu extends React.Component{
                     <Text style = {{color: '#330382', fontSize: 12}}>Savings</Text>
                     <Text style = {{color: '#330382', fontSize: 12, fontWeight: 'bold'}}>       {"$" + this.state.totalSavings.toFixed(2)}</Text>
                   </View>
-                  <SafeAreaView style = {{marginLeft: '6%', minHeight: '14%', maxHeight: '30%', marginTop:'12%'}}>
+                  <SafeAreaView style = {{marginLeft: '6%', minHeight: '12%', maxHeight: '20%', marginTop:'12%'}}>
                     <FlatList
                       data={this.state.order}
                       renderItem={this.renderOrder}
@@ -913,26 +913,40 @@ const styles = StyleSheet.create({
   },
   checkoutModal:
   {
-    flex: 1,
+    //flex: 1,
     position: 'absolute',
-    width: '85%',
-    marginLeft:'7%',
+    //width: '85%',
+    //marginLeft:'7%',
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    flexGrow: 1
+    flexGrow: 1,
+
+    marginLeft: -0.05*screenWidth,
+    height: '60%',
+    width: screenWidth,
+    top: '55%',
+
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50
   },
   orderModal:
   {
     flex: 1,
     position: 'absolute',
-    width: '85%',
+    //width: '85%',
     marginLeft:'7%',
     justifyContent: 'flex-start',
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    flexGrow: 1
+    flexGrow: 1,
+
+    marginLeft: -0.05*screenWidth,
+    height: '40%',
+    width: screenWidth,
+    top: '65%',
+
   },
   orderItem:
   {
