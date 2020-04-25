@@ -30,6 +30,9 @@ const firestoreDB = firebase.firestore();
 export default class Menu extends React.Component{
   constructor(props) {
       super(props);
+      const { navigation, route } = props;
+      const email = route.params.email;
+      console.log(email);
       this.state = {
         location: null,
         address: '',
@@ -49,7 +52,7 @@ export default class Menu extends React.Component{
         TIMES: [],
         order: [],
         currentOrderQuantity: 1,
-        username: 'ezhan',
+        username: email,
         checkoutButtonOpacity: 0,
         openCheckout: false,
         orderTotal: 0,
@@ -59,6 +62,7 @@ export default class Menu extends React.Component{
         liveBarLength: 0.0,
         openOrder: false,
         orderNumb: 0,
+        params: '',
       };
       this._getLocationAsync();
 
@@ -75,7 +79,9 @@ export default class Menu extends React.Component{
       this.renderOrder = this.renderOrder.bind(this);
 
       this.addItem = this.addItem.bind(this);
-      this
+      
+      
+
     }
 
   initTimes = () => {
@@ -237,6 +243,7 @@ export default class Menu extends React.Component{
 
     return(
       <View style = {{flex:1}}>
+      
         <Modal
           isVisible = {this.state.openModal}
           onSwipeComplete={this.turnModalOff}
@@ -982,5 +989,5 @@ const styles = StyleSheet.create({
   	backgroundColor: '#8134FF',
   	position: 'absolute',
   	left: 0,
-  }
+  },
 });
