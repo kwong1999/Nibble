@@ -15,7 +15,7 @@ const Stack = createStackNavigator();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Onboard">
+      <Stack.Navigator initialRouteName="Profile">
         <Stack.Screen name="Onboard" component={Onboard} options={{headerShown:false, title: ' ', headerTintColor: '#330382', cardStyle: { backgroundColor: '#FFFFFF' }, headerRight: () => (
             <Button
               style="background: url(person.png)"

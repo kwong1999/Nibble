@@ -24,28 +24,28 @@ if(!firebase.apps.length){
 
 const firestoreDB = firebase.firestore();
 
-//Menu class
 export default class Profile extends React.Component{
   constructor(props)
   {
     super(props);
 
     this.state = {
-      name: "Name",
-      phoneNumber: "Phone Number",
-      month: "January",
+      name: 'Name',
+      phoneNumber: 'Phone Number',
+      month: 'January',
       year: 2020,
-      email: "@usc",
-      address: "",
+      email: '@usc',
+      address: '',
       lat: 0,
       lon: 0,
       location: null,
+      image: 'nibble.png',
       };
       //this.getInfo = this.getInfo.bind(this);
-      //this._getLocationAsync();
+      this._getLocationAsync();
    
   }
-  _getLocationAsync = async () => {
+   _getLocationAsync = async () => {
     // let { status } = await Permissions.askAsync(Permissions.LOCATION);
     // if (status !== 'granted') {
     //   this.setState({
@@ -54,6 +54,7 @@ export default class Profile extends React.Component{
     // }
 
     let location = await Location.getCurrentPositionAsync({});
+
     const key = '5c3d93713edb442c825f89b7bc7d3aa4';
     const { latitude , longitude } = location.coords;
     this.setState({ location: {latitude, longitude}});
@@ -61,31 +62,34 @@ export default class Profile extends React.Component{
     this.setState({lon: longitude});
     const coords = latitude + ", " + longitude;
           opencage.geocode({ key, q: coords }).then(response => {
-            result = response.results[0];
+            result = response.results[0]; 
             this.setState({address: (result.formatted).substring(0,(result.formatted).indexOf(','))});
           });
   };
-
+ 
   getInfo = () => {
-    
-    var n, p, m, y;
-    firestoreDB.collection("users").doc("@usc").get().then(function(doc) {
-      const data = doc.data();
-      console.log(data);
-      n = data.name;
-      p = data.phoneNumber;
-      m = data.month;
-      y = data.year;
-      console.log(n);
-      this.setState({name: n});
-      
-      console.log(n);
-     
-      
-    });
+  
+    let currentComponent = this;
+    var docRef = firestoreDB.collection('users').doc(this.state.email);
 
-      
-      
+    docRef.get().then(function(doc) {
+        if (doc.exists) {
+            var temp = doc.data().name;
+            currentComponent.setState({name: temp});
+            temp = doc.data().phoneNumber;
+            currentComponent.setState({phoneNumber: temp});
+            temp = doc.data().month;
+            currentComponent.setState({month: temp});
+            temp = doc.data().year;
+            currentComponent.setState({year: temp});
+
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    }).catch(function(error) {
+        console.log("Error getting document:", error);
+    });
 
   }
   componentDidMount() {
@@ -94,7 +98,51 @@ export default class Profile extends React.Component{
 
   render(){
     return(
-          <Text style = {[styles.textInput, {marginTop: 20}]}> {this.state.name} </Text>
+      <View style = {{flex:1}}>
+      <Text>{'\n\n\n'}</Text>
+          <View style={styles.container1}>
+            <View style={{width: '10%'}}>
+            </View>
+            <View style={{width: '30%'}}> 
+              <Image source={require('./nibble.png')} style = {{ width: 117, height: 117, borderRadius: 100 }}/>
+            </View>
+            <View style={{width: '10%'}}>
+            </View>
+            <View style={{width: '50%'}}> 
+              <Text style={{marginTop: 30, fontWeight: 'bold', fontSize: 25}}> {this.state.name} </Text>
+              <Text style={{fontStyle: 'italic', fontSize: 12}}> joined {this.state.month}, {this.state.year} </Text>            
+              </View>
+          </View>
+          <View style={{backgroundColor: '#D3D3D3', position: 'absolute', top: 220, left: 30, height: 1, width: 300}}>
+          </View>
+          <View style={{backgroundColor: '#D3D3D3', position: 'absolute', top: 275, left: 30, height: 1, width: 300}}>
+          </View>
+          <View style={{backgroundColor: '#D3D3D3', position: 'absolute', top: 325, left: 30, height: 1, width: 300}}>
+          </View>
+          <View style={[styles.container1, {position: 'absolute', top: 240}]}>
+          <View style={{width: '10%'}}>
+            </View>
+            <View style={{width: '30%'}}>
+            <Text>Email </Text>
+            <Text>{'\n'}</Text>
+            <Text>Phone Number </Text>
+            <Text>{'\n'}</Text>
+            <Text>Current Location </Text>
+            </View>
+            <View style={{width: '20%'}}>
+            </View>
+            <View style={{width: '30%'}}>
+            <Text style={{fontWeight: 'bold'}}>{this.state.email} </Text>
+            <Text>{'\n'}</Text>
+            <Text style={{fontWeight: 'bold'}}>{this.state.phoneNumber} </Text>
+            <Text>{'\n'}</Text>
+            <Text style={{fontWeight: 'bold'}}>{this.state.address} </Text>
+            </View>
+            <View style={{width: '10%'}}>
+            </View>
+          </View>
+      </View>
+         
      
       );
   }
@@ -111,5 +159,12 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     borderBottomWidth: 2,
     borderBottomColor: '#6200f5'
-  }
+  },
+  container1: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start', // if you want to fill rows left to right
+    height: '10%'
+  },
 });
