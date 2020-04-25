@@ -84,6 +84,8 @@ export default class Menu extends React.Component{
 
     }
 
+
+
   initTimes = () => {
 
     var hours = new Date().getHours();
@@ -243,7 +245,6 @@ export default class Menu extends React.Component{
 
     return(
       <View style = {{flex:1}}>
-      
         <Modal
           isVisible = {this.state.openModal}
           onSwipeComplete={this.turnModalOff}
@@ -658,6 +659,10 @@ export default class Menu extends React.Component{
   turnModalOff = () =>{
     this.setState({openModal:false});
     this.setState({openOrder: false});
+  }
+  goToProfile = () => {
+    console.log("ugh");
+    this.props.navigation.navigate('Profile');
   }
 }
 

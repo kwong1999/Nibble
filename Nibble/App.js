@@ -6,6 +6,7 @@ import { createStackNavigator, createSwitchNavigator } from '@react-navigation/s
 import Home from './Home';
 import Onboard from './Onboard';
 import Signup from './Signup';
+import Profile from './Profile';
 
 //import RestCard from './RestCard'
 
@@ -23,6 +24,7 @@ function App() {
             </Button>
           ),}}/>
         <Stack.Screen name="Signup" component={Signup} options={{headerShown:true, title: 'nibble', headerTintColor: '#330382', cardStyle: { backgroundColor: '#FFFFFF' },}}/>
+        <Stack.Screen name="Profile" component={Profile} options={{headerShown:true, title: 'nibble', headerTintColor: '#330382', cardStyle: { backgroundColor: '#FFFFFF' },}}/>
         <Stack.Screen name="Home" component={Home} options={{headerLeft: null, title: 'nibble', headerTintColor: '#330382', cardStyle: { backgroundColor: '#FFFFFF' }, headerRight: () => (
             <Button
               style="background: url(person.png)"

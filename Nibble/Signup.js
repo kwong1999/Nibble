@@ -86,7 +86,7 @@ export default class Onboard extends React.Component{
   }
 
   signUpConfirm(){
-    var name = this.state.firstName + this.state.lastName;
+    var name = this.state.firstName + ' ' + this.state.lastName;
     var Smonth = new Date().getMonth() + 1;
     var Syear = new Date().getFullYear();
     firestoreDB.collection("users").doc(this.state.email).set({
