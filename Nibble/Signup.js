@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import Modal from 'react-native-modal';
-import { View, Text, Button, SafeAreaView, ScrollView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, TextInput, KeyboardAvoidingView} from 'react-native';
+import { View, Text, Button, SafeAreaView, ScrollView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, AsyncStorage} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
@@ -96,10 +96,30 @@ export default class Onboard extends React.Component{
       month: Smonth,
       year: Syear,
     });
+    this.storeData(name, this.state.phoneNumber, this.state.email, Smonth, Syear);
 
     this.props.navigation.navigate('Home', {email: this.state.email});
 
   }
+
+  storeData = async (name, phoneNumber, email, month, year) => {
+    console.log("added!");
+
+    try {
+      console.log("added!");
+
+      AsyncStorage.setItem('email', email);
+
+      // await AsyncStorage.setItem('name', name);
+      // await AsyncStorage.setItem('phoneNumber', phoneNumber);
+      // await AsyncStorage.setItem('month', month);
+      // await AsyncStorage.setItem('year', year);
+      console.log("added!");
+
+    } catch (error) {
+      // Error saving data
+    }
+  };
 
   setFirstActive(){
     this.setState({firstStyle: styles.activeBorder, secondStyle: styles.inactiveBorder});
