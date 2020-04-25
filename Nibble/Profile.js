@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import Modal from 'react-native-modal';
-import { View, Text, Button, SafeAreaView, ScrollView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, TextInput, KeyboardAvoidingView} from 'react-native';
+import { View, Text, Button, SafeAreaView, ScrollView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, AsyncStorage} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
@@ -34,7 +34,7 @@ export default class Profile extends React.Component{
       phoneNumber: 'Phone Number',
       month: 'January',
       year: 2020,
-      email: '@usc',
+      email: '@empty',
       address: '',
       lat: 0,
       lon: 0,
@@ -43,7 +43,7 @@ export default class Profile extends React.Component{
       };
       //this.getInfo = this.getInfo.bind(this);
       this._getLocationAsync();
-   
+
   }
    _getLocationAsync = async () => {
     // let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -62,13 +62,13 @@ export default class Profile extends React.Component{
     this.setState({lon: longitude});
     const coords = latitude + ", " + longitude;
           opencage.geocode({ key, q: coords }).then(response => {
-            result = response.results[0]; 
+            result = response.results[0];
             this.setState({address: (result.formatted).substring(0,(result.formatted).indexOf(','))});
           });
   };
- 
+
   getInfo = () => {
-  
+
     let currentComponent = this;
     var docRef = firestoreDB.collection('users').doc(this.state.email);
 
@@ -93,8 +93,23 @@ export default class Profile extends React.Component{
 
   }
   componentDidMount() {
-      this.getInfo();
+      this.getEmail();
     }
+
+  getEmail = async () => {
+    console.log("get email called");
+    try {
+      const storageEmail = await AsyncStorage.getItem('email');
+      console.log("email:" + storageEmail);
+      if (storageEmail != null) {
+        // We have data!!
+        this.setState({email: storageEmail});
+        this.getInfo();
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
 
   render(){
     return(
@@ -103,14 +118,14 @@ export default class Profile extends React.Component{
           <View style={styles.container1}>
             <View style={{width: '10%'}}>
             </View>
-            <View style={{width: '30%'}}> 
+            <View style={{width: '30%'}}>
               <Image source={require('./nibble.png')} style = {{ width: 117, height: 117, borderRadius: 100 }}/>
             </View>
             <View style={{width: '10%'}}>
             </View>
-            <View style={{width: '50%'}}> 
+            <View style={{width: '50%'}}>
               <Text style={{marginTop: 30, fontWeight: 'bold', fontSize: 25}}> {this.state.name} </Text>
-              <Text style={{fontStyle: 'italic', fontSize: 12}}> joined {this.state.month}, {this.state.year} </Text>            
+              <Text style={{fontStyle: 'italic', fontSize: 12}}> joined {this.state.month}, {this.state.year} </Text>
               </View>
           </View>
           <View style={{backgroundColor: '#D3D3D3', position: 'absolute', top: 220, left: 30, height: 1, width: 300}}>
@@ -142,12 +157,12 @@ export default class Profile extends React.Component{
             </View>
           </View>
       </View>
-         
-     
+
+
       );
   }
 
- 
+
 
 }
 

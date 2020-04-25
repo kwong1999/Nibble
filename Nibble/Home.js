@@ -32,7 +32,7 @@ export default class Menu extends React.Component{
       super(props);
       const { navigation, route } = props;
       const email = route.params.email;
-      console.log(email);
+      //console.log(email);
       this.state = {
         location: null,
         address: '',
@@ -79,8 +79,8 @@ export default class Menu extends React.Component{
       this.renderOrder = this.renderOrder.bind(this);
 
       this.addItem = this.addItem.bind(this);
-      
-      
+
+
 
     }
 
