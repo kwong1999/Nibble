@@ -144,9 +144,9 @@ export default class Profile extends React.Component{
             <Text>{'\n'}</Text>
             <Text>Current Location </Text>
             </View>
-            <View style={{width: '20%'}}>
+            <View style={{width: '10%'}}>
             </View>
-            <View style={{width: '30%'}}>
+            <View style={{width: '40%'}}>
             <Text style={{fontWeight: 'bold'}}>{this.state.email} </Text>
             <Text>{'\n'}</Text>
             <Text style={{fontWeight: 'bold'}}>{this.state.phoneNumber} </Text>
