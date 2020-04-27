@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import Modal from 'react-native-modal';
-import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity} from 'react-native';
+import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, AsyncStorage} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { CommonActions } from '@react-navigation/native';
@@ -27,7 +27,11 @@ const firestoreDB = firebase.firestore();
 
 //Menu class
 export default class Onboard extends React.Component{
-
+  constructor(props){
+    super(props);
+    this.storeData = this.storeData.bind(this);
+    this.storeData();
+  }
   render(){
     return(
       <View style = {{flex:10, backgroundColor: '#8134FF', alignItems: 'center'}}>
@@ -47,7 +51,23 @@ export default class Onboard extends React.Component{
         })
         this.props.navigation.dispatch(navigationAction)
     }
+  storeData = async () => {
 
+      try {
+        console.log("asdf!");
+
+        AsyncStorage.setItem('email', "null");
+
+        // await AsyncStorage.setItem('name', name);
+        // await AsyncStorage.setItem('phoneNumber', phoneNumber);
+        // await AsyncStorage.setItem('month', month);
+        // await AsyncStorage.setItem('year', year);
+        console.log("asdf2!");
+
+      } catch (error) {
+        // Error saving data
+      }
+  }
 }
 
 const styles = StyleSheet.create({
