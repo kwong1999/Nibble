@@ -24,7 +24,7 @@ if(!firebase.apps.length){
 const firestoreDB = firebase.firestore();
 
 //Menu class
-export default class Onboard extends React.Component{
+export default class Signup extends React.Component{
   constructor(props)
   {
     super(props);
@@ -95,6 +95,7 @@ export default class Onboard extends React.Component{
       phoneNumber: this.state.phoneNumber,
       month: Smonth,
       year: Syear,
+      payment: 'null',
     });
     this.storeData(name, this.state.phoneNumber, this.state.email, Smonth, Syear);
 

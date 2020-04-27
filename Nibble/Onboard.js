@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import Modal from 'react-native-modal';
-import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity} from 'react-native';
+import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, AsyncStorage} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { CommonActions } from '@react-navigation/native';
@@ -27,6 +27,26 @@ const firestoreDB = firebase.firestore();
 
 //Menu class
 export default class Onboard extends React.Component{
+  constructor(props){
+    super(props);
+    this.storeData = this.storeData.bind(this);
+    this.storeData();
+  };
+
+  storeData = async () => {
+
+      try {
+        console.log("added null");
+
+        AsyncStorage.setItem('email', 'null');
+
+      } catch (error) {
+        // Error saving data
+      }
+    };
+
+
+
 
   render(){
     return(
@@ -35,7 +55,7 @@ export default class Onboard extends React.Component{
         <View style = {{flex: 9, top:400}}>
           <TouchableOpacity style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold'}}>Log In</Text></TouchableOpacity>
           <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Signup')} style = {[styles.button, {top: 20, backgroundColor: '#FFFFFF'}]}><Text style = {{color:'#8134FF', fontSize: 18, fontWeight: 'bold'}}>Sign up</Text></TouchableOpacity>
-          <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Home', {email: 'ezhan'})} style = {[{marginTop: 40, alignItems: 'center',}]}><Text style = {{color:'#FFFFFF', fontSize: 14, fontWeight: 'bold'}}>Skip for now</Text></TouchableOpacity>
+          <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Home', {email: 'null'})} style = {[{marginTop: 40, alignItems: 'center',}]}><Text style = {{color:'#FFFFFF', fontSize: 14, fontWeight: 'bold'}}>Skip for now</Text></TouchableOpacity>
         </View>
       </View>
       );
@@ -48,7 +68,12 @@ export default class Onboard extends React.Component{
         this.props.navigation.dispatch(navigationAction)
     }
 
-}
+}; 
+
+
+
+
+
 
 const styles = StyleSheet.create({
   button: {
