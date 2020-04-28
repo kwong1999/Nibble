@@ -31,7 +31,20 @@ export default class Onboard extends React.Component{
     super(props);
     this.storeData = this.storeData.bind(this);
     this.storeData();
-  }
+  };
+
+  storeData = async () => {
+
+      try {
+        console.log("added null");
+
+        AsyncStorage.setItem('email', 'null');
+
+      } catch (error) {
+        // Error saving data
+      }
+    };
+
   render(){
     return(
       <View style = {{flex:10, backgroundColor: '#8134FF', alignItems: 'center'}}>
@@ -39,7 +52,7 @@ export default class Onboard extends React.Component{
         <View style = {{flex: 9, top:400}}>
           <TouchableOpacity style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold'}}>Log In</Text></TouchableOpacity>
           <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Signup')} style = {[styles.button, {top: 20, backgroundColor: '#FFFFFF'}]}><Text style = {{color:'#8134FF', fontSize: 18, fontWeight: 'bold'}}>Sign up</Text></TouchableOpacity>
-          <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Home', {email: 'ezhan'})} style = {[{marginTop: 40, alignItems: 'center',}]}><Text style = {{color:'#FFFFFF', fontSize: 14, fontWeight: 'bold'}}>Skip for now</Text></TouchableOpacity>
+          <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Home', {email: 'null'})} style = {[{marginTop: 40, alignItems: 'center',}]}><Text style = {{color:'#FFFFFF', fontSize: 14, fontWeight: 'bold'}}>Skip for now</Text></TouchableOpacity>
         </View>
       </View>
       );
@@ -51,24 +64,11 @@ export default class Onboard extends React.Component{
         })
         this.props.navigation.dispatch(navigationAction)
     }
-  storeData = async () => {
+};
 
-      try {
-        console.log("asdf!");
 
-        AsyncStorage.setItem('email', "null");
 
-        // await AsyncStorage.setItem('name', name);
-        // await AsyncStorage.setItem('phoneNumber', phoneNumber);
-        // await AsyncStorage.setItem('month', month);
-        // await AsyncStorage.setItem('year', year);
-        console.log("asdf2!");
 
-      } catch (error) {
-        // Error saving data
-      }
-  }
-}
 
 const styles = StyleSheet.create({
   button: {

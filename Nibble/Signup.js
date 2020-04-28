@@ -24,7 +24,7 @@ if(!firebase.apps.length){
 const firestoreDB = firebase.firestore();
 
 //Menu class
-export default class Onboard extends React.Component{
+export default class Signup extends React.Component{
   constructor(props)
   {
     super(props);
@@ -54,14 +54,14 @@ export default class Onboard extends React.Component{
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
         <View><Image source = {require('./signupPic.png')} style = {{left: '15%', marginTop: 40}}/></View>
         <TouchableOpacity activeOpacity = {1} onPress= {this.setFirstActive} style = {this.state.firstStyle}>
-          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.firstName(text)} value = {this.state.firstName}/>
-          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.lastName(text)}  value = {this.state.lastName}/>
-          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.phoneNumber(text)} value = {this.state.phoneNumber}/>
+          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.firstName(text)} value = {this.state.firstName} clearTextOnFocus = {true}/>
+          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.lastName(text)}  value = {this.state.lastName} clearTextOnFocus={true}/>
+          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.phoneNumber(text)} value = {this.state.phoneNumber} clearTextOnFocus={true}/>
         </TouchableOpacity>
         <TouchableOpacity activeOpacity = {1} onPress= {this.setSecondActive} style = {[this.state.secondStyle, {marginTop: 50}]}>
-          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.email(text)} value = {this.state.email}/>
-          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.password(text)}  value = {this.state.password}/>
-          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.confirm(text)} value = {this.state.confirm}/>
+          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.email(text)} value = {this.state.email} clearTextOnFocus={true}/>
+          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.password(text)}  value = {this.state.password} clearTextOnFocus={true}/>
+          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.confirm(text)} value = {this.state.confirm} clearTextOnFocus={true}/>
         </TouchableOpacity>
         <TouchableOpacity onPress = {this.signUpConfirm} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold'}}>Sign up</Text></TouchableOpacity>
 
@@ -95,6 +95,7 @@ export default class Onboard extends React.Component{
       phoneNumber: this.state.phoneNumber,
       month: Smonth,
       year: Syear,
+      payment: 'null',
     });
     this.storeData(name, this.state.phoneNumber, this.state.email, Smonth, Syear);
 

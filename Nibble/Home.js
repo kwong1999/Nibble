@@ -10,6 +10,7 @@ import * as Permissions from 'expo-permissions';
 import opencage from 'opencage-api-client';
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
+import Signup from './Signup';
 
 const firebaseConfig = {
   apiKey: "<>",
@@ -32,7 +33,7 @@ export default class Menu extends React.Component{
       super(props);
       const { navigation, route } = props;
       const email = route.params.email;
-      //console.log(email);
+      console.log("email: " + email);
       this.state = {
         location: null,
         address: '',
@@ -549,7 +550,7 @@ export default class Menu extends React.Component{
               </TouchableOpacity>
               <View style={styles.quantityNumberBox}>
                 <Text style={styles.quantityNumberText}> {this.state.currentOrderQuantity} </Text>
-                <TouchableOpacity onPress={() =>this.addItem(item.name, this.state.modalRest, this.state.currentOrderQuantity, item.newPrice, item.originalPrice)}>
+                <TouchableOpacity onPress={() => {this.addItem(item.name, this.state.modalRest, this.state.currentOrderQuantity, item.newPrice, item.originalPrice);}}>
                     <Text style={{fontSize: 11, fontWeight: 'bold', color: '#FFFFFF', marginTop: 60}}>ADD   </Text>
                 </TouchableOpacity>
               </View>
@@ -601,14 +602,18 @@ export default class Menu extends React.Component{
   };
 
   addItem = (name, restName, quantity, price, oldPrice) =>{
-  	console.log("add");
+  	console.log(this.state.username);
+    if(this.state.username.localeCompare('null') == 0)
+    {
+      this.goToSignup();
+    }
     price = price.substring(1, price.length);
     var priceNumber = parseInt(price, 10);
 
     oldPrice = oldPrice.substring(1, oldPrice.length);
     var oldPriceNumber = parseInt(oldPrice, 10);
 
-    var item = {name: name, restName: restName, quantity: quantity, price: priceNumber};
+    var item = {name: name, restName: restName, quantity: quantity, price: priceNumber, oldPrice: oldPriceNumber};
 
     var totalCost = this.state.orderTotal + (priceNumber*quantity);
     var totalSavings = this.state.totalSavings + (oldPriceNumber - priceNumber) * quantity;
@@ -650,12 +655,17 @@ export default class Menu extends React.Component{
 	  		quantity: this.state.order[i].quantity,
 	  		fulfilled: false,
 	  		username: this.state.username,
+        price: this.state.order[i].price,
+        oldPrice: this.state.order[i].oldPrice,
+
 		});
 		firestoreDB.collection("users").doc(this.state.username).collection("orders").add({
 		   	itemName: this.state.order[i].name,
 	  		quantity: this.state.order[i].quantity,
 	  		fulfilled: false,
 	  		restaurant: this.state.order[i].restName,
+        price: this.state.order[i].price,
+        oldPrice: this.state.order[i].oldPrice,
 		});
   	}
   }
@@ -679,9 +689,11 @@ export default class Menu extends React.Component{
     this.setState({openModal:false});
     this.setState({openOrder: false});
   }
-  goToProfile = () => {
-    console.log("ugh");
-    this.props.navigation.navigate('Profile');
+  goToSignup()
+  {
+    console.log('here');
+    this.props.navigation.navigate('Signup');
+    this.setState({openModal:false, openCheckout: false});
   }
 }
 
