@@ -44,18 +44,53 @@ export default class OrderHistory extends React.Component{
 
     firestoreDB.collection("users").doc(this.state.email).collection("orders").get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
+
         var data = doc.data();
         var restName = data.restaurant;
-        var itemName = data.itemName;
+        var itemName1 = data.itemName;
         var p = data.price;
         var oldP = data.oldPrice;
         var quant = data.quantity;
-        var id = data.id;
-        var orderObj = {rest: restName, item: itemName, price: p, oldPrice: oldP, quantity: quant};
         var tempArray = this.state.orders;
-        tempArray.push(orderObj);
-        this.setState({orders: tempArray});
-        console.log(orderObj);
+        var inOrder = false;
+        for(var i =0; i < tempArray.length; i++)
+        {
+          if(tempArray[i].rest == restName)
+          {
+            var itemOrdered = false;
+            for(var j =0; j < tempArray[i].items.length; j++)
+            {
+              if(tempArray[i].items[j].itemName == itemName1)
+              {
+                tempArray[i].items[j].quantity = tempArray[i].items[j].quantity + quant;
+                itemOrdered = true;
+                break;
+              }
+            }
+            if(!itemOrdered)
+            {
+              var itemObj = {itemName: itemName1, quantity: quant, id: tempArray[i].items.length};
+              tempArray[i].items.push(itemObj);
+            }
+            tempArray[i].price = (tempArray[i].price + (p*quant));
+            console.log(tempArray[i].price);
+            tempArray[i].oldPrice = (tempArray[i].oldPrice + (oldP*quant));
+            inOrder = true;
+            //console.log(orderObj);
+            this.setState({orders: tempArray});
+            break;
+          }
+        }
+        if(!inOrder)
+        {
+          var itemObj = {itemName: itemName1, quantity: quant, id: 0};
+          var orderObj = {rest: restName, items: [], price: (p*quant), oldPrice: (oldP*quant), id: tempArray.length};
+          orderObj.items.push(itemObj);
+          tempArray.push(orderObj);
+          console.log(p);
+          this.setState({orders: tempArray});
+
+        }
 
         });
       });
@@ -119,15 +154,20 @@ export default class OrderHistory extends React.Component{
     <View style={{width: '60%'}}>
      <Text style={{fontWeight:'bold', fontSize: 18}}>{item.rest}</Text>
      <Text> </Text>
-        <Text style={{ fontSize: 14}}>{item.item}    x{item.quantity}</Text>
+     <FlatList
+              data={item.items}
+              renderItem={this.renderItem}
+              keyExtractor={item => item.id}
+              showsVerticalScrollIndicator={false}
+            />
     </View>
     <View style={{width: '20%'}}>
     <Text> </Text>
-    <Text style={{textDecorationLine: "line-through", color: '#A8A1B3', top: 40}}>{ "$" + item.oldPrice.toFixed(2)}  ></Text>
+    <Text style={{textDecorationLine: "line-through", color: '#A8A1B3', top: 40}}>{ "$" + (item.oldPrice).toFixed(2)}  ></Text>
       </View>
       <View style={{width: '20%'}}>
       <Image source={require('./info.png')}/>
-      <Text style = {{fontSize:13, top: 40}}>{"$"+(item.price*item.quantity).toFixed(2)}</Text>
+      <Text style = {{fontSize:13, top: 40}}>{"$"+(item.price).toFixed(2)}</Text>
       </View>
     </View>
     <Text> </Text>
@@ -137,6 +177,14 @@ export default class OrderHistory extends React.Component{
 
     </View>);
   };
+
+renderItem = ({item}) => {
+  return(
+  <View>
+    <Text style={{ fontSize: 14}}>{item.itemName}    x{item.quantity}</Text>
+  </View>
+  ); 
+}
 
   
 
