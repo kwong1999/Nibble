@@ -64,7 +64,9 @@ export default class Menu extends React.Component{
         openOrder: false,
         orderNumb: 0,
         params: '',
-        refresh: false
+        refresh: false,
+        checkoutOpacity: 1,
+        openNotLive: false
       };
 
       this._getLocationAsync();
@@ -249,6 +251,53 @@ export default class Menu extends React.Component{
 
     return(
       <View style = {{flex:1}}>
+      <Modal
+        isVisible = {this.state.openNotLive}
+        onSwipeComplete={this.turnModalOff}
+        onBackdropPress={this.turnModalOff}
+        swipeDirection={['down']}
+        backdropColor ={"black"}
+        swipeThreshold={50}
+        backdropOpacity = {0.5}
+        >
+        <View style={styles.modalCard}>
+          <Image source = {{uri: this.state.modalImage}}
+            style = {styles.modalImage}
+          />
+          <View style = {{flex: 1,flexDirection: 'row'}}>
+            <View style = {{width: '75%'}}>
+              <Text style={{fontSize: 32, fontWeight: "bold", marginLeft: "5%", marginTop: "3%"}}>{this.state.modalRest}</Text>
+              <Text style={{fontSize: 13, marginLeft: "6%", marginTop: "2%"}}>{this.state.modalAddress}  •  {this.state.modalDist} miles</Text>
+              <View style = {{flexDirection: "row"}}>
+                <Image source = {require('./watchIcon.png')}
+                  style = {{marginLeft: "5.5%", marginTop: "2.5%"}}
+                />
+                <Text style={{fontSize: 13, marginLeft: "1.2%", marginTop: "2%"}}>{this.state.modalWatching}</Text>
+              </View>
+            </View>
+            <View style = {{flex: 1, flexDirection: 'row', marginTop: '5%', flexWrap: 'wrap',}}>
+              <View><Text style = {{color:'#FF3434', fontSize: 18, fontWeight: 'bold'}}>NOT LIVE</Text></View>
+              <View><Text style = {{fontStyle: 'italic', fontSize: 11}}>    live at {this.state.modalTime}</Text></View>
+            </View>
+          </View>
+          <View style = {{flex: 0.5, height: 25, flexDirection: 'row', top: '14%', flexWrap: 'wrap', marginLeft: "5%"}}>
+            <View><Text style = {{fontSize: 13,}}>what to expect!</Text></View>
+          </View>
+          <SafeAreaView style = {{flex:6.5, top: 40}}>
+            <FlatList contentContainerStyle = {{flex: 1, flexDirection: 'row', flexWrap:'wrap', marginLeft: '5%'}}
+              data={this.state.ITEMS}
+              renderItem={this.renderNotLiveDeals}
+              keyExtractor={timeSlot => timeSlot.id}
+              showsVerticalScrollIndicator={false}
+            />
+          </SafeAreaView>
+          <View style = {{flex: 2.5, alignItems:'center'}}><Text>come back at 8:30 for tonight’s nibbles </Text>
+          <Image source = {require('./happyface.png')}
+            style = {{marginTop: "2.5%"}}
+          />
+          </View>
+        </View>
+      </Modal>
         <Modal
           isVisible = {this.state.openModal}
           onSwipeComplete={this.turnModalOff}
@@ -264,11 +313,11 @@ export default class Menu extends React.Component{
               />
               <View style = {{flex: 1,flexDirection: 'row'}}>
                 <View style = {{flex: 4}}>
-                  <Text style={{fontSize: 32, fontWeight: "bold", marginLeft: "4%", marginTop: "3%"}}>{this.state.modalRest}</Text>
-                  <Text style={{fontSize: 13, marginLeft: "4%", marginTop: "2%"}}>{this.state.modalAddress}  •  {this.state.modalDist} miles</Text>
+                  <Text style={{fontSize: 32, fontWeight: "bold", marginLeft: "5%", marginTop: "3%"}}>{this.state.modalRest}</Text>
+                  <Text style={{fontSize: 13, marginLeft: "5%", marginTop: "2%"}}>{this.state.modalAddress}  •  {this.state.modalDist} miles</Text>
                   <View style = {{flexDirection: "row"}}>
                     <Image source = {require('./watchIcon.png')}
-                      style = {{marginLeft: "4%", marginTop: "2.5%"}}
+                      style = {{marginLeft: "5%", marginTop: "2.5%"}}
                     />
                     <Text style={{fontSize: 13, marginLeft: "1.2%", marginTop: "2%"}}>{this.state.modalWatching}</Text>
                   </View>
@@ -291,7 +340,7 @@ export default class Menu extends React.Component{
                 backdropColor ={"black"}
                 backdropOpacity = {0.5}
               >
-                <View style = {styles.checkoutModal}>
+                <View style = {[styles.checkoutModal, {opacity: this.state.checkoutOpacity}]}>
                   <Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16}}>{this.state.modalRest}</Text>
                   <View style = {{backgroundColor: '#EDE1FF', height: 26, width: '100%', alignItems: 'center', justifyContent:'center', marginTop: 10, flexDirection: 'row'}}>
                     <Text style = {{color: '#330382', fontSize: 12}}>Savings</Text>
@@ -316,42 +365,42 @@ export default class Menu extends React.Component{
                   </TouchableOpacity>
                   <Text>{'\n'}</Text>
                 </View>
+                <Modal
+                    isVisible = {this.state.openOrder}
+                    onBackdropPress={this.turnModalOff}
+                    backdropColor ={"black"}
+                    backdropOpacity = {0.5}
+                  >
+                    <View style = {styles.orderModal}>
+                      <View style= {styles.container1}>
+                      <View style={{width:'70%'}}>
+                        <Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16}}>    {this.state.modalRest}</Text>
+                      </View>
+                      <View style={{width:'30%'}}>
+                        <Text style = {{color: '#000000', marginTop: '20%', fontSize: 10}}>    Order#{this.state.orderNumb}</Text>
+                      </View>
+                      </View>
+                      <View style = {{backgroundColor: '#FFFCE6', height: 26, width: '100%', alignItems: 'center', justifyContent:'center', marginTop: 10, flexDirection: 'row'}}>
+                        <Text style = {{color: '#62580E', fontSize: 12}}>       Pick up before {hours}:00</Text>
+                      </View>
+                      <SafeAreaView style = {{marginLeft: '6%', minHeight: '14%', maxHeight: '30%', marginTop:'12%'}}>
+                        <FlatList
+                          data={this.state.order}
+                          renderItem={this.renderOrderFinal}
+                          keyExtractor={timeSlot => timeSlot.id}
+                          showsVerticalScrollIndicator={false}
+                        />
+                      </SafeAreaView>
+                      <Text>{'\n'}</Text>
+                      <View style={{alignItems: 'center'}}>
+                      <TouchableOpacity onPress = {this.turnModalOff} style={{backgroundColor:'#8134FF', borderRadius: 12, width: 260, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
+                        <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>Return Home</Text>
+                      </TouchableOpacity>
+                      </View>
+                       <Text>{'\n'}</Text>
+                      </View>
+                  </Modal>
               </Modal>
-              <Modal
-	                isVisible = {this.state.openOrder}
-	                onBackdropPress={this.turnModalOff}
-	                backdropColor ={"black"}
-	                backdropOpacity = {0.5}
-	              >
-	                <View style = {styles.orderModal}>
-                	  <View style= {styles.container1}>
-                	  <View style={{width:'70%'}}>
-	                  	<Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16}}>    {this.state.modalRest}</Text>
-              		  </View>
-              		  <View style={{width:'30%'}}>
-	                  	<Text style = {{color: '#000000', marginTop: '20%', fontSize: 10}}>    Order#{this.state.orderNumb}</Text>
-	                  </View>
-	                  </View>
-	                  <View style = {{backgroundColor: '#FFFCE6', height: 26, width: '100%', alignItems: 'center', justifyContent:'center', marginTop: 10, flexDirection: 'row'}}>
-	                    <Text style = {{color: '#62580E', fontSize: 12}}>       Pick up before {hours}:00</Text>
-	                  </View>
-	                  <SafeAreaView style = {{marginLeft: '6%', minHeight: '14%', maxHeight: '30%', marginTop:'12%'}}>
-	                    <FlatList
-	                      data={this.state.order}
-	                      renderItem={this.renderOrderFinal}
-	                      keyExtractor={timeSlot => timeSlot.id}
-	                      showsVerticalScrollIndicator={false}
-	                    />
-	                  </SafeAreaView>
-	                  <Text>{'\n'}</Text>
-	                  <View style={{alignItems: 'center'}}>
-	                  <TouchableOpacity onPress = {this.turnModalOff} style={{backgroundColor:'#8134FF', borderRadius: 12, width: 260, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
-                    	<Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>Return Home</Text>
-              		  </TouchableOpacity>
-              		  </View>
-              		   <Text>{'\n'}</Text>
-	                  </View>
-	              </Modal>
               <View style = {[styles.checkOutButton, {opacity: this.state.checkoutButtonOpacity}]}>
                 <TouchableOpacity onPress = {this.checkout}>
                   <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Check Out</Text>
@@ -459,9 +508,11 @@ export default class Menu extends React.Component{
   renderRestaurants = ({item}) => {
     var wString = item.watchers + " biters watching";
     var sBox = styles.box;
+    var live = false;
     if(item.time.localeCompare('LIVE') == 0)
     {
       sBox = styles.liveBox;
+      live = true;
     }
 
     return(
@@ -472,7 +523,7 @@ export default class Menu extends React.Component{
       // </TouchableOpacity>
       // </View>
       <View>
-        <TouchableOpacity style = {sBox} onPress={() => this.turnModalOn(item.name, item.image, item.address, item.watchers, item.time, item.dist)}>
+        <TouchableOpacity style = {sBox} onPress={() => this.turnModalOn(item.name, item.image, item.address, item.watchers, item.time, item.dist, live)}>
           <View style={styles.container1}>
             <View style={styles.restTitle}>
               <Text style = {styles.restaurantName}>{item.name}</Text>
@@ -540,7 +591,6 @@ export default class Menu extends React.Component{
             </View>
           </View>
         </TouchableOpacity>
-
         <View style={styles.quantityBox}>
           <View style={styles.container1}>
               <View style={styles.emptySideQuantity}>
@@ -557,10 +607,34 @@ export default class Menu extends React.Component{
                <TouchableOpacity style={styles.signPlus} onPress={() => this.setState({currentOrderQuantity: this.state.currentOrderQuantity +1})}>
                 <Text style={styles.signText}>+</Text>
               </TouchableOpacity>
-
           </View>
         </View>
 
+      </View>
+    );
+  };
+
+  renderNotLiveDeals = ({item}) => {
+    var itemInArray = [item.name];
+    let {itemPressed} = this.state;
+    var itemName = item.name;
+    var shown = false;
+    var visibility = 0;
+
+    return(
+      <View style={{flexDirection:'row'}}>
+        <TouchableOpacity activeOpacity = {1} style = {styles.notLiveDealBox} onPress={() => this.setState({itemPressed: itemName, currentOrderQuantity: 1})}>
+          <View>
+            <View style = {{flexDirection: 'row'}}>
+              <Text style = {[styles.restaurantName, {flex:8, fontSize:16}]}>{item.name}</Text>
+            </View>
+            <View style={{width: '90%'}}>
+              <View style={styles.dealDesc}>
+                <Text style={{fontSize: 12}}>{item.description}</Text>
+              </View>
+            </View>
+          </View>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -646,7 +720,7 @@ export default class Menu extends React.Component{
 
   purchase = () => {
   	console.log('buy');
-  	this.setState({openOrder: true});
+    this.setState({openOrder: true, checkoutOpacity: 0});
   	this.setState({placeOrderColor: '#5ED634', placeOrderText:'\u2705\tSuccess'});
   	for(var i=0; i < this.state.order.length; i++)
   	{
@@ -670,7 +744,7 @@ export default class Menu extends React.Component{
   	}
   }
 
-  turnModalOn = (name, image, address, watchers, time, dist) =>{
+  turnModalOn = (name, image, address, watchers, time, dist, live) =>{
     if (name == "Dulce Cafe")
       name = "Dulce"
 
@@ -680,13 +754,19 @@ export default class Menu extends React.Component{
    		sz = snap.size +1;// will return the collection size
    		this.setState({orderNumb: sz});
 	});
-
-    this.setState({openModal:true, modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist, checkoutOpacity: 0, openCheckout: false, checkoutButtonOpacity: 0, placeOrderColor: '#8134FF', totalSavings: 0, orderTotal: 0});
+    if(live){
+      this.setState({openModal:true,});
+    }
+    else
+    {
+      this.setState({openNotLive:true});
+    }
+    this.setState({modalRest: name, modalImage: image, modalAddress: address, modalWatching: watchers, modalTime: time, modalDist: dist, openCheckout: false, checkoutButtonOpacity: 0, placeOrderColor: '#8134FF', totalSavings: 0, orderTotal: 0});
     this.setState({order: []});
   }
 
   turnModalOff = () =>{
-    this.setState({openModal:false});
+    this.setState({openModal:false, openNotLive: false, checkoutOpacity: 1});
     this.setState({openOrder: false});
   }
   goToSignup()
@@ -965,7 +1045,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
     flexGrow: 1,
-
     marginLeft: -0.05*screenWidth,
     height: '60%',
     width: screenWidth,
@@ -984,7 +1063,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
     flexGrow: 1,
-
+    zIndex: 999,
     marginLeft: -0.05*screenWidth,
     height: '40%',
     width: screenWidth,
@@ -1025,5 +1104,21 @@ const styles = StyleSheet.create({
   	backgroundColor: '#8134FF',
   	position: 'absolute',
   	left: 0,
+  },
+  notLiveDealBox:{
+    height: 120,
+    paddingTop: 14,
+    paddingLeft: 10,
+    backgroundColor: '#FFFFFF',
+    marginVertical: 8,
+    marginRight: 12,
+    width: 0.43 * screenWidth,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    borderColor: '#EDE1FF',
+    borderWidth: 2,
+    zIndex: 1,
   },
 });

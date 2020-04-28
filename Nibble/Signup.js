@@ -52,29 +52,21 @@ export default class Signup extends React.Component{
     return(
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
-        <View><Image source = {require('./signupPic.png')} style = {{left: '15%', marginTop: 40}}/></View>
-        <TouchableOpacity activeOpacity = {1} onPress= {this.setFirstActive} style = {this.state.firstStyle}>
-          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.firstName(text)} value = {this.state.firstName} clearTextOnFocus = {true}/>
-          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.lastName(text)}  value = {this.state.lastName} clearTextOnFocus={true}/>
-          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.phoneNumber(text)} value = {this.state.phoneNumber} clearTextOnFocus={true}/>
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity = {1} onPress= {this.setSecondActive} style = {[this.state.secondStyle, {marginTop: 50}]}>
-          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.email(text)} value = {this.state.email} clearTextOnFocus={true}/>
-          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.password(text)}  value = {this.state.password} clearTextOnFocus={true}/>
-          <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.confirm(text)} value = {this.state.confirm} clearTextOnFocus={true}/>
-        </TouchableOpacity>
-        <TouchableOpacity onPress = {this.signUpConfirm} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold'}}>Sign up</Text></TouchableOpacity>
-
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
+        <View style={styles.viewContainer}>
+          <View><Image source = {require('./signupPic.png')} style = {{left: '15%', marginTop: 40}}/></View>
+          <TouchableOpacity activeOpacity = {1} onPress= {this.setFirstActive} style = {this.state.firstStyle}>
+            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.firstName(text)} value = {this.state.firstName} clearTextOnFocus = {true}/>
+            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.lastName(text)}  value = {this.state.lastName} clearTextOnFocus={true}/>
+            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.phoneNumber(text)} value = {this.state.phoneNumber} clearTextOnFocus={true}/>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity = {1} onPress= {this.setSecondActive} style = {[this.state.secondStyle, {marginTop: 50}]}>
+            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.email(text)} value = {this.state.email} clearTextOnFocus={true}/>
+            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.password(text)}  value = {this.state.password} clearTextOnFocus={true}/>
+            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.confirm(text)} value = {this.state.confirm} clearTextOnFocus={true}/>
+          </TouchableOpacity>
+          <TouchableOpacity onPress = {this.signUpConfirm} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold'}}>Sign up</Text></TouchableOpacity>
+          </View>
       </ScrollView>
-
       </KeyboardAvoidingView>
       // <SafeAreaView>
       //   <FlatList
@@ -111,10 +103,6 @@ export default class Signup extends React.Component{
 
       AsyncStorage.setItem('email', email);
 
-      // await AsyncStorage.setItem('name', name);
-      // await AsyncStorage.setItem('phoneNumber', phoneNumber);
-      // await AsyncStorage.setItem('month', month);
-      // await AsyncStorage.setItem('year', year);
       console.log("added!");
 
     } catch (error) {
@@ -159,7 +147,8 @@ export default class Signup extends React.Component{
 
 const styles = StyleSheet.create({
   button: {
-    top: 70,
+    marginTop: 60,
+    marginBottom: 20,
     borderWidth: 3,
     backgroundColor: '#8134FF',
     borderColor: '#FFFFFF',
@@ -172,7 +161,13 @@ const styles = StyleSheet.create({
   activeBorder: {
     width: 327, borderRadius: 22, top: 20, borderWidth:6, borderColor: '#8134FF', alignItems: 'center'
   },
-
+  viewContainer:{
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    flex: 1
+  },
   inactiveBorder:{
     width: 327, borderRadius: 22, top: 20, borderWidth:6, borderColor: '#c39aff', alignItems: 'center'
   },
