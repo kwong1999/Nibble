@@ -86,7 +86,7 @@ export default class OrderHistory extends React.Component{
     return(
       <View style = {{flex:1}}>
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
-        <TouchableOpacity onPress = {() => {this.props.navigation.navigate('Home'); console.log("ught");}} style={{backgroundColor:'#8134FF', z: 9999, borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center'}}>
+        <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{backgroundColor:'#8134FF', z: 9999, borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center'}}>
                 <Image source={require('./Vector.png')}/>
               </TouchableOpacity>
         <Text style={{borderWidth: 10, borderColor: '#FFFFFF'}}>@{this.state.email}</Text>
@@ -122,9 +122,11 @@ export default class OrderHistory extends React.Component{
         <Text style={{ fontSize: 14}}>{item.item}    x{item.quantity}</Text>
     </View>
     <View style={{width: '20%'}}>
+    <Text> </Text>
     <Text style={{textDecorationLine: "line-through", color: '#A8A1B3', top: 40}}>{ "$" + item.oldPrice.toFixed(2)}  ></Text>
       </View>
       <View style={{width: '20%'}}>
+      <Image source={require('./info.png')}/>
       <Text style = {{fontSize:13, top: 40}}>{"$"+(item.price*item.quantity).toFixed(2)}</Text>
       </View>
     </View>

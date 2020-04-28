@@ -205,7 +205,7 @@ export default class Profile extends React.Component{
           </View>
           <View style={{backgroundColor: '#EDE1FF', position: 'absolute', top: 380, left: 30, height: 1.5, width: 310}}>
           </View>
-          <View style={{backgroundColor: '#EDE1FF', position: 'absolute', top: 430, left: 30, height: 1.5, width: 300}}>
+          <View style={{backgroundColor: '#EDE1FF', position: 'absolute', top: 425, left: 30, height: 1.5, width: 310}}>
           </View>
           <View style={[styles.container1, {}]}>
                 <View style={{width: '10%'}}>
@@ -238,17 +238,19 @@ export default class Profile extends React.Component{
                   <Text style={{fontWeight: 'bold', fontSize: 12, textAlign: 'right',}}>{this.state.address}</Text>
                   <Text>{'\n'}</Text>
                   <TouchableOpacity onPress={() => this.props.navigation.navigate('OrderHistory')}>
-                    <Text>                        > </Text>
+                    <Text>                            > </Text>
                   </TouchableOpacity>
                   <Text>{'\n'}</Text>
                   <TouchableOpacity onPress={this.paymentPress}>
-                    <Text style= {{fontSize: 12}}>                            {this.state.paymentButtonText}</Text>
+                    <Text style= {{fontSize: 12}}>                                {this.state.paymentButtonText}</Text>
                   </TouchableOpacity>
                   </View>
                   <View style={{width: '10%'}}>
                   </View>
           </View>
           {this.renderAdd()}
+          <View style={{backgroundColor: '#EDE1FF', marginLeft: 30, top: 10, height: 1.5, width: 310}}>
+          </View>
             <Text> </Text>
         <Text> </Text>
         <Text> </Text>
@@ -278,7 +280,7 @@ export default class Profile extends React.Component{
               <Text></Text>
               <Text> </Text>
         
-              <TouchableOpacity onPress = {this.addPay} style={{backgroundColor:'#8134FF', borderRadius: 12, width: 100, height:35, flexDirection:'row', marginBottom: 0, alignItems: 'center', justifyContent: 'center'}}>
+              <TouchableOpacity onPress = {this.addPay} style={{backgroundColor:'#8134FF', borderRadius: 12, width: 100, height:35, flexDirection:'row', marginBottom: 0, alignItems: 'center', justifyContent: 'center', marginLeft: 20}}>
                       <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>ADD</Text>
                     </TouchableOpacity>
                     <Text> </Text>
