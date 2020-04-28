@@ -144,6 +144,7 @@ export default class Profile extends React.Component{
       if (!result.cancelled) {
         this.setState({ image: result.uri });
         console.log(result.uri);
+        this.storeImage(result.uri);
       }
 
       console.log(result);
@@ -151,6 +152,16 @@ export default class Profile extends React.Component{
       console.log(E);
     }
   };
+  storeImage = async (image) => {
+
+      try {
+        console.log("added null");
+        AsyncStorage.setItem('profileImage', image);
+
+      } catch (error) {
+        // Error saving data
+      }
+    };
 
   getEmail = async () => {
     try {
@@ -161,17 +172,16 @@ export default class Profile extends React.Component{
         this.setState({email: storageEmail});
         this.getInfo();
       }
-      else
-      {
-        this.props.navigation.navigate('Signup');
-      }
+      const profileImage = await AsyncStorage.getItem('profileImage');
+      this.setState({image: profileImage});
     } catch (error) {
-      this.props.navigation.navigate('Signup');
+
     }
   };
 
   render(){
   	let {image} = this.state;
+  	console.log(image);
     return(
       <View style = {{flex:1}}>
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
@@ -186,8 +196,8 @@ export default class Profile extends React.Component{
                 </View>
                 <View style={{width: '30%'}}>
                 <TouchableOpacity onPress ={this._pickImage}>
-                  {!image && <Image source={require('./nibble.png')} style = {{ width: 117, height: 117, borderRadius: 100 }}/>}
-                	{image && <Image source={{ uri: image }} style={{ width: 117, height: 117, borderRadius: 100 }} />}
+                  {(!image || image =='null') && <Image source={require('./nibble.png')} style = {{ width: 117, height: 117, borderRadius: 100 }}/>}
+                	{image && (image!='null') && <Image source={{ uri: image }} style={{ width: 117, height: 117, borderRadius: 100 }} />}
                 </TouchableOpacity>
                 </View>
                 <View style={{width: '10%'}}>
