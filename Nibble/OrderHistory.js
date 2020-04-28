@@ -36,10 +36,10 @@ export default class OrderHistory extends React.Component{
       email: '@empty',
       orders: [],
       };
-      
+
 
   }
- 
+
   getInfo = () => {
 
     firestoreDB.collection("users").doc(this.state.email).collection("orders").get().then((querySnapshot) => {
@@ -113,7 +113,7 @@ export default class OrderHistory extends React.Component{
       {
       }
     } catch (error) {
-      
+
     }
   };
 
@@ -146,7 +146,7 @@ export default class OrderHistory extends React.Component{
   }
 
   renderOrders = ({item}) => {
-    
+
     return(
     <View>
     <Text> </Text>
@@ -186,7 +186,7 @@ renderItem = ({item}) => {
   ); 
 }
 
-  
+
 
 
 
@@ -195,7 +195,7 @@ renderItem = ({item}) => {
 const styles = StyleSheet.create({
   textInput: {
     fontSize: 10,
-    height: 40, 
+    height: 40,
     left: 30,
     width: '80%',
     borderBottomWidth: 2,
@@ -207,6 +207,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'flex-start', // if you want to fill rows left to right
-  
+
   },
 });
