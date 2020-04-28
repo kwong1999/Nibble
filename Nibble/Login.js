@@ -109,16 +109,6 @@ export default class Signup extends React.Component{
   }
 
 
-  firstName(text){
-    this.setState({firstName: text});
-  }
-  lastName(text){
-    this.setState({lastName: text});
-  }
-  phoneNumber(text){
-    this.setState({phoneNumber: text})
-  }
-
   email(text){
     this.setState({firstStyle: styles.inactiveBorder, secondStyle: styles.activeBorder});
     this.setState({email: text});
