@@ -98,7 +98,7 @@ export default class Profile extends React.Component{
             temp = doc.data().paymentMethod;
             currentComponent.setState({paymentMethod: temp});
             console.log(temp);
-            if(temp != null)
+            if(temp != null && temp != 'null')
             {
               currentComponent.setState({paymentString: temp});
               currentComponent.setState({paymentButtonText: 'x'});
