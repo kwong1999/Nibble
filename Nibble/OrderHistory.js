@@ -55,6 +55,7 @@ export default class OrderHistory extends React.Component{
         var tempArray = this.state.orders;
         tempArray.push(orderObj);
         this.setState({orders: tempArray});
+        console.log(orderObj);
 
         });
       });
@@ -85,7 +86,7 @@ export default class OrderHistory extends React.Component{
     return(
       <View style = {{flex:1}}>
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
-        <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{backgroundColor:'#8134FF', borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: 600, left: 270}}>
+        <TouchableOpacity onPress = {() => {this.props.navigation.navigate('Home'); console.log("ught");}} style={{backgroundColor:'#8134FF', z: 9999, borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center'}}>
                 <Image source={require('./Vector.png')}/>
               </TouchableOpacity>
         <Text style={{borderWidth: 10, borderColor: '#FFFFFF'}}>@{this.state.email}</Text>
@@ -128,8 +129,10 @@ export default class OrderHistory extends React.Component{
       </View>
     </View>
     <Text> </Text>
+    <Text> </Text>
     <View style={{backgroundColor: '#EDE1FF',  height: 1.5, width: 300}}>
       </View>
+
     </View>);
   };
 

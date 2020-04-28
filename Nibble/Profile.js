@@ -7,6 +7,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
 import opencage from 'opencage-api-client';
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -42,7 +44,6 @@ export default class Profile extends React.Component{
       lat: 0,
       lon: 0,
       location: null,
-      image: 'nibble.png',
       paymentMethod: null,
       paymentString: 'Add Payment Method',
       paymentButtonText: '+',
@@ -51,6 +52,7 @@ export default class Profile extends React.Component{
       cardNumber: 'Card Number',
       cardExp: 'Exp',
       cardSec: 'Security',
+      image: null,
       };
       //this.getInfo = this.getInfo.bind(this);
       this._getLocationAsync();
@@ -119,7 +121,36 @@ export default class Profile extends React.Component{
   }
   componentDidMount() {
       this.getEmail();
+      this.getPermissionAsync();
     }
+
+    getPermissionAsync = async () => {
+    if (Constants.platform.ios) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+      }
+    }
+  };
+
+  _pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+      if (!result.cancelled) {
+        this.setState({ image: result.uri });
+        console.log(result.uri);
+      }
+
+      console.log(result);
+    } catch (E) {
+      console.log(E);
+    }
+  };
 
   getEmail = async () => {
     try {
@@ -140,41 +171,43 @@ export default class Profile extends React.Component{
   };
 
   render(){
+  	let {image} = this.state;
     return(
       <View style = {{flex:1}}>
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
-      <Text>{'\n\n\n'}</Text>
-       <View style={{position: 'absolute', top: 400}}>
-            {this.renderAdd()}
-            </View>
+      <View style={styles.viewContainer}>
+      <Text>{'\n\n'}</Text>
         <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{backgroundColor:'#8134FF', borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: 600, left: 270}}>
                 <Image source={require('./Vector.png')}/>
               </TouchableOpacity>
-              <View style={styles.container1}>
+              <View style={[styles.container1, {height: 200}]}>
                 <View style={{width: '10%'}}>
                 </View>
                 <View style={{width: '30%'}}>
-                  <Image source={require('./nibble.png')} style = {{ width: 117, height: 117, borderRadius: 100 }}/>
+                <TouchableOpacity onPress ={this._pickImage}>
+                  {!image && <Image source={require('./nibble.png')} style = {{ width: 117, height: 117, borderRadius: 100 }}/>}
+                	{image && <Image source={{ uri: image }} style={{ width: 117, height: 117, borderRadius: 100 }} />}
+                </TouchableOpacity>
                 </View>
                 <View style={{width: '10%'}}>
                 </View>
                 <View style={{width: '50%'}}>
-                  <Text style={{marginTop: 30, fontWeight: 'bold', fontSize: 25}}> {this.state.name} </Text>
-                  <Text style={{fontStyle: 'italic', fontSize: 12}}> joined {this.state.month}, {this.state.year} </Text>
+                  <Text style={{marginTop: 30, marginRight: 20, fontWeight: 'bold', fontSize: 25}}>{this.state.name}</Text>
+                  <Text style={{fontStyle: 'italic', fontSize: 12, marginTop: 5,}}> joined {this.state.month}, {this.state.year} </Text>
                   </View>
               </View>
-          <View style={{backgroundColor: '#EDE1FF', position: 'absolute', top: 225, left: 30, height: 1.5, width: 300}}>
+         <View style={{backgroundColor: '#EDE1FF', position: 'absolute', top: 230, left: 30, height: 1.5, width: 310}}>
           </View>
-          <View style={{backgroundColor: '#EDE1FF', position: 'absolute', top: 270, left: 30, height: 1.5, width: 300}}>
+          <View style={{backgroundColor: '#EDE1FF', position: 'absolute', top: 280, left: 30, height: 1.5, width: 310}}>
           </View>
-          <View style={{backgroundColor: '#EDE1FF', position: 'absolute', top: 320, left: 30, height: 1.5, width: 300}}>
+          <View style={{backgroundColor: '#EDE1FF', position: 'absolute', top: 330, left: 30, height: 1.5, width: 310}}>
           </View>
-          <View style={{backgroundColor: '#EDE1FF', position: 'absolute', top: 370, left: 30, height: 1.5, width: 300}}>
+          <View style={{backgroundColor: '#EDE1FF', position: 'absolute', top: 380, left: 30, height: 1.5, width: 310}}>
           </View>
-          <View style={{backgroundColor: '#EDE1FF', position: 'absolute', top: 420, left: 30, height: 1.5, width: 300}}>
+          <View style={{backgroundColor: '#EDE1FF', position: 'absolute', top: 430, left: 30, height: 1.5, width: 300}}>
           </View>
-          <View style={[styles.container1, {position: 'absolute', top: 240}]}>
+          <View style={[styles.container1, {}]}>
                 <View style={{width: '10%'}}>
                   </View>
                   <View style={{width: '40%'}}>
@@ -197,12 +230,12 @@ export default class Profile extends React.Component{
                   </View>
                   <View style={{width: '5%'}}>
                   </View>
-                  <View style={{width: '40%'}}>
-                  <Text style={{fontWeight: 'bold', fontSize: 12, textAlign: 'center',}}>{this.state.email} </Text>
+                  <View style={{width: '35%', marginRight: 35}}>
+                  <Text style={{fontWeight: 'bold', fontSize: 12, textAlign: 'right'}}>{this.state.email}</Text>
                   <Text>{'\n'}</Text>
-                  <Text style={{fontWeight: 'bold', fontSize: 12, textAlign: 'center',}}>{this.state.phoneNumber} </Text>
+                  <Text style={{fontWeight: 'bold', fontSize: 12, textAlign: 'right',}}>{this.state.phoneNumber}</Text>
                   <Text>{'\n'}</Text>
-                  <Text style={{fontWeight: 'bold', fontSize: 12, textAlign: 'center',}}>{this.state.address} </Text>
+                  <Text style={{fontWeight: 'bold', fontSize: 12, textAlign: 'right',}}>{this.state.address}</Text>
                   <Text>{'\n'}</Text>
                   <TouchableOpacity onPress={() => this.props.navigation.navigate('OrderHistory')}>
                     <Text>                        > </Text>
@@ -212,9 +245,10 @@ export default class Profile extends React.Component{
                     <Text style= {{fontSize: 12}}>                            {this.state.paymentButtonText}</Text>
                   </TouchableOpacity>
                   </View>
-                  <View style={{width: '5%'}}>
+                  <View style={{width: '10%'}}>
                   </View>
           </View>
+          {this.renderAdd()}
             <Text> </Text>
         <Text> </Text>
         <Text> </Text>
@@ -223,6 +257,7 @@ export default class Profile extends React.Component{
         <Text> </Text>
         <Text> </Text>
         <Text> </Text>
+        </View>
       </ScrollView>
 
       </KeyboardAvoidingView>
@@ -240,9 +275,16 @@ export default class Profile extends React.Component{
               <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.cardNumber(text)}  value = {this.state.cardNumber} clearTextOnFocus={true}></TextInput>
               <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.cardExp(text)} value = {this.state.cardExp} clearTextOnFocus={true}></TextInput>
               <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 0}]} onChangeText={text => this.cardSec(text)} value = {this.state.cardSec} clearTextOnFocus = {true}></TextInput>
-              <TouchableOpacity onPress = {this.addPay} style={{backgroundColor:'#8134FF', borderRadius: 12, width: 100, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
+              <Text></Text>
+              <Text> </Text>
+        
+              <TouchableOpacity onPress = {this.addPay} style={{backgroundColor:'#8134FF', borderRadius: 12, width: 100, height:35, flexDirection:'row', marginBottom: 0, alignItems: 'center', justifyContent: 'center'}}>
                       <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>ADD</Text>
                     </TouchableOpacity>
+                    <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
             </View>
             );
         } else {
@@ -331,7 +373,7 @@ const styles = StyleSheet.create({
   textInput: {
     fontSize: 10,
     height: 40, 
-    left: 30,
+    left: 20,
     width: '80%',
     borderBottomWidth: 2,
     borderBottomColor: '#8235ff',
@@ -344,4 +386,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start', // if you want to fill rows left to right
   
   },
+  viewContainer:{
+        flexDirection:'column',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+        flex: 1
+    }
 });
