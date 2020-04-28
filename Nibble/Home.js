@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import Modal from 'react-native-modal';
-import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity} from 'react-native';
+import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, TextInput} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
@@ -66,7 +66,14 @@ export default class Menu extends React.Component{
         params: '',
         refresh: false,
         checkoutOpacity: 1,
-        openNotLive: false
+        openNotLive: false,
+        paymentOpacity: 1,
+        openPayment: false,
+        cardName: 'Name',
+        cardNumber: 'Card Number',
+        cardExp: 'Expiration',
+        cardSec: 'CVV',
+        lastFour: '',
       };
 
       this._getLocationAsync();
@@ -211,6 +218,7 @@ export default class Menu extends React.Component{
     componentDidMount() {
       this.initTimes();
       this.getTimes();
+      this.updatePayment();
     }
 
   _getLocationAsync = async () => {
@@ -360,11 +368,38 @@ export default class Menu extends React.Component{
                     <Text style = {{fontSize: 12}}>{"$" + (this.state.orderTotal*0.08).toFixed(2)}</Text>
                     <Text>{'\n\n'}</Text>
                   </View>
-                  <TouchableOpacity onPress = {this.purchase} style={{backgroundColor:this.state.placeOrderColor, borderRadius: 12, width: 260, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
+                  <View style ={{flexDirection: 'row', alignSelf: 'left', left: '15%',}}>
+                    <Image source = {require('./card.png')}
+                    />
+                  <Text style = {{fontSize: 14, top: -2}}>   {this.state.lastFour}</Text>
+                  </View>
+                  <TouchableOpacity onPress = {this.checkPayment} style={{backgroundColor:this.state.placeOrderColor, top: 15, borderRadius: 12, width: 260, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>{this.state.placeOrderText}</Text>
                   </TouchableOpacity>
                   <Text>{'\n'}</Text>
                 </View>
+                <Modal
+                  isVisible = {this.state.openPayment}
+                  onBackdropPress={this.turnModalOff}
+                  backdropColor ={"black"}
+                  backdropOpacity = {0.5}
+                >
+                  <View style = {[styles.paymentModal, {opacity: this.state.paymentOpacity}]}>
+                    <Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16}}>Add Payment Method</Text>
+                    <View style = {{marginTop: '10%'}}>
+                      <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 0}]} onChangeText={text => this.cardName(text)} value = {this.state.cardName} clearTextOnFocus = {true}></TextInput>
+                      <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.cardNumber(text)}  value = {this.state.cardNumber} clearTextOnFocus={true}></TextInput>
+                      <View style = {{flex: 2.8, flexDirection: 'row'}}>
+                        <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {flex: 1, width: '36%', marginTop: 25, marginBottom: 35}]} onChangeText={text => this.cardExp(text)} value = {this.state.cardExp} clearTextOnFocus={true}></TextInput>
+                        <View style = {{flex: 0.8}}></View>
+                        <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {flex: 1, width: '36%', marginTop: 25,}]} onChangeText={text => this.cardSec(text)} value = {this.state.cardSec} clearTextOnFocus = {true}></TextInput>
+                      </View>
+                    </View>
+                    <TouchableOpacity onPress = {this.addPayment} style={{position: 'absolute', top: '60%', backgroundColor:'#8134FF', borderRadius: 12, width: 98, height:37, alignItems: 'center', justifyContent: 'center'}}>
+                      <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>Add</Text>
+                    </TouchableOpacity>
+                  </View>
+                </Modal>
                 <Modal
                     isVisible = {this.state.openOrder}
                     onBackdropPress={this.turnModalOff}
@@ -509,6 +544,7 @@ export default class Menu extends React.Component{
     var wString = item.watchers + " biters watching";
     var sBox = styles.box;
     var live = false;
+
     if(item.time.localeCompare('LIVE') == 0)
     {
       sBox = styles.liveBox;
@@ -713,11 +749,64 @@ export default class Menu extends React.Component{
 
   };
 
+  addPayment = () =>{
+    this.setState({openPayment: false,});
+    var pRef = firestoreDB.collection("users").doc(this.state.username);
 
+          return pRef.update({
+              paymentMethod: this.state.cardNumber
+
+          })
+          .then(function() {
+              console.log("Document successfully updated!");
+
+          })
+          .catch(function(error) {
+              // The document probably doesn't exist.
+              console.error("Error updating document: ", error);
+          });
+
+  }
   checkout = () => {
   	this.setState({openCheckout: true});
   }
+  updatePayment = () => {
+    firestoreDB.collection("users").doc(this.state.username).get().then(doc => {
+        if(!doc.exists) {
+          console.log('No such user');
+        }
+        else{
+          if (doc.data().paymentMethod != "null")
+          {
+            console.log("existing payment");
+            var lastDigits = doc.data().paymentMethod.substring(0, 4);
+            this.setState({lastFour: lastDigits});
+          }
+        }
+      });
+  }
 
+  checkPayment = () =>{
+    firestoreDB.collection("users").doc(this.state.username).get().then(doc => {
+        if(!doc.exists) {
+          console.log('No such user');
+        }
+        else{
+          if (doc.data().paymentMethod != "null")
+          {
+            console.log("existing payment");
+            var lastDigits = doc.data().paymentMethod.substring(0, 4);
+            this.setState({lastFour: lastDigits});
+            this.purchase();
+          }
+          else{
+            this.setState({openPayment: true});
+            console.log('open payment');
+            return;
+          }
+        }
+      });
+  }
   purchase = () => {
   	console.log('buy');
     this.setState({openOrder: true, checkoutOpacity: 0});
@@ -774,6 +863,19 @@ export default class Menu extends React.Component{
     console.log('here');
     this.props.navigation.navigate('Signup');
     this.setState({openModal:false, openCheckout: false});
+  }
+
+  cardName(text){
+    this.setState({cardName: text});
+  }
+  cardNumber(text){
+    this.setState({cardNumber: text});
+  }
+  cardExp(text){
+    this.setState({cardExp: text});
+  }
+  cardSec(text){
+    this.setState({cardSec: text});
   }
 }
 
@@ -1120,5 +1222,32 @@ const styles = StyleSheet.create({
     borderColor: '#EDE1FF',
     borderWidth: 2,
     zIndex: 1,
+  },
+  textInput: {
+    fontSize: 12,
+    height: 40,
+    width: '80%',
+    borderBottomWidth: 2,
+    borderBottomColor: '#8032ff',
+    width: .8*screenWidth,
+  },
+  paymentModal:
+  {
+    //flex: 1,
+    position: 'absolute',
+    //width: '85%',
+    //marginLeft:'7%',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    flexGrow: 1,
+    marginLeft: -0.05*screenWidth,
+    height: '60%',
+    width: screenWidth,
+    top: '55%',
+
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50
   },
 });
