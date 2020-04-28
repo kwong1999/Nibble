@@ -183,13 +183,8 @@ renderItem = ({item}) => {
   <View>
     <Text style={{ fontSize: 14}}>{item.itemName}    x{item.quantity}</Text>
   </View>
-  ); 
+  );
 }
-
-
-
-
-
 }
 
 const styles = StyleSheet.create({
