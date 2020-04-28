@@ -10,6 +10,7 @@ import Onboard from './Onboard';
 import Signup from './Signup';
 import Profile from './Profile';
 import OrderHistory from './OrderHistory';
+import Login from './Login';
 
 //import RestCard from './RestCard'
 
@@ -28,6 +29,7 @@ function App() {
               <Image source={require("./person.png")}/>
             </TouchableOpacity>
           ),})}/>
+        <Stack.Screen name="Login" component={Login} options={{headerShown:true, title: 'nibble', headerTintColor: '#330382', headerLeft: null, cardStyle: { backgroundColor: '#FFFFFF' },}}/>
         <Stack.Screen name="Signup" component={Signup} options={{headerShown:true, title: 'nibble', headerTintColor: '#330382', headerLeft: null, cardStyle: { backgroundColor: '#FFFFFF' },}}/>
         <Stack.Screen name="OrderHistory" component={OrderHistory} options={{headerShown:true, title: 'Order History', headerTintColor: '#330382', headerLeft: null, cardStyle: { backgroundColor: '#FFFFFF' },}}/>
         <Stack.Screen name="Profile" component={Profile} options={{headerLeft: null, headerShown:true, title: 'nibble', headerTintColor: '#330382', cardStyle: { backgroundColor: '#FFFFFF' },}}/>
