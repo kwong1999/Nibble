@@ -64,7 +64,9 @@ export default class Menu extends React.Component{
         openOrder: false,
         orderNumb: 0,
         params: '',
+        refresh: false
       };
+
       this._getLocationAsync();
 
       this.renderDeals = this.renderDeals.bind(this);
@@ -78,6 +80,7 @@ export default class Menu extends React.Component{
       this.renderRestaurants = this.renderRestaurants.bind(this);
       this.addItem = this.addItem.bind(this);
       this.renderOrder = this.renderOrder.bind(this);
+      this.renderQuantity = this.renderQuantity.bind(this);
 
       this.addItem = this.addItem.bind(this);
 
@@ -313,7 +316,8 @@ export default class Menu extends React.Component{
                   </TouchableOpacity>
                   <Text>{'\n'}</Text>
                 </View>
-        		  <Modal
+              </Modal>
+              <Modal
 	                isVisible = {this.state.openOrder}
 	                onBackdropPress={this.turnModalOff}
 	                backdropColor ={"black"}
@@ -348,7 +352,6 @@ export default class Menu extends React.Component{
               		   <Text>{'\n'}</Text>
 	                  </View>
 	              </Modal>
-              </Modal>
               <View style = {[styles.checkOutButton, {opacity: this.state.checkoutButtonOpacity}]}>
                 <TouchableOpacity onPress = {this.checkout}>
                   <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Check Out</Text>
@@ -497,10 +500,12 @@ export default class Menu extends React.Component{
   };
 //ugh
   renderDeals = ({item}) => {
-
+    var itemInArray = [item.name];
     var sBox = styles.dealBoxNotPressed;
     let {itemPressed} = this.state;
     var itemName = item.name;
+    var shown = false;
+    var visibility = 0;
     if(itemPressed.localeCompare(itemName) == 0)
     {
       sBox = styles.dealBoxPressed;
@@ -509,6 +514,7 @@ export default class Menu extends React.Component{
     {
       if(itemName == this.state.order[i].name)
       {
+        visibility = 100;
         sBox = styles.dealBoxOrdered;
       }
     }
@@ -519,10 +525,9 @@ export default class Menu extends React.Component{
           <View>
             <View style = {{flexDirection: 'row'}}>
               <Text style = {[styles.restaurantName, {flex:8}]}>{item.name}</Text>
-              <Image source = {require('./purpleCircle.png')}
-                style = {{flex: 3, height: 18, width: 18, position: 'absolute', left: '88%' }}
-              />
-              <Text style = {{flex: 1, fontSize: 12, color: '#FFFFFF'}}>6</Text>
+              <View style ={{opacity: visibility, borderRadius:24, backgroundColor: '#8134FF', position: 'absolute', left: '88%', width: 22, height: 22, alignItems: 'center', justifyContent:'center'}}>
+                <FlatList data={itemInArray} extraData={this.state.refresh} renderItem={this.renderQuantity}/>
+              </View>
             </View>
             <View style={{width: '70%'}}>
               <View style={styles.dealDesc}>
@@ -533,16 +538,13 @@ export default class Menu extends React.Component{
                 <Text>{item.newPrice}</Text>
               </View>
             </View>
-
           </View>
-
         </TouchableOpacity>
 
         <View style={styles.quantityBox}>
           <View style={styles.container1}>
               <View style={styles.emptySideQuantity}>
               </View>
-
               <TouchableOpacity style={styles.signMinus} onPress={() => this.setState({currentOrderQuantity: (this.state.currentOrderQuantity > 0) ? (this.state.currentOrderQuantity - 1) : 0})}>
                 <Text style={styles.signText}>-</Text>
               </TouchableOpacity>
@@ -562,6 +564,20 @@ export default class Menu extends React.Component{
       </View>
     );
   };
+
+  renderQuantity = ({item}) => {
+    var number = 0;
+    for(var i = 0; i < this.state.order.length; i++)
+    {
+
+      if(this.state.order[i].name == item)
+      {
+        number = this.state.order[i].quantity;
+      }
+    }
+    return(<View><Text style = {{fontSize: 12, color: '#FFFFFF'}}>{number}</Text></View>);
+  }
+
 //sad
   renderOrder = ({item}) => {
     var totalCost = this.state.orderTotal + (item.price*item.quantity);
@@ -619,12 +635,15 @@ export default class Menu extends React.Component{
       this.setState({checkoutButtonOpacity: 100});
     }
     var placeOrderText = "Place Order\t\t\t\t" + "$" + (totalCost*1.08).toFixed(2);
-    this.setState({orderTotal: totalCost, totalSavings: totalSavings, placeOrderText: placeOrderText, itemPressed:''});
+    this.setState((state) => {return {orderTotal: totalCost, totalSavings: totalSavings, placeOrderText: placeOrderText, itemPressed:'', refresh: !this.state.refresh}});
 
-  }
+  };
+
+
   checkout = () => {
   	this.setState({openCheckout: true});
   }
+
   purchase = () => {
   	console.log('buy');
   	this.setState({openOrder: true});
