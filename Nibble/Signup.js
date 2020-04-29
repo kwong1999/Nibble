@@ -46,6 +46,8 @@ export default class Signup extends React.Component{
     this.setFirstActive = this.setFirstActive.bind(this);
     this.setSecondActive = this.setSecondActive.bind(this);
     this.signUpConfirm = this.signUpConfirm.bind(this);
+     console.disableYellowBox = true;
+
   }
   render(){
     var firstStyle = styles.inactiveBorder;
