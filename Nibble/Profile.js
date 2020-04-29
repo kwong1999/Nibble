@@ -102,7 +102,6 @@ export default class Profile extends React.Component{
             console.log(temp);
             if(temp != null && temp != 'null')
             {
-            	console.log('hi');
               currentComponent.setState({paymentString: temp});
               currentComponent.setState({paymentButtonText: 'x'});
 

@@ -33,7 +33,8 @@ export default class Signup extends React.Component{
       email: 'Email',
       password: 'Password',
       firstStyle: styles.inactiveBorder,
-      secondStyle: styles.activeBorder
+      secondStyle: styles.activeBorder,
+      secure: false,
     };
 
     this.setFirstActive = this.setFirstActive.bind(this);
@@ -55,7 +56,7 @@ export default class Signup extends React.Component{
         </View>
         <TouchableOpacity activeOpacity = {1} onPress= {this.setFirstActive} style = {this.state.firstStyle}>
           <TextInput clearButtonMode="while-editing" onFocus = {this.setFirstActive} style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.email(text)} value = {this.state.email} clearTextOnFocus = {true}/>
-          <TextInput clearButtonMode="while-editing" onFocus = {this.setFirstActive} style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.password(text)}  value = {this.state.password} clearTextOnFocus={true}/>
+          <TextInput clearButtonMode="while-editing" secureTextEntry={this.state.secure} onFocus = {() => {this.setFirstActive(); this.setState({secure: true});}} style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.password(text)}  value = {this.state.password} clearTextOnFocus={true}/>
           <Text> </Text>
           <Text> </Text>
         </TouchableOpacity>

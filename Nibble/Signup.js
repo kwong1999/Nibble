@@ -37,7 +37,9 @@ export default class Signup extends React.Component{
       password: "Password",
       confirm: "Confirm Password",
       firstStyle: styles.activeBorder,
-      secondStyle: styles.inactiveBorder
+      secondStyle: styles.inactiveBorder,
+      securePass: false,
+      secureCon: false,
       // firstStyle: {width: 327, borderRadius: 22, top: 20, borderWidth:3, borderColor: '#8134FF', alignItems: 'center'}
     };
     this.first = React.createRef();
@@ -63,8 +65,8 @@ export default class Signup extends React.Component{
           </TouchableOpacity>
           <TouchableOpacity activeOpacity = {1} onPress= {this.setSecondActive} style = {[this.state.secondStyle, {marginTop: 50}]}>
             <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.email(text)} value = {this.state.email} clearTextOnFocus={true}/>
-            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.password(text)}  value = {this.state.password} clearTextOnFocus={true}/>
-            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.confirm(text)} value = {this.state.confirm} clearTextOnFocus={true}/>
+            <TextInput clearButtonMode="while-editing"  secureTextEntry={this.state.securePass} style = {[styles.textInput, {marginTop: 25}]} onFocus ={() => {this.setState({securePass: true});}} onChangeText={text => this.password(text)}  value = {this.state.password} clearTextOnFocus={true}/>
+            <TextInput clearButtonMode="while-editing" secureTextEntry={this.state.secureCon} style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onFocus ={() => {this.setState({secureCon: true});}} onChangeText={text => this.confirm(text)} value = {this.state.confirm} clearTextOnFocus={true}/>
           </TouchableOpacity>
           <TouchableOpacity onPress = {this.signUpConfirm} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold'}}>Sign up</Text></TouchableOpacity>
           </View>
