@@ -48,6 +48,20 @@ export default class Signup extends React.Component{
     this.setFirstActive = this.setFirstActive.bind(this);
     this.setSecondActive = this.setSecondActive.bind(this);
     this.signUpConfirm = this.signUpConfirm.bind(this);
+    this.clearFirst = this.clearFirst.bind(this);
+    this.clearLast = this.clearLast.bind(this);
+    this.clearEmail = this.clearEmail.bind(this);
+    this.clearPhone = this.clearPhone.bind(this);
+    this.clearPassword = this.clearPassword.bind(this);
+    this.clearConfirm = this.clearConfirm.bind(this);
+    this.resetFirst = this.resetFirst.bind(this);
+    this.resetLast = this.resetLast.bind(this);
+    this.resetPhone = this.resetPhone.bind(this);
+    this.resetEmail = this.resetEmail.bind(this);
+    this.resetPassword = this.resetPassword.bind(this);
+    this.resetConfirm = this.resetConfirm.bind(this);
+
+
      console.disableYellowBox = true;
 
   }
@@ -57,16 +71,19 @@ export default class Signup extends React.Component{
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
         <View style={styles.viewContainer}>
-          <View><Image source = {require('./signupPic.png')} style = {{left: '15%', marginTop: 40}}/></View>
-          <TouchableOpacity activeOpacity = {1} onPress= {this.setFirstActive} style = {this.state.firstStyle}>
-            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.firstName(text)} value = {this.state.firstName} clearTextOnFocus = {true}/>
-            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.lastName(text)}  value = {this.state.lastName} clearTextOnFocus={true}/>
-            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.phoneNumber(text)} value = {this.state.phoneNumber} clearTextOnFocus={true}/>
+          <View style={{flexDirection:'row'}}>
+            <Text style = {{opacity: 0.7}}>Already have an account? </Text>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Login')}}><Text style = {{color:'#8134FF', fontWeight:'bold'}}>Log in</Text></TouchableOpacity>
+          </View>
+          <TouchableOpacity activeOpacity = {1} onPress= {this.setFirstActive} style = {[this.state.firstStyle, {marginTop: 20}]}>
+            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.firstName(text)} value = {this.state.firstName} onFocus = {this.clearFirst} onBlur={this.resetFirst}/>
+            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.lastName(text)}  value = {this.state.lastName} onFocus={this.clearLast} onBlur={this.resetLast}/>
+            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.phoneNumber(text)} value = {this.state.phoneNumber} onFocus={this.clearPhone} onBlur={this.resetPhone}/>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity = {1} onPress= {this.setSecondActive} style = {[this.state.secondStyle, {marginTop: 50}]}>
-            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.email(text)} value = {this.state.email} clearTextOnFocus={true}/>
-            <TextInput clearButtonMode="while-editing"  secureTextEntry={this.state.securePass} style = {[styles.textInput, {marginTop: 25}]} onFocus ={() => {this.setState({securePass: true});}} onChangeText={text => this.password(text)}  value = {this.state.password} clearTextOnFocus={true}/>
-            <TextInput clearButtonMode="while-editing" secureTextEntry={this.state.secureCon} style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onFocus ={() => {this.setState({secureCon: true});}} onChangeText={text => this.confirm(text)} value = {this.state.confirm} clearTextOnFocus={true}/>
+            <TextInput clearButtonMode="while-editing" autoCapitalize = "none" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.email(text)} value = {this.state.email} onFocus={this.clearEmail} onBlur={this.resetEmail}/>
+            <TextInput clearButtonMode="while-editing"  secureTextEntry={this.state.securePass} style = {[styles.textInput, {marginTop: 25}]} onFocus ={() => {this.setState({securePass: true});}} onChangeText={text => this.password(text)}  value = {this.state.password} onFocus={this.clearPassword} onBlur={this.resetPassword}/>
+            <TextInput clearButtonMode="while-editing" secureTextEntry={this.state.secureCon} style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onFocus ={() => {this.setState({secureCon: true});}} onChangeText={text => this.confirm(text)} value = {this.state.confirm} onFocus={this.clearConfirm} onBlur={this.resetConfirm}/>
           </TouchableOpacity>
           <TouchableOpacity onPress = {this.signUpConfirm} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold'}}>Sign up</Text></TouchableOpacity>
           </View>
@@ -146,12 +163,56 @@ export default class Signup extends React.Component{
     this.setState({confirm: text});
   }
 
+  clearFirst(){
+    this.setState({firstName: ""});
+  }
+  clearLast(){
+    this.setState({lastName: ""});
+  }
+  clearPhone(){
+    this.setState({phoneNumber: ""});
+  }
+  clearEmail(){
+    if(this.state.email == "Email")
+      this.setState({email: ""});
+  }
+  clearPassword(){
+    this.setState({password: "", securePass: true});
+  }
+  clearConfirm(){
+    this.setState({confirm: "", secureCon: true});
+  }
+
+  resetFirst(){
+    if(this.state.firstName == "")
+      this.setState({firstName: "First Name"});
+  }
+  resetLast(){
+    if(this.state.lastName == "")
+      this.setState({lastName: "Last Name"});
+  }
+  resetEmail(){
+    if(this.state.email == "")
+      this.setState({email: "Email"});
+  }
+  resetPhone(){
+    if(this.state.phoneNumber == "")
+      this.setState({phoneNumber: "Phone Number"});
+  }
+  resetPassword(){
+    if(this.state.password == "")
+      this.setState({password: "Password", securePass:false});
+  }
+  resetConfirm(){
+    if(this.state.confirm == "")
+      this.setState({confirm: "Confirm", secureCon: false});
+  }
 
 }
 
 const styles = StyleSheet.create({
   button: {
-    marginTop: 60,
+    marginTop: 30,
     marginBottom: 20,
     borderWidth: 3,
     backgroundColor: '#8134FF',
@@ -170,7 +231,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'flex-start',
     justifyContent: 'center',
-    flex: 1
+    flex: 1,
+    top: 30
   },
   inactiveBorder:{
     width: 327, borderRadius: 22, top: 20, borderWidth:6, borderColor: '#c39aff', alignItems: 'center'
