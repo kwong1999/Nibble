@@ -31,6 +31,8 @@ export default class Onboard extends React.Component{
     super(props);
     this.storeData = this.storeData.bind(this);
     this.storeData();
+    console.disableYellowBox = true;
+
   };
 
   storeData = async () => {

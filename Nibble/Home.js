@@ -92,6 +92,7 @@ export default class Menu extends React.Component{
       this.renderQuantity = this.renderQuantity.bind(this);
 
       this.addItem = this.addItem.bind(this);
+      console.disableYellowBox = true;
 
 
 
