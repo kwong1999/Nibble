@@ -40,7 +40,12 @@ export default class Signup extends React.Component{
     this.setFirstActive = this.setFirstActive.bind(this);
     this.setSecondActive = this.setSecondActive.bind(this);
     this.loginConfirm = this.loginConfirm.bind(this);
-     console.disableYellowBox = true;
+
+    this.clearEmail = this.clearEmail.bind(this);
+    this.clearPassword = this.clearPassword.bind(this);
+
+    this.resetEmail = this.resetEmail.bind(this);
+    this.resetPassword = this.resetPassword.bind(this);
 
 
   }
@@ -51,16 +56,16 @@ export default class Signup extends React.Component{
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
         <View><Image source = {require('./signupPic.png')} style = {{left: '15%', marginTop: 40}}/></View>
         <View style={{flexDirection:'row'}}>
-          <Text>Don't have an account? </Text>
-          <TouchableOpacity><Text>Sign up</Text></TouchableOpacity>
+          <Text style = {{opacity: 0.7}}>Don't have an account? </Text>
+          <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Signup')}}><Text style = {{color:'#8134FF', fontWeight:'bold'}}>Sign up</Text></TouchableOpacity>
         </View>
         <TouchableOpacity activeOpacity = {1} onPress= {this.setFirstActive} style = {this.state.firstStyle}>
-          <TextInput clearButtonMode="while-editing" onFocus = {this.setFirstActive} style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.email(text)} value = {this.state.email} clearTextOnFocus = {true}/>
-          <TextInput clearButtonMode="while-editing" secureTextEntry={this.state.secure} onFocus = {() => {this.setFirstActive(); this.setState({secure: true});}} style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.password(text)}  value = {this.state.password} clearTextOnFocus={true}/>
+          <TextInput clearButtonMode="while-editing" autoCapitalize='none' onFocus = {()=>{this.setFirstActive();  this.clearEmail();}} style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.email(text)} value = {this.state.email} onBlur={this.resetEmail}/>
+          <TextInput clearButtonMode="while-editing" secureTextEntry={this.state.secure} onFocus = {() => {this.setFirstActive(); this.setState({secure: true}); this.clearPassword();}} style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.password(text)}  value = {this.state.password} onBlur ={this.resetPassword}/>
           <Text> </Text>
           <Text> </Text>
         </TouchableOpacity>
-        <TouchableOpacity style = {{marginTop: 20}}><Text>Forgot Password</Text></TouchableOpacity>
+        <TouchableOpacity style = {{marginTop: 20}}><Text style = {{color: '#8134FF', fontSize: 13, opacity: 0.8, fontWeight:'bold'}}>Forgot Password</Text></TouchableOpacity>
         <TouchableOpacity onPress = {this.loginConfirm} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold'}}>Log in</Text></TouchableOpacity>
       </ScrollView>
 
@@ -125,7 +130,25 @@ export default class Signup extends React.Component{
     this.setState({confirm: text});
   }
 
+  resetEmail(){
+    if(this.state.email == "")
+      this.setState({email: "Email"});
+  }
 
+  clearEmail(){
+    if(this.state.email == "Email")
+      this.setState({email: ""});
+  }
+
+  resetPassword(){
+    if(this.state.password == "")
+      this.setState({password: "Password", secure:false});
+  }
+
+  clearPassword(){
+    if(this.state.password == "Password")
+      this.setState({password: "", secure: true});
+  }
 }
 
 const styles = StyleSheet.create({
