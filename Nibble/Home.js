@@ -148,6 +148,7 @@ export default class Menu extends React.Component{
       dist = dist * 60 * 1.1515;
       var fixed = dist.toFixed(1);
       this.setState({distance: fixed});
+      console.log(fixed);
     }
 
   }
@@ -170,6 +171,7 @@ export default class Menu extends React.Component{
           {
             if(t.localeCompare(this.state.TIMES[i].time) ==0)
             {
+              this.distance(data.lat, data.lon);
               this.distance(data.lat, data.lon);
               var tempArray = this.state.TIMES;
               var a1 = data.name;
@@ -229,9 +231,11 @@ export default class Menu extends React.Component{
     //     location: 'Permission to access location was denied',
     //   });
     // }
-
+    const { status, permissions } = await Permissions.askAsync(Permissions.LOCATION);
+    console.log('location coords');
     let location = await Location.getCurrentPositionAsync({});
     const key = '5c3d93713edb442c825f89b7bc7d3aa4';
+    console.log('location coords' + location.coords);
     const { latitude , longitude } = location.coords;
     this.setState({ location: {latitude, longitude}});
     this.setState({lat: latitude});
