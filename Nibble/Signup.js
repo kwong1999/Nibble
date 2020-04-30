@@ -112,6 +112,7 @@ export default class Signup extends React.Component{
       month: Smonth,
       year: Syear,
       payment: 'null',
+      rewards: 0
     });
     this.storeData(name, this.state.phoneNumber, this.state.email, Smonth, Syear);
 
@@ -122,7 +123,7 @@ export default class Signup extends React.Component{
       alert('This email already has an account');
     }
   });
-    
+
 
   }
 
@@ -133,6 +134,7 @@ export default class Signup extends React.Component{
       console.log("added!");
 
       AsyncStorage.setItem('email', email);
+      AsyncStorage.setItem('rewards', '0');
 
       console.log("added!");
 
