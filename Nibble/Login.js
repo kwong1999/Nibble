@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
 
   inactiveBorder:{
-    width: 327, borderRadius: 22, top: 20, borderWidth:4, borderColor: '#c39aff', alignItems: 'center', marginBottom: 20
+    width: 327, borderRadius: 22, top: 20, borderWidth:4, borderColor: '#c39aff', alignItems: 'center', marginBottom: 20,
   },
   textInput: {
     fontSize: 14,
@@ -178,6 +178,6 @@ const styles = StyleSheet.create({
     width: '80%',
     paddingLeft: 5,
     borderBottomWidth: 2,
-    borderBottomColor: '#6200f5'
+    borderBottomColor: '#c39aff'
   }
 });
