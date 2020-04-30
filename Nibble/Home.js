@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import Modal from 'react-native-modal';
-import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, ScrollView, TextInput, Picker, KeyboardAvoidingView} from 'react-native';
+import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableWithoutFeedback, TouchableOpacity, ScrollView, TextInput, Picker, KeyboardAvoidingView} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
@@ -214,9 +214,11 @@ export default class Menu extends React.Component{
 
   getItems(restName) {
       var tempArray = [];
+      console.log(restName);
       firestoreDB.collection("restaurants").doc(restName).collection("deals").get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         var data = doc.data();
+        console.log("i found", data.name);
         var a1 = data.name;
         var a2 = data.id;
         var a3 = data.description;
@@ -286,7 +288,7 @@ export default class Menu extends React.Component{
         swipeThreshold={50}
         backdropOpacity = {0.5}
         >
-        <View style={[styles.modalCard, {flex: 10}]}>
+        <View style={styles.modalCard}>
           <Image source = {{uri: this.state.modalImage}}
             style = {styles.modalImage}
           />
@@ -332,12 +334,13 @@ export default class Menu extends React.Component{
           backdropColor ={"black"}
           swipeThreshold={50}
           backdropOpacity = {0.5}
+          propagateSwipe = {true}
           >
             <View style={styles.modalCard}>
               <Image source = {{uri: this.state.modalImage}}
                 style = {styles.modalImage}
               />
-              <View style = {{flex: 1,flexDirection: 'row'}}>
+              <View style = {{flexDirection: 'row'}}>
                 <View style = {{flex: 4}}>
                   <Text style={{fontSize: 32, fontWeight: "bold", marginLeft: "5%", marginTop: "3%"}}>{this.state.modalRest}</Text>
                   <Text style={{fontSize: 13, marginLeft: "5%", marginTop: "2%"}}>{this.state.modalAddress}  •  {this.state.modalDist} miles</Text>
@@ -352,15 +355,17 @@ export default class Menu extends React.Component{
                   <Text style={modalTimeStyle}>{this.state.modalTime}</Text>
                 </View>
               </View>
-              <ScrollView style = {{flex: 10.5}}>
-                <SafeAreaView>
-                    <FlatList style = {{flex: 1}}
-                      data={this.state.ITEMS}
-                      renderItem={this.renderDeals}
-                      keyExtractor={timeSlot => timeSlot.id}
-                      showsVerticalScrollIndicator={false}
-                    />
-                </SafeAreaView>
+              <ScrollView style = {{top: 10}}>
+                  <SafeAreaView>
+                      <FlatList style = {{flex: 1}}
+                        data={this.state.ITEMS}
+                        renderItem={this.renderDeals}
+                        keyExtractor={timeSlot => timeSlot.id}
+                        showsVerticalScrollIndicator={false}
+                      />
+                  </SafeAreaView>
+                  <Text>{'\n'}</Text>
+                  <Text>{'\n'}</Text>
               </ScrollView>
               <Modal
                 isVisible = {this.state.openCheckout}
@@ -505,14 +510,14 @@ export default class Menu extends React.Component{
 	        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 	          <Text>{address}</Text>
 	        </View>
-        <SafeAreaView style = {{flex: 20}}>
+        <View style = {{flex: 20}}>
           <FlatList style = {{flex: 1}}
             data={timeR}
             renderItem={this.renderTimes}
             keyExtractor={timeSlot => timeSlot.id}
             showsVerticalScrollIndicator={false}
           />
-        </SafeAreaView>
+        </View>
         </View>
         </View>
       </View>
@@ -568,7 +573,7 @@ export default class Menu extends React.Component{
     }
     return (
       <View>
-       		<View style={styles.container1}>
+       		<View style={[styles.container1, {marginBottom: 20}]}>
        		<View style={[styles.sideBox, {height: length}]}></View>
        		<View style={styles.mainMenu}>
 	      	<View style={styles.container1}>
@@ -589,8 +594,6 @@ export default class Menu extends React.Component{
 	        </SafeAreaView>
 	        </View>
         </View>
-
-        <Text>{"\n"}</Text>
       </View>);
   };
   //get rid of yello
@@ -732,7 +735,7 @@ export default class Menu extends React.Component{
     var itemName = item.name;
     var shown = false;
     var visibility = 0;
-
+    console.log(item);
     return(
       <View style={{flexDirection:'row'}}>
         <TouchableOpacity activeOpacity = {1} style = {styles.notLiveDealBox} onPress={() => this.setState({itemPressed: itemName, currentOrderQuantity: 1})}>
@@ -954,6 +957,7 @@ export default class Menu extends React.Component{
       name = "Dulce"
 
     this.getItems(name);
+    console.log(name);
     var sz =0;
     firestoreDB.collection("restaurants").doc(name).collection("orders").get().then(snap => {
    		sz = snap.size +1;// will return the collection size
@@ -1109,7 +1113,8 @@ const styles = StyleSheet.create({
     width: '5%' // is 50% of container width
   },
   timeBox: {
-    width: '60%' // is 50% of container width
+    width: '60%', // is 50% of container width
+    flexDirection: 'row'
   },
   lBox: {
     width: '35%', // is 50% of container width
