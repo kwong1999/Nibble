@@ -267,6 +267,7 @@ export default class Menu extends React.Component{
       }
       var hours = new Date().getHours();
 
+
     return(
       <View style = {{flex:1}}>
       <Modal
@@ -555,7 +556,7 @@ export default class Menu extends React.Component{
 
     var liveString = "live in " + h + " hr(s), " + m + " min";
     var length = 10;
-    if(item.time == 'LIVE') 
+    if(item.time == 'LIVE')
     {
       liveString = "";
       length = ((min/60)*(210*item.restaurants.length));
@@ -651,7 +652,7 @@ export default class Menu extends React.Component{
       {
         visibility = 100;
         sBox = styles.dealBoxOrdered;
-        isOrdered = true; 
+        isOrdered = true;
       }
     }
     if(isOrdered && itemPressed.localeCompare(itemName) == 0)
@@ -852,7 +853,7 @@ export default class Menu extends React.Component{
     this.setState({openPayment: false,});
     var pRef = firestoreDB.collection("users").doc(this.state.username);
 
-          return pRef.update({
+          pRef.update({
               payment: this.state.cardNumber
 
           })
@@ -864,6 +865,8 @@ export default class Menu extends React.Component{
               // The document probably doesn't exist.
               console.error("Error updating document: ", error);
           });
+          this.setState({openPayment: false});
+
 
   }
   checkout = () => {
