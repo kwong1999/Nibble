@@ -102,7 +102,10 @@ export default class Signup extends React.Component{
     var name = this.state.firstName + ' ' + this.state.lastName;
     var Smonth = new Date().getMonth() + 1;
     var Syear = new Date().getFullYear();
-    firestoreDB.collection("users").doc(this.state.email).set({
+    firestoreDB.collection('users').doc(this.state.email).get()
+    .then((docSnapshot) => {
+    if (!docSnapshot.exists) {
+      firestoreDB.collection("users").doc(this.state.email).set({
       name: name,
       password: this.state.password,
       phoneNumber: this.state.phoneNumber,
@@ -113,6 +116,13 @@ export default class Signup extends React.Component{
     this.storeData(name, this.state.phoneNumber, this.state.email, Smonth, Syear);
 
     this.props.navigation.navigate('Home', {email: this.state.email});
+    }
+    else
+    {
+      alert('This email already has an account');
+    }
+  });
+    
 
   }
 

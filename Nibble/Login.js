@@ -78,6 +78,7 @@ export default class Signup extends React.Component{
     firestoreDB.collection("users").doc(email).get().then(doc => {
         if(!doc.exists) {
           console.log('No such user');
+          alert('Please enter a valid username');
         }
         else{
           if (doc.data().password == this.state.password)
@@ -88,6 +89,7 @@ export default class Signup extends React.Component{
           else{
             console.log('incorrect password');
             console.log(doc.data().password);
+             alert('Wrong password');
           }
         }
       })

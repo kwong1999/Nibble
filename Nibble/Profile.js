@@ -53,6 +53,9 @@ export default class Profile extends React.Component{
       cardExp: 'Exp',
       cardSec: 'CVV',
       image: null,
+      permission: false,
+      cardHeight: 0,
+      cardWidth: 0,
       };
       //this.getInfo = this.getInfo.bind(this);
       this._getLocationAsync();
@@ -107,11 +110,12 @@ export default class Profile extends React.Component{
             currentComponent.setState({year: temp});
             temp = doc.data().paymentMethod;
             currentComponent.setState({paymentMethod: temp});
-            console.log(temp);
+            
             if(temp != null && temp != 'null')
             {
+            	console.log('card' + temp);
               currentComponent.setState({paymentString: temp});
-              currentComponent.setState({paymentButtonText: 'x'});
+              currentComponent.setState({paymentButtonText: 'x', cardWidth: 15, cardHeight: 12});
 
             }
             else
@@ -138,12 +142,21 @@ export default class Profile extends React.Component{
     if (Constants.platform.ios) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
+        this.setState({permission: false});
       }
+      else
+      {
+      	this.setState({permission: true});
+      }
+
     }
   };
 
   _pickImage = async () => {
+  	if(this.state.permission == false)
+  	{
+  		return;
+  	}
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -153,11 +166,9 @@ export default class Profile extends React.Component{
       });
       if (!result.cancelled) {
         this.setState({ image: result.uri });
-        console.log(result.uri);
         this.storeImage(result.uri);
       }
 
-      console.log(result);
     } catch (E) {
       console.log(E);
     }
@@ -165,7 +176,6 @@ export default class Profile extends React.Component{
   storeImage = async (image) => {
 
       try {
-        console.log("added null");
         AsyncStorage.setItem('profileImage', image);
 
       } catch (error) {
@@ -176,7 +186,6 @@ export default class Profile extends React.Component{
   getEmail = async () => {
     try {
       const storageEmail = await AsyncStorage.getItem('email');
-      console.log("email:" + storageEmail);
       if (storageEmail != null || storageEmail !='null') {
         // We have data!!
         this.setState({email: storageEmail});
@@ -191,7 +200,6 @@ export default class Profile extends React.Component{
 
   render(){
   	let {image} = this.state;
-  	console.log(image);
     return(
       <View style = {{flex:1}}>
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
@@ -242,11 +250,16 @@ export default class Profile extends React.Component{
                    </TouchableOpacity>
                  </View>
                  <View style={{backgroundColor: '#EDE1FF', alignSelf: 'center', height: 1.5, width: 310, marginTop: 18, marginBottom: 18}}></View>
-                 <View style = {{flexDirection: 'row', justifyContent:'space-between'}}>
-                   <Text style={{fontSize: 12,}}>Add Payment Method</Text>
+                 <View style = {{flexDirection: 'row'}}>
+                 <View style={{width: '95%', flexDirection: 'row'}}>
+                 <Image source={require('./Union.png')} style={{height: this.state.cardHeight, width: this.state.cardWidth}}/>
+                   <Text style={{fontSize: 12,}}>  {this.state.paymentString}</Text>
+                   </View>
+                   <View style={{width: '5%'}}>
                    <TouchableOpacity onPress={this.paymentPress}>
                      <Text style= {{fontSize: 16}}>{this.state.paymentButtonText}</Text>
                    </TouchableOpacity>
+                   </View>
                  </View>
                  <View style={{backgroundColor: '#EDE1FF', alignSelf: 'center', height: 1.5, width: 310, marginTop: 18}}></View>
 
@@ -334,8 +347,7 @@ export default class Profile extends React.Component{
   }
 
 addPay = () => {
-  console.log(this.state.cardNumber);
-  this.setState({addPaymentVisible: false, paymentButtonText: 'x', paymentString: this.state.cardNumber});
+  this.setState({addPaymentVisible: false, paymentButtonText: 'x', paymentString: this.state.cardNumber, cardHeight: 12, cardWidth: 15});
   var pRef = firestoreDB.collection("users").doc(this.state.email);
 
         return pRef.update({
@@ -357,7 +369,7 @@ addPay = () => {
   paymentPress = () => {
     if(this.state.paymentButtonText == 'x')
     {
-        this.setState({paymentString: 'Add Payment Method', paymentButtonText: '+', cardName: 'Name',cardNumber: 'Card Number', cardExp: 'Exp', cardSec: 'Security',});
+        this.setState({paymentString: 'Add Payment Method', paymentButtonText: '+', cardName: 'Name',cardNumber: 'Card Number', cardExp: 'Exp', cardSec: 'Security', cardWidth: 0, cardHeight: 0});
         var pRef = firestoreDB.collection("users").doc(this.state.email);
 
         // Set the "capital" field of the city 'DC'

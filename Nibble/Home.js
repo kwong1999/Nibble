@@ -610,6 +610,10 @@ export default class Menu extends React.Component{
         sBox = styles.dealBoxOrdered;
       }
     }
+    if(this.state.currentOrderQuantity == 0)
+    {
+    	sBox = styles.dealBoxNotPressed;
+    }
 
     return(
       <View>
