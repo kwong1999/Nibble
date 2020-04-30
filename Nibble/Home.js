@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import Modal from 'react-native-modal';
-import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, TextInput, Picker, KeyboardAvoidingView} from 'react-native';
+import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, ScrollView, TextInput, Picker, KeyboardAvoidingView} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
@@ -286,11 +286,11 @@ export default class Menu extends React.Component{
         swipeThreshold={50}
         backdropOpacity = {0.5}
         >
-        <View style={styles.modalCard}>
+        <View style={[styles.modalCard, {flex: 10}]}>
           <Image source = {{uri: this.state.modalImage}}
             style = {styles.modalImage}
           />
-          <View style = {{flex: 1,flexDirection: 'row'}}>
+          <View style = {{flex: 1, flexDirection: 'row'}}>
             <View style = {{width: '75%'}}>
               <Text style={{fontSize: 32, fontWeight: "bold", marginLeft: "5%", marginTop: "3%"}}>{this.state.modalRest}</Text>
               <Text style={{fontSize: 13, marginLeft: "6%", marginTop: "2%"}}>{this.state.modalAddress}  •  {this.state.modalDist} miles</Text>
@@ -352,14 +352,16 @@ export default class Menu extends React.Component{
                   <Text style={modalTimeStyle}>{this.state.modalTime}</Text>
                 </View>
               </View>
-              <SafeAreaView style = {{flex: 5.5}}>
-                <FlatList style = {{flex: 1}}
-                  data={this.state.ITEMS}
-                  renderItem={this.renderDeals}
-                  keyExtractor={timeSlot => timeSlot.id}
-                  showsVerticalScrollIndicator={false}
-                />
-              </SafeAreaView>
+              <ScrollView style = {{flex: 10.5}}>
+                <SafeAreaView>
+                    <FlatList style = {{flex: 1}}
+                      data={this.state.ITEMS}
+                      renderItem={this.renderDeals}
+                      keyExtractor={timeSlot => timeSlot.id}
+                      showsVerticalScrollIndicator={false}
+                    />
+                </SafeAreaView>
+              </ScrollView>
               <Modal
                 isVisible = {this.state.openCheckout}
                 onBackdropPress={this.turnModalOff}
