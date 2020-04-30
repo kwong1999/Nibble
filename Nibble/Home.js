@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import Modal from 'react-native-modal';
-import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, TextInput, Picker, KeyboardAvoidingView} from 'react-native';
+import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableWithoutFeedback, TouchableOpacity, ScrollView, TextInput, Picker, KeyboardAvoidingView} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
@@ -215,9 +215,11 @@ export default class Menu extends React.Component{
   getItems(restName) {
   	console.log(restName);
       var tempArray = [];
+      console.log(restName);
       firestoreDB.collection("restaurants").doc(restName).collection("deals").get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         var data = doc.data();
+
         console.log(data);
         var a1 = data.name;
         var a2 = data.id;
@@ -293,7 +295,7 @@ export default class Menu extends React.Component{
           <Image source = {{uri: this.state.modalImage}}
             style = {styles.modalImage}
           />
-          <View style = {{flex: 1,flexDirection: 'row'}}>
+          <View style = {{flex: 1, flexDirection: 'row'}}>
             <View style = {{width: '75%'}}>
               <Text style={{fontSize: 32, fontWeight: "bold", marginLeft: "5%", marginTop: "3%"}}>{this.state.modalRest}</Text>
               <Text style={{fontSize: 13, marginLeft: "6%", marginTop: "2%"}}>{this.state.modalAddress}  •  {this.state.modalDist} miles</Text>
@@ -335,12 +337,13 @@ export default class Menu extends React.Component{
           backdropColor ={"black"}
           swipeThreshold={50}
           backdropOpacity = {0.5}
+          propagateSwipe = {true}
           >
             <View style={styles.modalCard}>
               <Image source = {{uri: this.state.modalImage}}
                 style = {styles.modalImage}
               />
-              <View style = {{flex: 1,flexDirection: 'row'}}>
+              <View style = {{flexDirection: 'row'}}>
                 <View style = {{flex: 4}}>
                   <Text style={{fontSize: 32, fontWeight: "bold", marginLeft: "5%", marginTop: "3%"}}>{this.state.modalRest}</Text>
                   <Text style={{fontSize: 13, marginLeft: "5%", marginTop: "2%"}}>{this.state.modalAddress}  •  {this.state.modalDist} miles</Text>
@@ -355,14 +358,18 @@ export default class Menu extends React.Component{
                   <Text style={modalTimeStyle}>{this.state.modalTime}</Text>
                 </View>
               </View>
-              <SafeAreaView style = {{flex: 5.5}}>
-                <FlatList style = {{flex: 1}}
-                  data={this.state.ITEMS}
-                  renderItem={this.renderDeals}
-                  keyExtractor={timeSlot => timeSlot.id}
-                  showsVerticalScrollIndicator={false}
-                />
-              </SafeAreaView>
+              <ScrollView style = {{top: 10}}>
+                  <SafeAreaView>
+                      <FlatList style = {{flex: 1}}
+                        data={this.state.ITEMS}
+                        renderItem={this.renderDeals}
+                        keyExtractor={timeSlot => timeSlot.id}
+                        showsVerticalScrollIndicator={false}
+                      />
+                  </SafeAreaView>
+                  <Text>{'\n'}</Text>
+                  <Text>{'\n'}</Text>
+              </ScrollView>
               <Modal
                 isVisible = {this.state.openCheckout}
                 onBackdropPress={this.turnModalOff}
@@ -451,7 +458,7 @@ export default class Menu extends React.Component{
                         <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {flex: 1, width: '36%', marginTop: 25,}]} onChangeText={text => this.cardSec(text)} value = {this.state.cardSec} onFocus = {this.clearCardSec} onBlur = {this.resetCardSec}></TextInput>
                       </View>
                     </View>
-                    <TouchableOpacity onPress = {this.addPayment} style={{position: 'absolute', top: '60%', backgroundColor:'#8134FF', borderRadius: 12, width: 98, height:37, alignItems: 'center', justifyContent: 'center'}}>
+                    <TouchableOpacity onPress = {this.addPayment} style={{position: 'absolute', top: '80%', backgroundColor:'#8134FF', borderRadius: 12, width: 98, height:37, alignItems: 'center', justifyContent: 'center'}}>
                       <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>Add</Text>
                     </TouchableOpacity>
                   </View>
@@ -506,14 +513,14 @@ export default class Menu extends React.Component{
 	        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 	          <Text>{address}</Text>
 	        </View>
-        <SafeAreaView style = {{flex: 20}}>
+        <View style = {{flex: 20}}>
           <FlatList style = {{flex: 1}}
             data={timeR}
             renderItem={this.renderTimes}
             keyExtractor={timeSlot => timeSlot.id}
             showsVerticalScrollIndicator={false}
           />
-        </SafeAreaView>
+        </View>
         </View>
         </View>
       </View>
@@ -569,7 +576,7 @@ export default class Menu extends React.Component{
     }
     return (
       <View>
-       		<View style={styles.container1}>
+       		<View style={[styles.container1, {marginBottom: 20}]}>
        		<View style={[styles.sideBox, {height: length}]}></View>
        		<View style={styles.mainMenu}>
 	      	<View style={styles.container1}>
@@ -590,8 +597,6 @@ export default class Menu extends React.Component{
 	        </SafeAreaView>
 	        </View>
         </View>
-
-        <Text>{"\n"}</Text>
       </View>);
   };
   //get rid of yello
@@ -733,7 +738,7 @@ export default class Menu extends React.Component{
     var itemName = item.name;
     var shown = false;
     var visibility = 0;
-
+    console.log(item);
     return(
       <View style={{flexDirection:'row'}}>
         <TouchableOpacity activeOpacity = {1} style = {styles.notLiveDealBox} onPress={() => this.setState({itemPressed: itemName, currentOrderQuantity: 1})}>
@@ -953,6 +958,7 @@ export default class Menu extends React.Component{
   turnModalOn = (name, image, address, watchers, time, dist, live) =>{
   	console.log(name);
     this.getItems(name);
+    console.log(name);
     var sz =0;
     firestoreDB.collection("restaurants").doc(name).collection("orders").get().then(snap => {
    		sz = snap.size +1;// will return the collection size
@@ -1108,7 +1114,8 @@ const styles = StyleSheet.create({
     width: '5%' // is 50% of container width
   },
   timeBox: {
-    width: '60%' // is 50% of container width
+    width: '60%', // is 50% of container width
+    flexDirection: 'row'
   },
   lBox: {
     width: '35%', // is 50% of container width
@@ -1407,16 +1414,15 @@ dealBoxOrderedPressed:{
   textInput: {
     fontSize: 12,
     height: 40,
-    width: '80%',
     borderBottomWidth: 2,
     borderBottomColor: '#8032ff',
-    width: .8*screenWidth,
+    width: .7*screenWidth,
   },
   paymentModal:
   {
     //flex: 1,
+    alignSelf:'center',
     position: 'absolute',
-    //width: '85%',
     //marginLeft:'7%',
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -1424,12 +1430,10 @@ dealBoxOrderedPressed:{
     borderRadius: 12,
     flexGrow: 1,
     marginLeft: -0.05*screenWidth,
-    height: '60%',
-    width: screenWidth,
-    top: '55%',
-
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50
+    height: '45%',
+    width: screenWidth * 0.9,
+    top: '24%',
+    borderRadius: 50
   },
   onePicker: {
    height: 44,

@@ -60,8 +60,9 @@ export default class Feed extends React.Component{
               </View>
             </LinearGradient>
           </TouchableOpacity>
-          <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18,}}>$5 off at 500 points</Text>
-
+          <View>
+            <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18,}}>$5 off at 500 points</Text>
+          </View>
 
         </View>
       );
