@@ -448,7 +448,7 @@ export default class Menu extends React.Component{
                         <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {flex: 1, width: '36%', marginTop: 25,}]} onChangeText={text => this.cardSec(text)} value = {this.state.cardSec} onFocus = {this.clearCardSec} onBlur = {this.resetCardSec}></TextInput>
                       </View>
                     </View>
-                    <TouchableOpacity onPress = {this.addPayment} style={{position: 'absolute', top: '60%', backgroundColor:'#8134FF', borderRadius: 12, width: 98, height:37, alignItems: 'center', justifyContent: 'center'}}>
+                    <TouchableOpacity onPress = {this.addPayment} style={{position: 'absolute', top: '80%', backgroundColor:'#8134FF', borderRadius: 12, width: 98, height:37, alignItems: 'center', justifyContent: 'center'}}>
                       <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>Add</Text>
                     </TouchableOpacity>
                   </View>
@@ -1406,16 +1406,15 @@ dealBoxOrderedPressed:{
   textInput: {
     fontSize: 12,
     height: 40,
-    width: '80%',
     borderBottomWidth: 2,
     borderBottomColor: '#8032ff',
-    width: .8*screenWidth,
+    width: .7*screenWidth,
   },
   paymentModal:
   {
     //flex: 1,
+    alignSelf:'center',
     position: 'absolute',
-    //width: '85%',
     //marginLeft:'7%',
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -1423,12 +1422,10 @@ dealBoxOrderedPressed:{
     borderRadius: 12,
     flexGrow: 1,
     marginLeft: -0.05*screenWidth,
-    height: '60%',
-    width: screenWidth,
-    top: '55%',
-
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50
+    height: '45%',
+    width: screenWidth * 0.9,
+    top: '24%',
+    borderRadius: 50
   },
   onePicker: {
    height: 44,
