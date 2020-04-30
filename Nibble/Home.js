@@ -738,7 +738,6 @@ export default class Menu extends React.Component{
     var itemName = item.name;
     var shown = false;
     var visibility = 0;
-    console.log(item);
     return(
       <View style={{flexDirection:'row'}}>
         <TouchableOpacity activeOpacity = {1} style = {styles.notLiveDealBox} onPress={() => this.setState({itemPressed: itemName, currentOrderQuantity: 1})}>
@@ -794,7 +793,6 @@ export default class Menu extends React.Component{
   };
 
   addItem = (name, restName, quantity, price, oldPrice) =>{
-  	console.log(this.state.username);
     if(this.state.username.localeCompare('null') == 0)
     {
       this.goToSignup();
@@ -820,7 +818,6 @@ export default class Menu extends React.Component{
     }
 
     this.state.order.push(item);
-    console.log(this.state.order);
 
     if(this.state.order.length>0)
     {
@@ -895,7 +892,6 @@ export default class Menu extends React.Component{
         else{
           if (doc.data().paymentMethod != "null")
           {
-            console.log("existing payment");
             var length = doc.data().paymentMethod.length;
             var lastDigits = doc.data().paymentMethod.substring(length-4, length);
             this.setState({lastFour: lastDigits});
@@ -915,7 +911,6 @@ export default class Menu extends React.Component{
         else{
           if (doc.data().paymentMethod != "null")
           {
-            console.log("existing payment");
             var length = doc.data().paymentMethod.length;
             var lastDigits = doc.data().paymentMethod.substring(length-4, length);
             this.setState({lastFour: lastDigits});
@@ -923,14 +918,12 @@ export default class Menu extends React.Component{
           }
           else{
             this.setState({openPayment: true});
-            console.log('open payment');
             return;
           }
         }
       });
   }
   purchase = () => {
-  	console.log('buy');
   	this.setState({placeOrderColor: '#5ED634', placeOrderText:'\u2705\tSuccess'});
     setTimeout(() => {this.setState({checkoutOpacity: 0, openOrder: true,})}, 1000);
   	for(var i=0; i < this.state.order.length; i++)
@@ -990,7 +983,7 @@ export default class Menu extends React.Component{
     this.setState({cardName: text});
   }
   cardNumber(text){
-    this.setState({cardNumber: text});
+	this.setState({cardNumber: text.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim()});
   }
   cardExp(text){
     this.setState({cardExp: text});

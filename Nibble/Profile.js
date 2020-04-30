@@ -112,7 +112,7 @@ export default class Profile extends React.Component{
             currentComponent.setState({month: monthNames[temp-1]});
             temp = doc.data().year;
             currentComponent.setState({year: temp});
-            temp = doc.data().paymentMethod;
+            temp = doc.data().payment;
             currentComponent.setState({paymentMethod: temp});
 
             if(temp != null && temp != 'null')
@@ -422,7 +422,7 @@ addPay = () => {
   var pRef = firestoreDB.collection("users").doc(this.state.email);
 
         return pRef.update({
-            paymentMethod: this.state.cardNumber
+            payment: this.state.cardNumber
 
         })
         .then(function() {
@@ -445,7 +445,7 @@ addPay = () => {
 
         // Set the "capital" field of the city 'DC'
         return pRef.update({
-            paymentMethod: 'null'
+            payment: 'null'
         })
         .then(function() {
             console.log("Document successfully updated!");
