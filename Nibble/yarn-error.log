@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /Users/eric/.yarn/bin/yarnpkg add expo-image-picker@~8.1.0
+  /usr/local/bin/node /Users/eric/.yarn/bin/yarnpkg add expo-linear-gradient@~8.1.0
 
 PATH: 
   /Users/eric/.yarn/bin:/Users/eric/.config/yarn/global/node_modules/.bin:/Library/Frameworks/Python.framework/Versions/3.8/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin:/Users/eric/Downloads/apache-ant-1.9.14/bin

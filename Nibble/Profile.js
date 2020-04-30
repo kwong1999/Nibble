@@ -111,7 +111,7 @@ export default class Profile extends React.Component{
             currentComponent.setState({year: temp});
             temp = doc.data().paymentMethod;
             currentComponent.setState({paymentMethod: temp});
-            
+
             if(temp != null && temp != 'null')
             {
             	console.log('card' + temp);
@@ -270,15 +270,15 @@ export default class Profile extends React.Component{
                  <View style = {{flexDirection: 'row'}}>
                  <View style={{width: '95%', flexDirection: 'row'}}>
                  <Image source={require('./Union.png')} style={{height: this.state.cardHeight, width: this.state.cardWidth}}/>
-                   <Text style={{fontSize: 12,}}>  {this.state.paymentString}</Text>
+                   <Text style={{fontSize: 12,}}>{this.state.paymentString}</Text>
                    </View>
                    <View style={{width: '5%'}}>
                    <TouchableOpacity onPress={this.paymentPress}>
-                     <Text style= {{fontSize: 16}}>{this.state.paymentButtonText}</Text>
+                     <Text style= {{fontSize: 16}}> {this.state.paymentButtonText}</Text>
                    </TouchableOpacity>
                    </View>
                  </View>
-                 <View style={{backgroundColor: '#EDE1FF', alignSelf: 'center', height: 1.5, width: 310, marginTop: 18}}></View>
+                 <View style={{backgroundColor: '#EDE1FF', alignSelf: 'center', height: 1.5, width: 310, marginTop: 17}}></View>
 
           </View>
           {this.renderAdd()}
@@ -413,8 +413,8 @@ addPay = () => {
 			  {
 			  		tempCard = tempCard + this.state.cardNumber[i];
 			  }
-			  this.setState({paymentString: tempCard});
- 
+			  this.setState({paymentString: "  " + tempCard});
+
 
   var pRef = firestoreDB.collection("users").doc(this.state.email);
 

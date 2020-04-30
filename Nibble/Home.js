@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import Modal from 'react-native-modal';
-import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, TextInput} from 'react-native';
+import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, TextInput, Picker, KeyboardAvoidingView} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
@@ -29,6 +29,11 @@ const firestoreDB = firebase.firestore();
 
 //Menu class
 export default class Menu extends React.Component{
+  static navigationOptions = {
+    title:'nibble',
+    gesturesEnabled: false,
+    drawerLockMode: 'locked-open',
+  };
   constructor(props) {
       super(props);
       const { navigation, route } = props;
@@ -77,6 +82,7 @@ export default class Menu extends React.Component{
       };
 
       this._getLocationAsync();
+      this.updatePayment();
 
       this.renderDeals = this.renderDeals.bind(this);
       this.initTimes = this.initTimes.bind(this);
@@ -90,6 +96,14 @@ export default class Menu extends React.Component{
       this.addItem = this.addItem.bind(this);
       this.renderOrder = this.renderOrder.bind(this);
       this.renderQuantity = this.renderQuantity.bind(this);
+
+      this.clearCardSec = this.clearCardSec.bind(this);
+      this.clearCardName = this.clearCardName.bind(this);
+      this.clearCardNumber = this.clearCardNumber.bind(this);
+
+      this.resetCardSec = this.resetCardSec.bind(this);
+      this.resetCardName = this.resetCardName.bind(this);
+      this.resetCardNumber = this.resetCardNumber.bind(this);
 
       this.addItem = this.addItem.bind(this);
       console.disableYellowBox = true;
@@ -221,7 +235,6 @@ export default class Menu extends React.Component{
     componentDidMount() {
       this.initTimes();
       this.getTimes();
-      this.updatePayment();
     }
 
   _getLocationAsync = async () => {
@@ -376,7 +389,7 @@ export default class Menu extends React.Component{
                   <View style ={{flexDirection: 'row', alignSelf: 'left', left: '15%',}}>
                     <Image source = {require('./card.png')}
                     />
-                  <Text style = {{fontSize: 14, top: -2}}>   {this.state.lastFour}</Text>
+                  <Text style = {{fontSize: 14, top: -3, fontWeight: '600'}}>   {this.state.lastFour}</Text>
                   </View>
                   <TouchableOpacity onPress = {this.checkPayment} style={{backgroundColor:this.state.placeOrderColor, top: 15, borderRadius: 12, width: 260, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>{this.state.placeOrderText}</Text>
@@ -392,12 +405,47 @@ export default class Menu extends React.Component{
                   <View style = {[styles.paymentModal, {opacity: this.state.paymentOpacity}]}>
                     <Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16}}>Add Payment Method</Text>
                     <View style = {{marginTop: '10%'}}>
-                      <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 0}]} onChangeText={text => this.cardName(text)} value = {this.state.cardName} clearTextOnFocus = {true}></TextInput>
-                      <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.cardNumber(text)}  value = {this.state.cardNumber} clearTextOnFocus={true}></TextInput>
+                      <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 0}]} onChangeText={text => this.cardName(text)} value = {this.state.cardName} onFocus = {this.clearCardName} onBlur = {this.resetCardName}></TextInput>
+                      <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.cardNumber(text)}  value = {this.state.cardNumber} onFocus={this.clearCardNumber} onBlur = {this.resetCardNumber}></TextInput>
                       <View style = {{flex: 2.8, flexDirection: 'row'}}>
-                        <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {flex: 1, width: '36%', marginTop: 25, marginBottom: 35}]} onChangeText={text => this.cardExp(text)} value = {this.state.cardExp} clearTextOnFocus={true}></TextInput>
+                      <Picker
+                      style={[styles.onePicker, {left: 5, width: 25}]} itemStyle={styles.onePickerItem}
+                      selectedValue={this.state.month}
+                      onValueChange={(itemValue) => this.setState({month: itemValue})}
+                      >
+                      <Picker.Item label="Jan" value="1" />
+                      <Picker.Item label="Feb" value="2" />
+                      <Picker.Item label="Mar" value="3" />
+                      <Picker.Item label="Apr" value="4" />
+                      <Picker.Item label="May" value="5" />
+                      <Picker.Item label="June" value="6" />
+                      <Picker.Item label="July" value="7" />
+                      <Picker.Item label="Aug" value="8" />
+                      <Picker.Item label="Sept" value="9" />
+                      <Picker.Item label="Oct" value="10" />
+                      <Picker.Item label="Nov" value="11" />
+                      <Picker.Item label="Dec" value="12" />
+                      </Picker>
+                      <Text style={{color: '#8235ff', top: 25, fontSize: 32, left: 10}}>/</Text>
+                        <Picker
+                        style={[styles.onePicker, {left: 15, width: 40}]} itemStyle={styles.onePickerItem}
+                        selectedValue={this.state.month}
+                        onValueChange={(itemValue) => this.setState({month: itemValue})}
+                        >
+                        <Picker.Item label="2020" value="2020" />
+                        <Picker.Item label="2021" value="2021" />
+                        <Picker.Item label="2022" value="2022" />
+                        <Picker.Item label="2023" value="2023" />
+                        <Picker.Item label="2024" value="2024" />
+                        <Picker.Item label="2025" value="2025" />
+                        <Picker.Item label="2026" value="2026" />
+                        <Picker.Item label="2027" value="2027" />
+                        <Picker.Item label="2028" value="2028" />
+                        <Picker.Item label="2029" value="2029" />
+                        <Picker.Item label="2030" value="2030" />
+                        </Picker>
                         <View style = {{flex: 0.8}}></View>
-                        <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {flex: 1, width: '36%', marginTop: 25,}]} onChangeText={text => this.cardSec(text)} value = {this.state.cardSec} clearTextOnFocus = {true}></TextInput>
+                        <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {flex: 1, width: '36%', marginTop: 25,}]} onChangeText={text => this.cardSec(text)} value = {this.state.cardSec} onFocus = {this.clearCardSec} onBlur = {this.resetCardSec}></TextInput>
                       </View>
                     </View>
                     <TouchableOpacity onPress = {this.addPayment} style={{position: 'absolute', top: '60%', backgroundColor:'#8134FF', borderRadius: 12, width: 98, height:37, alignItems: 'center', justifyContent: 'center'}}>
@@ -620,7 +668,7 @@ export default class Menu extends React.Component{
     {
     	sBox = styles.dealBoxNotPressed;
     }
- 
+
     return(
       <View>
         <TouchableOpacity activeOpacity = {1} style = {sBox} onPress={() => this.pressItem(itemName)}>
@@ -833,14 +881,19 @@ export default class Menu extends React.Component{
   updatePayment = () => {
     firestoreDB.collection("users").doc(this.state.username).get().then(doc => {
         if(!doc.exists) {
+          this.setState({lastFour: ""});
           console.log('No such user');
         }
         else{
           if (doc.data().paymentMethod != "null")
           {
             console.log("existing payment");
-            var lastDigits = doc.data().paymentMethod.substring(0, 4);
+            var length = doc.data().paymentMethod.length;
+            var lastDigits = doc.data().paymentMethod.substring(length-4, length);
             this.setState({lastFour: lastDigits});
+          }
+          else{
+            this.setState({lastFour: ""});
           }
         }
       });
@@ -855,7 +908,8 @@ export default class Menu extends React.Component{
           if (doc.data().paymentMethod != "null")
           {
             console.log("existing payment");
-            var lastDigits = doc.data().paymentMethod.substring(0, 4);
+            var length = doc.data().paymentMethod.length;
+            var lastDigits = doc.data().paymentMethod.substring(length-4, length);
             this.setState({lastFour: lastDigits});
             this.purchase();
           }
@@ -869,8 +923,8 @@ export default class Menu extends React.Component{
   }
   purchase = () => {
   	console.log('buy');
-    this.setState({openOrder: true, checkoutOpacity: 0});
   	this.setState({placeOrderColor: '#5ED634', placeOrderText:'\u2705\tSuccess'});
+    setTimeout(() => {this.setState({checkoutOpacity: 0, openOrder: true,})}, 1000);
   	for(var i=0; i < this.state.order.length; i++)
   	{
 	  	firestoreDB.collection("restaurants").doc(this.state.order[i].restName).collection("orders").add({
@@ -937,6 +991,30 @@ export default class Menu extends React.Component{
   cardSec(text){
     this.setState({cardSec: text});
   }
+
+  clearCardName(){
+    this.setState({cardName: ""});
+  }
+  clearCardNumber(){
+    this.setState({cardNumber: ""});
+  }
+  clearCardSec(){
+    this.setState({cardSec: ""});
+  }
+
+  resetCardName(){
+    if(this.state.cardName == "")
+      this.setState({cardName: "Name"});
+  }
+  resetCardNumber(){
+    if(this.state.cardNumber == "")
+      this.setState({cardNumber: "Card Number"});
+  }
+  resetCardSec(){
+    if(this.state.cardSec == "")
+      this.setState({cardSec: "CVV"});
+  }
+
 }
 
 const styles = StyleSheet.create({
@@ -974,7 +1052,12 @@ const styles = StyleSheet.create({
     width: 0.9 * screenWidth,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#EDE1FF'
+    borderColor: '#EDE1FF',
+    shadowColor: '#b189ff',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 2,
+    elevation: 1
   },
   liveBox:{
     backgroundColor: '#FFFFFF',
@@ -1072,6 +1155,10 @@ const styles = StyleSheet.create({
     borderColor: '#EDE1FF',
     borderWidth: 2,
     zIndex: 1,
+    shadowColor: '#b189ff',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 2,
   },
   dealBoxOrdered:{
     height: 110,
@@ -1104,6 +1191,7 @@ dealBoxOrderedPressed:{
     borderColor: '#8134FF',
     borderWidth: 4,
     zIndex: 1,
+
   },
   quantityBox:
   {
@@ -1139,6 +1227,10 @@ dealBoxOrderedPressed:{
     borderColor: '#EDE1FF',
     borderWidth: 2,
     zIndex: 1,
+    shadowColor: '#b189ff',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 2,
   },
   dealPrice:{
     marginTop: 14,
@@ -1305,6 +1397,11 @@ dealBoxOrderedPressed:{
     borderColor: '#EDE1FF',
     borderWidth: 2,
     zIndex: 1,
+
+    shadowColor: '#b189ff',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 2,
   },
   textInput: {
     fontSize: 12,
@@ -1333,4 +1430,17 @@ dealBoxOrderedPressed:{
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50
   },
+  onePicker: {
+   height: 44,
+   borderColor: 'white',
+   borderWidth: 0,
+   top: 25,
+ },
+ onePickerItem: {
+   height: 40,
+   color: 'black',
+   fontSize: 15,
+   borderWidth: 0,
+
+ },
 });
