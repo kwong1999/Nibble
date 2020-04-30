@@ -213,17 +213,19 @@ export default class Menu extends React.Component{
 
 
   getItems(restName) {
+  	console.log(restName);
       var tempArray = [];
       firestoreDB.collection("restaurants").doc(restName).collection("deals").get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         var data = doc.data();
+        console.log(data);
         var a1 = data.name;
         var a2 = data.id;
         var a3 = data.description;
-        var a4 = data.image;
         var a5 = "$"+data.newPrice.toFixed(2);
         var a6 = "$"+data.originalPrice.toFixed(2);
-        var item = {name: a1, id: a2, description: a3, image: a4, newPrice: a5, originalPrice: a6};
+        var item = {name: a1, id: a2, description: a3, newPrice: a5, originalPrice: a6};
+        console.log(item);
         tempArray.push(item);
         this.setState({ITEMS: tempArray});
 
@@ -233,6 +235,7 @@ export default class Menu extends React.Component{
 
 
     componentDidMount() {
+    	console.log('hiahsbdakjsd');
       this.initTimes();
       this.getTimes();
     }
@@ -559,10 +562,10 @@ export default class Menu extends React.Component{
 
     var liveString = "live in " + h + " hr(s), " + m + " min";
     var length = 10;
-    if(item.time == 'LIVE')
+    if(item.time == 'LIVE') 
     {
       liveString = "";
-      length = ((min/60)*210);
+      length = ((min/60)*(210*item.restaurants.length));
     }
     return (
       <View>
@@ -657,7 +660,7 @@ export default class Menu extends React.Component{
       {
         visibility = 100;
         sBox = styles.dealBoxOrdered;
-        isOrdered = true;
+        isOrdered = true; 
       }
     }
     if(isOrdered && itemPressed.localeCompare(itemName) == 0)
@@ -948,9 +951,7 @@ export default class Menu extends React.Component{
   }
 
   turnModalOn = (name, image, address, watchers, time, dist, live) =>{
-    if (name == "Dulce Cafe")
-      name = "Dulce"
-
+  	console.log(name);
     this.getItems(name);
     var sz =0;
     firestoreDB.collection("restaurants").doc(name).collection("orders").get().then(snap => {
