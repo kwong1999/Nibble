@@ -124,7 +124,7 @@ export default class OrderHistory extends React.Component{
       <View style = {{flex:1}}>
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
         <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{backgroundColor:'#8134FF', z: 9999, borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center'}}>
-                <Image source={require('./Vector.png')}/>
+                <Image source={require('./house.png')}/>
               </TouchableOpacity>
         <Text style={{borderWidth: 10, borderColor: '#FFFFFF'}}>@{this.state.email}</Text>
         <View style={{backgroundColor: '#EDE1FF',  height: 1.5, width: 300}}>

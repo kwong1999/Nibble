@@ -106,10 +106,13 @@ export default class Profile extends React.Component{
             temp = doc.data().phoneNumber;
             currentComponent.setState({phoneNumber: temp});
             temp = doc.data().month;
-            currentComponent.setState({month: temp});
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+			  "July", "August", "September", "October", "November", "December"
+			];
+            currentComponent.setState({month: monthNames[temp-1]});
             temp = doc.data().year;
             currentComponent.setState({year: temp});
-            temp = doc.data().paymentMethod;
+            temp = doc.data().payment;
             currentComponent.setState({paymentMethod: temp});
 
             if(temp != null && temp != 'null')
@@ -221,7 +224,7 @@ export default class Profile extends React.Component{
       <View style = {{flex:1}}>
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
       <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{zIndex: 999, backgroundColor:'#8134FF', borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: '87%', left: '78%'}}>
-              <Image source={require('./Vector.png')}/>
+              <Image source={require('./house.png')}/>
       </TouchableOpacity>
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
       <View style={styles.viewContainer}>
@@ -304,7 +307,7 @@ export default class Profile extends React.Component{
               <TextInput clearButtonMode="while-editing" keyboardType = {'numeric'} style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.cardNumber(text)}  value = {this.state.cardNumber} onFocus={this.clearCardNumber} onBlur={this.resetCardNumber}></TextInput>
               <View style = {{flex: 2.8, flexDirection: 'row'}}>
               <Picker
-              style={[styles.onePicker, {left: 5, width: 25}]} itemStyle={styles.onePickerItem}
+              style={[styles.onePicker, {left: 5, width: 35}]} itemStyle={styles.onePickerItem}
 		          selectedValue={this.state.month}
 		          onValueChange={(itemValue) => this.setState({month: itemValue})}
 		        >
@@ -419,7 +422,7 @@ addPay = () => {
   var pRef = firestoreDB.collection("users").doc(this.state.email);
 
         return pRef.update({
-            paymentMethod: this.state.cardNumber
+            payment: this.state.cardNumber
 
         })
         .then(function() {
@@ -442,7 +445,7 @@ addPay = () => {
 
         // Set the "capital" field of the city 'DC'
         return pRef.update({
-            paymentMethod: 'null'
+            payment: 'null'
         })
         .then(function() {
             console.log("Document successfully updated!");
@@ -493,13 +496,13 @@ const styles = StyleSheet.create({
         flex: 1
     },
    onePicker: {
-    height: 44,
+    height: 50,
     borderColor: 'white',
     borderWidth: 0,
     top: 25,
   },
   onePickerItem: {
-    height: 40,
+    height: 45,
     color: 'black',
     fontSize: 15,
   },

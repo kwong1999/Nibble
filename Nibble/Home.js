@@ -210,19 +210,21 @@ export default class Menu extends React.Component{
 
 
   getItems(restName) {
+  	console.log(restName);
       var tempArray = [];
       console.log(restName);
       firestoreDB.collection("restaurants").doc(restName).collection("deals").get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         var data = doc.data();
-        console.log("i found", data.name);
+
+        console.log(data);
         var a1 = data.name;
         var a2 = data.id;
         var a3 = data.description;
-        var a4 = data.image;
         var a5 = "$"+data.newPrice.toFixed(2);
         var a6 = "$"+data.originalPrice.toFixed(2);
-        var item = {name: a1, id: a2, description: a3, image: a4, newPrice: a5, originalPrice: a6};
+        var item = {name: a1, id: a2, description: a3, newPrice: a5, originalPrice: a6};
+        console.log(item);
         tempArray.push(item);
         this.setState({ITEMS: tempArray});
 
@@ -232,6 +234,7 @@ export default class Menu extends React.Component{
 
 
     componentDidMount() {
+    	console.log('hiahsbdakjsd');
       this.initTimes();
       this.getTimes();
     }
@@ -562,10 +565,10 @@ export default class Menu extends React.Component{
 
     var liveString = "live in " + h + " hr(s), " + m + " min";
     var length = 10;
-    if(item.time == 'LIVE')
+    if(item.time == 'LIVE') 
     {
       liveString = "";
-      length = ((min/60)*210);
+      length = ((min/60)*(210*item.restaurants.length));
     }
     return (
       <View>
@@ -658,7 +661,7 @@ export default class Menu extends React.Component{
       {
         visibility = 100;
         sBox = styles.dealBoxOrdered;
-        isOrdered = true;
+        isOrdered = true; 
       }
     }
     if(isOrdered && itemPressed.localeCompare(itemName) == 0)
@@ -731,7 +734,6 @@ export default class Menu extends React.Component{
     var itemName = item.name;
     var shown = false;
     var visibility = 0;
-    console.log(item);
     return(
       <View style={{flexDirection:'row'}}>
         <TouchableOpacity activeOpacity = {1} style = {styles.notLiveDealBox} onPress={() => this.setState({itemPressed: itemName, currentOrderQuantity: 1})}>
@@ -787,7 +789,6 @@ export default class Menu extends React.Component{
   };
 
   addItem = (name, restName, quantity, price, oldPrice) =>{
-  	console.log(this.state.username);
     if(this.state.username.localeCompare('null') == 0)
     {
       this.goToSignup();
@@ -813,7 +814,6 @@ export default class Menu extends React.Component{
     }
 
     this.state.order.push(item);
-    console.log(this.state.order);
 
     if(this.state.order.length>0)
     {
@@ -888,7 +888,6 @@ export default class Menu extends React.Component{
         else{
           if (doc.data().paymentMethod != "null")
           {
-            console.log("existing payment");
             var length = doc.data().paymentMethod.length;
             var lastDigits = doc.data().paymentMethod.substring(length-4, length);
             this.setState({lastFour: lastDigits});
@@ -908,7 +907,6 @@ export default class Menu extends React.Component{
         else{
           if (doc.data().paymentMethod != "null")
           {
-            console.log("existing payment");
             var length = doc.data().paymentMethod.length;
             var lastDigits = doc.data().paymentMethod.substring(length-4, length);
             this.setState({lastFour: lastDigits});
@@ -916,14 +914,12 @@ export default class Menu extends React.Component{
           }
           else{
             this.setState({openPayment: true});
-            console.log('open payment');
             return;
           }
         }
       });
   }
   purchase = () => {
-  	console.log('buy');
   	this.setState({placeOrderColor: '#5ED634', placeOrderText:'\u2705\tSuccess'});
     setTimeout(() => {this.setState({checkoutOpacity: 0, openOrder: true,})}, 1000);
   	for(var i=0; i < this.state.order.length; i++)
@@ -949,9 +945,7 @@ export default class Menu extends React.Component{
   }
 
   turnModalOn = (name, image, address, watchers, time, dist, live) =>{
-    if (name == "Dulce Cafe")
-      name = "Dulce"
-
+  	console.log(name);
     this.getItems(name);
     console.log(name);
     var sz =0;
@@ -985,7 +979,7 @@ export default class Menu extends React.Component{
     this.setState({cardName: text});
   }
   cardNumber(text){
-    this.setState({cardNumber: text});
+	this.setState({cardNumber: text.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim()});
   }
   cardExp(text){
     this.setState({cardExp: text});
