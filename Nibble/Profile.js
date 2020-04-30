@@ -117,7 +117,6 @@ export default class Profile extends React.Component{
 
             if(temp != null && temp != 'null')
             {
-            	console.log('card' + temp);
                	var tempCard = '';
 	            for(var i =0; i < temp.length-4; i++)
 				  {
@@ -190,7 +189,6 @@ export default class Profile extends React.Component{
       }
 
     } catch (E) {
-      console.log(E);
     }
   };
   storeImage = async (image) => {
@@ -327,8 +325,8 @@ export default class Profile extends React.Component{
 		        <Text style={{color: '#8235ff', top: 25, fontSize: 32, left: 10}}>/</Text>
 		        <Picker
               style={[styles.onePicker, {left: 15, width: 40}]} itemStyle={styles.onePickerItem}
-		          selectedValue={this.state.month}
-		          onValueChange={(itemValue) => this.setState({month: itemValue})}
+		          selectedValue={this.state.year}
+		          onValueChange={(itemValue) => this.setState({year: itemValue})}
 		        >
 		          <Picker.Item label="2020" value="2020" />
 		          <Picker.Item label="2021" value="2021" />

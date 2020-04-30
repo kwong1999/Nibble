@@ -78,6 +78,8 @@ export default class Menu extends React.Component{
         cardExp: 'Expiration',
         cardSec: 'CVV',
         lastFour: '',
+        month: '',
+        year: ''
       };
 
       this._getLocationAsync();
@@ -425,8 +427,8 @@ export default class Menu extends React.Component{
                       <Text style={{color: '#8235ff', top: 25, fontSize: 32, left: 10}}>/</Text>
                         <Picker
                         style={[styles.onePicker, {left: 15, width: 40}]} itemStyle={styles.onePickerItem}
-                        selectedValue={this.state.month}
-                        onValueChange={(itemValue) => this.setState({month: itemValue})}
+                        selectedValue={this.state.year}
+                        onValueChange={(itemValue) => this.setState({year: itemValue})}
                         >
                         <Picker.Item label="2020" value="2020" />
                         <Picker.Item label="2021" value="2021" />
@@ -873,7 +875,6 @@ export default class Menu extends React.Component{
     firestoreDB.collection("users").doc(this.state.username).get().then(doc => {
         if(!doc.exists) {
           this.setState({lastFour: ""});
-          console.log('No such user');
         }
         else{
           if (doc.data().payment != "null")
@@ -892,7 +893,6 @@ export default class Menu extends React.Component{
   checkPayment = () =>{
     firestoreDB.collection("users").doc(this.state.username).get().then(doc => {
         if(!doc.exists) {
-          console.log('No such user');
         }
         else{
           if (doc.data().payment != "null")
