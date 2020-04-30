@@ -115,7 +115,23 @@ export default class Profile extends React.Component{
             if(temp != null && temp != 'null')
             {
             	console.log('card' + temp);
-              currentComponent.setState({paymentString: temp});
+               	var tempCard = '';
+	            for(var i =0; i < temp.length-4; i++)
+				  {
+				  	if(temp[i] != ' ')
+				  	{
+				  		tempCard = tempCard + '*';
+				  	}
+				  	else
+				  	{
+				  		tempCard = tempCard + temp[i];
+				  	}
+				  }
+				  for(var i =temp.length-4; i < temp.length; i++)
+				  {
+				  		tempCard = tempCard + temp[i];
+				  }
+				  currentComponent.setState({paymentString: tempCard});
               currentComponent.setState({paymentButtonText: 'x', cardWidth: 15, cardHeight: 12});
 
             }
@@ -285,7 +301,7 @@ export default class Profile extends React.Component{
             return (
             <View style = {{flex: 1, alignSelf: 'center', alignItems: 'center', width: '80%', top: 20}}>
               <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 0}]} onChangeText={text => this.cardName(text)} value = {this.state.cardName} onFocus = {this.clearCardName} onBlur={this.resetCardName}></TextInput>
-              <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.cardNumber(text)}  value = {this.state.cardNumber} onFocus={this.clearCardNumber} onBlur={this.resetCardNumber}></TextInput>
+              <TextInput clearButtonMode="while-editing" keyboardType = {'numeric'} style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.cardNumber(text)}  value = {this.state.cardNumber} onFocus={this.clearCardNumber} onBlur={this.resetCardNumber}></TextInput>
               <View style = {{flex: 2.8, flexDirection: 'row'}}>
               <Picker
               style={[styles.onePicker, {left: 5, width: 25}]} itemStyle={styles.onePickerItem}
@@ -324,7 +340,7 @@ export default class Profile extends React.Component{
 		          <Picker.Item label="2030" value="2030" />
 		        </Picker>
                 <View style = {{flex: 0.8}}></View>
-                <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {flex: 1, width: '36%', marginTop: 25,}]} onChangeText={text => this.cardSec(text)} value = {this.state.cardSec} onFocus = {this.clearCardSec} onBlur={this.resetCardSec}></TextInput>
+                <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {flex: 1, width: '36%', marginTop: 25,}]} keyboardType = {'numeric'} onChangeText={text => this.cardSec(text)} value = {this.state.cardSec} onFocus = {this.clearCardSec} onBlur={this.resetCardSec}></TextInput>
                 </View>
               <Text> </Text>
               <TouchableOpacity onPress = {this.addPay} style={{backgroundColor:'#8134FF', borderRadius: 12, width: 100, height:35, flexDirection:'row', marginBottom: 0, alignItems: 'center', justifyContent: 'center'}}>
@@ -369,7 +385,7 @@ export default class Profile extends React.Component{
     this.setState({cardName: text});
   }
   cardNumber(text){
-    this.setState({cardNumber: text});
+    this.setState({cardNumber: text.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim()});
   }
   cardSec(text){
     this.setState({cardSec: text});
@@ -381,6 +397,25 @@ export default class Profile extends React.Component{
 
 addPay = () => {
   this.setState({addPaymentVisible: false, paymentButtonText: 'x', paymentString: this.state.cardNumber, cardHeight: 12, cardWidth: 15});
+  var tempCard = '';
+            for(var i =0; i < this.state.cardNumber.length-4; i++)
+			  {
+			  	if(this.state.cardNumber[i] != ' ')
+			  	{
+			  		tempCard = tempCard + '*';
+			  	}
+			  	else
+			  	{
+			  		tempCard = tempCard + this.state.cardNumber[i];
+			  	}
+			  }
+			  for(var i =this.state.cardNumber.length-4; i < this.state.cardNumber.length; i++)
+			  {
+			  		tempCard = tempCard + this.state.cardNumber[i];
+			  }
+			  this.setState({paymentString: tempCard});
+ 
+
   var pRef = firestoreDB.collection("users").doc(this.state.email);
 
         return pRef.update({
