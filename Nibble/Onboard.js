@@ -38,7 +38,6 @@ export default class Onboard extends React.Component{
   storeData = async () => {
 
       try {
-        console.log("added null");
 
         AsyncStorage.setItem('email', 'null');
         AsyncStorage.setItem('profileImage', '');

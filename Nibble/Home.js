@@ -38,7 +38,6 @@ export default class Menu extends React.Component{
       super(props);
       const { navigation, route } = props;
       const email = route.params.email;
-      console.log("email: " + email);
       this.state = {
         location: null,
         address: '',
@@ -160,7 +159,6 @@ export default class Menu extends React.Component{
       dist = dist * 60 * 1.1515;
       var fixed = dist.toFixed(1);
       this.setState({distance: fixed});
-      console.log(fixed);
     }
 
   }
@@ -210,21 +208,16 @@ export default class Menu extends React.Component{
 
 
   getItems(restName) {
-  	console.log(restName);
       var tempArray = [];
-      console.log(restName);
       firestoreDB.collection("restaurants").doc(restName).collection("deals").get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         var data = doc.data();
-
-        console.log(data);
         var a1 = data.name;
         var a2 = data.id;
         var a3 = data.description;
         var a5 = "$"+data.newPrice.toFixed(2);
         var a6 = "$"+data.originalPrice.toFixed(2);
         var item = {name: a1, id: a2, description: a3, newPrice: a5, originalPrice: a6};
-        console.log(item);
         tempArray.push(item);
         this.setState({ITEMS: tempArray});
 
@@ -234,7 +227,6 @@ export default class Menu extends React.Component{
 
 
     componentDidMount() {
-    	console.log('hiahsbdakjsd');
       this.initTimes();
       this.getTimes();
     }
@@ -247,10 +239,8 @@ export default class Menu extends React.Component{
     //   });
     // }
     const { status, permissions } = await Permissions.askAsync(Permissions.LOCATION);
-    console.log('location coords');
     let location = await Location.getCurrentPositionAsync({});
     const key = '5c3d93713edb442c825f89b7bc7d3aa4';
-    console.log('location coords' + location.coords);
     const { latitude , longitude } = location.coords;
     this.setState({ location: {latitude, longitude}});
     this.setState({lat: latitude});
@@ -863,7 +853,7 @@ export default class Menu extends React.Component{
     var pRef = firestoreDB.collection("users").doc(this.state.username);
 
           return pRef.update({
-              paymentMethod: this.state.cardNumber
+              payment: this.state.cardNumber
 
           })
           .then(function() {
@@ -886,10 +876,10 @@ export default class Menu extends React.Component{
           console.log('No such user');
         }
         else{
-          if (doc.data().paymentMethod != "null")
+          if (doc.data().payment != "null")
           {
-            var length = doc.data().paymentMethod.length;
-            var lastDigits = doc.data().paymentMethod.substring(length-4, length);
+            var length = doc.data().payment.length;
+            var lastDigits = doc.data().payment.substring(length-4, length);
             this.setState({lastFour: lastDigits});
           }
           else{
@@ -905,10 +895,10 @@ export default class Menu extends React.Component{
           console.log('No such user');
         }
         else{
-          if (doc.data().paymentMethod != "null")
+          if (doc.data().payment != "null")
           {
-            var length = doc.data().paymentMethod.length;
-            var lastDigits = doc.data().paymentMethod.substring(length-4, length);
+            var length = doc.data().payment.length;
+            var lastDigits = doc.data().payment.substring(length-4, length);
             this.setState({lastFour: lastDigits});
             this.purchase();
           }
@@ -945,9 +935,7 @@ export default class Menu extends React.Component{
   }
 
   turnModalOn = (name, image, address, watchers, time, dist, live) =>{
-  	console.log(name);
     this.getItems(name);
-    console.log(name);
     var sz =0;
     firestoreDB.collection("restaurants").doc(name).collection("orders").get().then(snap => {
    		sz = snap.size +1;// will return the collection size
@@ -970,7 +958,6 @@ export default class Menu extends React.Component{
   }
   goToSignup()
   {
-    console.log('here');
     this.props.navigation.navigate('Signup');
     this.setState({openModal:false, openCheckout: false});
   }
