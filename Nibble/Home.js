@@ -305,7 +305,7 @@ export default class Menu extends React.Component{
             <View><Text style = {{fontSize: 13,}}>what to expect!</Text></View>
           </View>
           <SafeAreaView style = {{flex:6.5, top: 40}}>
-            <FlatList contentContainerStyle = {{flex: 1, flexDirection: 'row', marginLeft: '5%'}}
+            <FlatList contentContainerStyle = {{flex: 1, flexDirection: 'row', marginLeft: '5%', width: screenWidth, numColumns: 2}}
               data={this.state.ITEMS}
               renderItem={this.renderNotLiveDeals}
               keyExtractor={(item, index) => index.toString()}
@@ -559,11 +559,33 @@ export default class Menu extends React.Component{
 
     var liveString = "live in " + h + " hr(s), " + m + " min";
     var length = 10;
+    var convertedTime = '';
     if(item.time == 'LIVE')
     {
       liveString = "";
       length = ((min/60)*(210*item.restaurants.length));
+      convertedTime = 'LIVE';
     }
+    else{
+
+    if(int == 12)
+    {
+    	convertedTime = '12:00 PM';
+    }
+    else if(int > 12)
+    {
+    	convertedTime = (int-12).toString() + ':00 PM';
+    }
+    else if(int == 0)
+    {
+    	convertedTime = '12:00 AM';
+    }
+    else 
+    {
+    	convertedTime = int.toString() + ':00 AM';
+    }
+}
+
     return (
       <View>
        		<View style={[styles.container1, {marginBottom: 20}]}>
@@ -571,7 +593,7 @@ export default class Menu extends React.Component{
        		<View style={styles.mainMenu}>
 	      	<View style={styles.container1}>
 		      	<View style={styles.timeBox}>
-		        	<Text style={timeStyle}>{item.time}</Text>
+		        	<Text style={timeStyle}>{convertedTime}</Text>
 		        </View>
 		        <View style={styles.lBox}>
 		        	<Text style= {styles.watch}>{liveString}</Text>
@@ -937,10 +959,10 @@ export default class Menu extends React.Component{
           oldPrice: this.state.order[i].oldPrice,
   		  });
   	}
-    this.updateRewards();
+    //this.updateRewards();
   }
 
-  updateRewards = async () => {
+ /* updateRewards = async () => {
     var currRewards = await AsyncStorage.getItem('rewards');
 
     currRewards = parseInt(currRewards);
@@ -955,7 +977,7 @@ export default class Menu extends React.Component{
       // Error saving data
     }
   };
-
+*/
 
   turnModalOn = (name, image, address, watchers, time, dist, live) =>{
     this.getItems(name);
