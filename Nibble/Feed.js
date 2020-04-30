@@ -36,17 +36,42 @@ export default class Feed extends React.Component{
     const { navigation, route } = props;
 
     this.state = {
-      rewardPoints: 10
+      rewardPoints: 10,
+      STATS: [
+        {number: 225, description: 'orders placed by friends'},
+        {number: 25, description: 'students were craving boba'},
+        {number: '18%', description: 'of students ate chinese food'}
+      ],
+      FEED: [
+        {name: 'Katie Wong', description: 'felt like enjoying thai today at', restaurant: 'Trio', image: require('./katie.png'), time: '5m'},
+        {name: 'Eric Zhan', description: 'loved some chicken at', restaurant: 'Chik-fil-a', image: require('./eric.png'), time: '12m'},
+        {name: 'Chan Lee', description: 'was thirsty for some', restaurant: 'Pot of Cha', image: require('./chan.png'), time: '15m'},
+        {name: 'Zade Kaylani', description: 'enjoyed a chai at', restaurant: 'Cafe Dulce', image: require('./zade.png'), time: '28m'}
+      ]
       };
       //this.getInfo = this.getInfo.bind(this);
 
-
+  }
+  componentDidMount(){
+    this.getRewards();
   }
 
-
+  getRewards = async () => {
+    try {
+      var currRewards = await AsyncStorage.getItem('rewards');
+      currRewards = parseInt(currRewards);
+      console.log("feed rewards", currRewards);
+      this.setState({rewardPoints: currRewards});
+    } catch (error) {
+      // Error saving data
+    }
+  };
   render(){
     return(
         <View style = {{flex: 1, alignItems:'center'}}>
+        <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{zIndex: 999, backgroundColor:'#8134FF', borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: '87%', left: '78%'}}>
+                <Image source={require('./house.png')}/>
+        </TouchableOpacity>
           <TouchableOpacity style = {styles.rewardsBox}>
             <LinearGradient start = {[0,0]} colors={['#8134FF', '#AD7CFE']} style = {{width: '100%', height:'100%', borderRadius: 10}}>
               <View style ={{flexDirection: 'row', alignItems:'center', height: '100%', width: '100%', justifyContent:'space-between'}}>
@@ -60,12 +85,53 @@ export default class Feed extends React.Component{
               </View>
             </LinearGradient>
           </TouchableOpacity>
-          <View>
-            <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18,}}>$5 off at 500 points</Text>
+          <View style = {{marginTop: 50}}>
+            <Text style = {{color: '#160039', fontSize: 14, opacity: 0.7, fontStyle: 'italic'}}>$5 off at 500 points</Text>
           </View>
-
+          <ScrollView style = {{left: 10, marginTop: 20}}>
+            <FlatList
+              data={this.state.STATS}
+              renderItem={this.renderStats}
+              horizontal = {true}
+              showsHorizontalScrollIndicator={false}
+            />
+          </ScrollView>
+          <ScrollView style = {{marginTop: 0}}>
+            <FlatList
+              data={this.state.FEED}
+              renderItem={this.renderFeed}
+              showsVerticalScrollIndicator={false}
+            />
+          </ScrollView>
         </View>
       );
+  }
+
+  renderStats = ({item}) => {
+    return(
+      <View style = {styles.statsBox}>
+        <Image source={require('./statsIcon.png')}/>
+        <Text style = {{fontSize: 36, fontWeight: 'bold', color: '#8336FF'}}>{item.number}</Text>
+        <Text style = {{textAlign: 'center', fontSize: 14, color: '#9462E8'}}>{item.description}</Text>
+      </View>
+    );
+  }
+  renderFeed = ({item}) => {
+    var imageString = item.image;
+    return(
+      <View style = {{width: 0.8*screenWidth}}>
+        <View style={{backgroundColor: '#EDE1FF', alignSelf: 'center', height: 1.5, width: 310, marginTop: 5, marginBottom: 10}}></View>
+        <View style = {{flexDirection:'row', alignItems: 'center'}}>
+          <Image resizeMode = "contain" style = {{height:30, width: 30}} source ={item.image}/>
+          <View style = {{marginLeft: 10, flexDirection:"row", flexWrap:"wrap",width:200,padding:10}}>
+            <Text style = {{fontWeight: 'bold'}}>{item.name}
+            <Text style = {{fontWeight:'normal'}}> {item.description} </Text>
+            <Text style = {{fontWeight: 'bold'}}>{item.restaurant}</Text></Text>
+          </View>
+        </View>
+        <View style = {{marginLeft: '90%'}}><Text style = {{fontSize: 12, fontStyle: 'italic', fontWeight: '200'}}>{item.time}</Text></View>
+      </View>
+    );
   }
 }
 
@@ -82,5 +148,15 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 2,
+  },
+  statsBox:{
+    height: 0.2*screenHeight,
+    width: 0.4*screenWidth,
+    backgroundColor: '#FAF8FF',
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
+    marginLeft: 20,
   }
 });

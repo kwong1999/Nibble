@@ -271,7 +271,7 @@ export default class Profile extends React.Component{
                  <View style = {{flexDirection: 'row'}}>
                  <View style={{width: '95%', flexDirection: 'row'}}>
                  <Image source={require('./Union.png')} style={{height: this.state.cardHeight, width: this.state.cardWidth}}/>
-                   <Text style={{fontSize: 12,}}>{this.state.paymentString}</Text>
+                   <Text style={{fontSize: 12, left: 5}}>  {this.state.paymentString}</Text>
                    </View>
                    <View style={{width: '5%'}}>
                    <TouchableOpacity onPress={this.paymentPress}>
@@ -414,7 +414,7 @@ addPay = () => {
 			  {
 			  		tempCard = tempCard + this.state.cardNumber[i];
 			  }
-			  this.setState({paymentString: "  " + tempCard});
+			  this.setState({paymentString: "   " + tempCard});
 
 
   var pRef = firestoreDB.collection("users").doc(this.state.email);

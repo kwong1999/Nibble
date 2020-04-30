@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import Modal from 'react-native-modal';
-import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableWithoutFeedback, TouchableOpacity, ScrollView, TextInput, Picker, KeyboardAvoidingView} from 'react-native';
+import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableWithoutFeedback, TouchableOpacity, ScrollView, TextInput, Picker, KeyboardAvoidingView, AsyncStorage} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
@@ -305,10 +305,10 @@ export default class Menu extends React.Component{
             <View><Text style = {{fontSize: 13,}}>what to expect!</Text></View>
           </View>
           <SafeAreaView style = {{flex:6.5, top: 40}}>
-            <FlatList contentContainerStyle = {{flex: 1, flexDirection: 'row', flexWrap:'wrap', marginLeft: '5%'}}
+            <FlatList contentContainerStyle = {{flex: 1, flexDirection: 'row', marginLeft: '5%'}}
               data={this.state.ITEMS}
               renderItem={this.renderNotLiveDeals}
-              keyExtractor={timeSlot => timeSlot.id}
+              keyExtractor={(item, index) => index.toString()}
               showsVerticalScrollIndicator={false}
             />
           </SafeAreaView>
@@ -328,6 +328,7 @@ export default class Menu extends React.Component{
           swipeThreshold={50}
           backdropOpacity = {0.5}
           propagateSwipe = {true}
+          useNativeDriver={false}
           >
             <View style={styles.modalCard}>
               <Image source = {{uri: this.state.modalImage}}
@@ -353,7 +354,7 @@ export default class Menu extends React.Component{
                       <FlatList style = {{flex: 1}}
                         data={this.state.ITEMS}
                         renderItem={this.renderDeals}
-                        keyExtractor={timeSlot => timeSlot.id}
+                        keyExtractor={(item, index) => index.toString()}
                         showsVerticalScrollIndicator={false}
                       />
                   </SafeAreaView>
@@ -375,7 +376,7 @@ export default class Menu extends React.Component{
                     <FlatList
                       data={this.state.order}
                       renderItem={this.renderOrder}
-                      keyExtractor={timeSlot => timeSlot.id}
+                      keyExtractor={(item, index) => index.toString()}
                       showsVerticalScrollIndicator={false}
                     />
                   </SafeAreaView>
@@ -474,7 +475,7 @@ export default class Menu extends React.Component{
                         <FlatList
                           data={this.state.order}
                           renderItem={this.renderOrderFinal}
-                          keyExtractor={timeSlot => timeSlot.id}
+                          keyExtractor={(item, index) => index.toString()}
                           showsVerticalScrollIndicator={false}
                         />
                       </SafeAreaView>
@@ -506,7 +507,7 @@ export default class Menu extends React.Component{
           <FlatList style = {{flex: 1}}
             data={timeR}
             renderItem={this.renderTimes}
-            keyExtractor={timeSlot => timeSlot.id}
+            keyExtractor={(item, index) => index.toString()}
             showsVerticalScrollIndicator={false}
           />
         </View>
@@ -580,7 +581,7 @@ export default class Menu extends React.Component{
 	          <FlatList style = {{flex: 1}}
 	            data={item.restaurants}
 	            renderItem={this.renderRestaurants}
-	            keyExtractor={timeSlot => timeSlot.id}
+              keyExtractor={(item, index) => index.toString()}
 	            showsVerticalScrollIndicator={false}
 	          />
 	        </SafeAreaView>
@@ -673,7 +674,7 @@ export default class Menu extends React.Component{
             <View style = {{flexDirection: 'row'}}>
               <Text style = {[styles.restaurantName, {flex:8}]}>{item.name}</Text>
               <View style ={{opacity: visibility, borderRadius:24, backgroundColor: '#8134FF', position: 'absolute', left: '88%', width: 22, height: 22, alignItems: 'center', justifyContent:'center'}}>
-                <FlatList data={itemInArray} extraData={this.state.refresh} renderItem={this.renderQuantity}/>
+                <FlatList data={itemInArray} extraData={this.state.refresh} renderItem={this.renderQuantity} keyExtractor={(item, index) => index.toString()}/>
               </View>
             </View>
             <View style={{width: '70%'}}>
@@ -914,28 +915,47 @@ export default class Menu extends React.Component{
   }
   purchase = () => {
   	this.setState({placeOrderColor: '#5ED634', placeOrderText:'\u2705\tSuccess'});
+    var totalPrice = 0;
     setTimeout(() => {this.setState({checkoutOpacity: 0, openOrder: true,})}, 1000);
   	for(var i=0; i < this.state.order.length; i++)
   	{
-	  	firestoreDB.collection("restaurants").doc(this.state.order[i].restName).collection("orders").add({
-		   	itemName: this.state.order[i].name,
-	  		quantity: this.state.order[i].quantity,
-	  		fulfilled: false,
-	  		username: this.state.username,
-        price: this.state.order[i].price,
-        oldPrice: this.state.order[i].oldPrice,
+  	  	firestoreDB.collection("restaurants").doc(this.state.order[i].restName).collection("orders").add({
+  		   	itemName: this.state.order[i].name,
+  	  		quantity: this.state.order[i].quantity,
+  	  		fulfilled: false,
+  	  		username: this.state.username,
+          price: this.state.order[i].price,
+          oldPrice: this.state.order[i].oldPrice,
 
-		});
-		firestoreDB.collection("users").doc(this.state.username).collection("orders").add({
-		   	itemName: this.state.order[i].name,
-	  		quantity: this.state.order[i].quantity,
-	  		fulfilled: false,
-	  		restaurant: this.state.order[i].restName,
-        price: this.state.order[i].price,
-        oldPrice: this.state.order[i].oldPrice,
-		});
+  		  });
+  	    firestoreDB.collection("users").doc(this.state.username).collection("orders").add({
+  		   	itemName: this.state.order[i].name,
+  	  		quantity: this.state.order[i].quantity,
+  	  		fulfilled: false,
+  	  		restaurant: this.state.order[i].restName,
+          price: this.state.order[i].price,
+          oldPrice: this.state.order[i].oldPrice,
+  		  });
   	}
+    this.updateRewards();
   }
+
+  updateRewards = async () => {
+    var currRewards = await AsyncStorage.getItem('rewards');
+
+    currRewards = parseInt(currRewards);
+    currRewards = currRewards + (Math.floor(this.state.orderTotal/10) * 10);
+    firestoreDB.collection("users").doc(this.state.username).update({
+      rewards: currRewards,
+    });
+    try {
+      AsyncStorage.setItem('rewards', currRewards.toString());
+
+    } catch (error) {
+      // Error saving data
+    }
+  };
+
 
   turnModalOn = (name, image, address, watchers, time, dist, live) =>{
     this.getItems(name);
@@ -943,7 +963,7 @@ export default class Menu extends React.Component{
     firestoreDB.collection("restaurants").doc(name).collection("orders").get().then(snap => {
    		sz = snap.size +1;// will return the collection size
    		this.setState({orderNumb: sz});
-	});
+	   });
     if(live){
       this.setState({openModal:true,});
     }
@@ -1332,7 +1352,6 @@ dealBoxOrderedPressed:{
     height: '40%',
     width: screenWidth,
     top: '65%',
-
   },
   orderItem:
   {
@@ -1386,8 +1405,8 @@ dealBoxOrderedPressed:{
     zIndex: 1,
 
     shadowColor: '#b189ff',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
     shadowRadius: 2,
   },
   textInput: {

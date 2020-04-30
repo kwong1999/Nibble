@@ -83,7 +83,7 @@ export default class Signup extends React.Component{
         else{
           if (doc.data().password == this.state.password)
           {
-            this.storeData(email);
+            this.storeData(email, doc.data().rewards);
             this.props.navigation.navigate('Home', {email: this.state.email});
           }
           else{
@@ -96,14 +96,10 @@ export default class Signup extends React.Component{
   }
 
 
-  storeData = async (email) => {
-    console.log("added!1");
-
+  storeData = async (email, rewards) => {
     try {
-      console.log("added!2");
-
       AsyncStorage.setItem('email', email);
-      console.log("added!3");
+      AsyncStorage.setItem('rewards', JSON.stringify(rewards));
 
     } catch (error) {
       // Error saving data
