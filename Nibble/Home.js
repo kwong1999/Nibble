@@ -111,8 +111,6 @@ export default class Menu extends React.Component{
 
     }
 
-
-
   initTimes = () => {
 
     var hours = new Date().getHours();
@@ -164,7 +162,6 @@ export default class Menu extends React.Component{
     }
 
   }
-
 
 
   getTimes = () => {
@@ -357,8 +354,7 @@ export default class Menu extends React.Component{
                         showsVerticalScrollIndicator={false}
                       />
                   </SafeAreaView>
-                  <Text>{'\n'}</Text>
-                  <Text>{'\n'}</Text>
+                  <Text style ={{fontSize:24}}>{'\n'}</Text>
               </ScrollView>
               <Modal
                 isVisible = {this.state.openCheckout}
@@ -624,6 +620,7 @@ export default class Menu extends React.Component{
                   </View>
                   <View style={styles.spacer1}></View>
               </View>
+              <Text style={styles.watch}>{wString}</Text>
             </View>
             <View style={styles.imageBox}>
               <Image source = {{uri:item.image}}
@@ -631,7 +628,6 @@ export default class Menu extends React.Component{
               />
             </View>
           </View>
-          <Text style={styles.watch}>{wString}</Text>
         </TouchableOpacity>
       </View>);
 
@@ -1033,7 +1029,7 @@ const styles = StyleSheet.create({
   },
   box: {
     backgroundColor: '#FFFFFF',
-    padding: 20,
+    padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
     width: 0.9 * screenWidth,
@@ -1048,7 +1044,7 @@ const styles = StyleSheet.create({
   },
   liveBox:{
     backgroundColor: '#FFFFFF',
-    padding: 20,
+    padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
     width: 0.9 * screenWidth,
