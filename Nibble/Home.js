@@ -936,6 +936,9 @@ export default class Menu extends React.Component{
           price: this.state.order[i].price,
           oldPrice: this.state.order[i].oldPrice,
   		  });
+        // firestoreDB.collection("users").doc(this.state.username).update({
+        //   rewards: currRewards,
+        // });
   	}
     this.updateRewards();
   }
@@ -945,9 +948,7 @@ export default class Menu extends React.Component{
 
     currRewards = parseInt(currRewards);
     currRewards = currRewards + (Math.floor(this.state.orderTotal/10) * 10);
-    firestoreDB.collection("users").doc(this.state.username).update({
-      rewards: currRewards,
-    });
+
     try {
       AsyncStorage.setItem('rewards', currRewards.toString());
 
