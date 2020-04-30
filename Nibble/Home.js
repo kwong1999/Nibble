@@ -620,7 +620,7 @@ export default class Menu extends React.Component{
     {
     	sBox = styles.dealBoxNotPressed;
     }
-
+ 
     return(
       <View>
         <TouchableOpacity activeOpacity = {1} style = {sBox} onPress={() => this.pressItem(itemName)}>
