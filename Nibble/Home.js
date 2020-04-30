@@ -598,6 +598,7 @@ export default class Menu extends React.Component{
     var itemName = item.name;
     var shown = false;
     var visibility = 0;
+    var isOrdered = false;
     if(itemPressed.localeCompare(itemName) == 0)
     {
       sBox = styles.dealBoxPressed;
@@ -608,7 +609,12 @@ export default class Menu extends React.Component{
       {
         visibility = 100;
         sBox = styles.dealBoxOrdered;
+        isOrdered = true;
       }
+    }
+    if(isOrdered && itemPressed.localeCompare(itemName) == 0)
+    {
+    	sBox = styles.dealBoxOrderedPressed;
     }
     if(this.state.currentOrderQuantity == 0)
     {
@@ -617,7 +623,7 @@ export default class Menu extends React.Component{
 
     return(
       <View>
-        <TouchableOpacity activeOpacity = {1} style = {sBox} onPress={() => this.setState({itemPressed: itemName, currentOrderQuantity: 1})}>
+        <TouchableOpacity activeOpacity = {1} style = {sBox} onPress={() => this.pressItem(itemName)}>
           <View>
             <View style = {{flexDirection: 'row'}}>
               <Text style = {[styles.restaurantName, {flex:8}]}>{item.name}</Text>
@@ -636,6 +642,17 @@ export default class Menu extends React.Component{
             </View>
           </View>
         </TouchableOpacity>
+        {(isOrdered) &&
+        <View style={styles.quantityBox}>
+          <View style={styles.container1}>
+              <View style={styles.emptySideQuantity}>
+              </View>
+              <TouchableOpacity style={{width: '20%'}} onPress={() => this.removeItem(this.state.itemPressed)}>
+                <Text style={styles.removeText}>Remove</Text>
+              </TouchableOpacity>
+          </View>
+        </View>}
+        {(!isOrdered) &&
         <View style={styles.quantityBox}>
           <View style={styles.container1}>
               <View style={styles.emptySideQuantity}>
@@ -653,7 +670,7 @@ export default class Menu extends React.Component{
                 <Text style={styles.signText}>+</Text>
               </TouchableOpacity>
           </View>
-        </View>
+        </View>}
 
       </View>
     );
@@ -757,6 +774,40 @@ export default class Menu extends React.Component{
     this.setState((state) => {return {orderTotal: totalCost, totalSavings: totalSavings, placeOrderText: placeOrderText, itemPressed:'', refresh: !this.state.refresh}});
 
   };
+
+  removeItem = (item) => {
+  	var index = -1;
+  	for(var i=0; i< this.state.order.length; i++)
+    {
+      if(this.state.order[i].name == item)
+      {
+        index =i;
+        break;
+      }
+    }
+    if(index != -1)
+    {
+    	var tempArray = this.state.order;
+    	tempArray.splice(i, 1);
+    	this.setState({order: tempArray});
+    	 if(this.state.order.length==0)
+	    {
+	      this.setState({checkoutButtonOpacity: 0});
+	    }
+	    this.setState({itemPressed: 'null', currentOrderQuantity: 0});
+    }
+  }
+
+  pressItem = (item) => {
+  	if(this.state.itemPressed == item)
+  	{
+  		this.setState({itemPressed: 'null', currentOrderQuantity: 0});
+  	}
+  	else
+  	{
+  		this.setState({itemPressed: item, currentOrderQuantity: 1});
+  	}
+  }
 
   addPayment = () =>{
     this.setState({openPayment: false,});
@@ -1038,6 +1089,22 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     zIndex: 1,
   },
+dealBoxOrderedPressed:{
+    height: 110,
+    paddingTop: 8,
+    paddingLeft: 10,
+    backgroundColor: '#FFFFFF',
+    marginVertical: 8,
+    marginHorizontal: 16,
+    width: 0.6 * screenWidth,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    borderColor: '#8134FF',
+    borderWidth: 4,
+    zIndex: 1,
+  },
   quantityBox:
   {
     height: 110,
@@ -1124,6 +1191,13 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     top: 35,
+  },
+  removeText:
+  {
+    color: '#FFFFFF',
+    fontSize: 15,
+    top: 35,
+    fontWeight: 'bold'
   },
   addText:
   {

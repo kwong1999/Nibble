@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import Modal from 'react-native-modal';
-import { View, Text, Button, SafeAreaView, ScrollView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, AsyncStorage} from 'react-native';
+import { View, Text, Button, SafeAreaView, ScrollView, FlatList, StyleSheet, Dimensions, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, AsyncStorage, Picker} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
@@ -50,12 +50,13 @@ export default class Profile extends React.Component{
       addPaymentVisible: false,
       cardName: 'Name',
       cardNumber: 'Card Number',
-      cardExp: 'Exp',
       cardSec: 'CVV',
       image: null,
       permission: false,
       cardHeight: 0,
       cardWidth: 0,
+      month: 1,
+      year: 1,
       };
       //this.getInfo = this.getInfo.bind(this);
       this._getLocationAsync();
@@ -286,7 +287,42 @@ export default class Profile extends React.Component{
               <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 0}]} onChangeText={text => this.cardName(text)} value = {this.state.cardName} onFocus = {this.clearCardName} onBlur={this.resetCardName}></TextInput>
               <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.cardNumber(text)}  value = {this.state.cardNumber} onFocus={this.clearCardNumber} onBlur={this.resetCardNumber}></TextInput>
               <View style = {{flex: 2.8, flexDirection: 'row'}}>
-                <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {flex: 1, width: '36%', marginTop: 25, marginBottom: 35}]} onChangeText={text => this.cardExp(text)} value = {this.state.cardExp} clearTextOnFocus={true}></TextInput>
+              <Picker
+              style={[styles.onePicker, {left: 5, width: 25}]} itemStyle={styles.onePickerItem}
+		          selectedValue={this.state.month}
+		          onValueChange={(itemValue) => this.setState({month: itemValue})}
+		        >
+		          <Picker.Item label="Jan" value="1" />
+		          <Picker.Item label="Feb" value="2" />
+		          <Picker.Item label="Mar" value="3" />
+		          <Picker.Item label="Apr" value="4" />
+		          <Picker.Item label="May" value="5" />
+		          <Picker.Item label="June" value="6" />
+		          <Picker.Item label="July" value="7" />
+		          <Picker.Item label="Aug" value="8" />
+		          <Picker.Item label="Sept" value="9" />
+		          <Picker.Item label="Oct" value="10" />
+		          <Picker.Item label="Nov" value="11" />
+		          <Picker.Item label="Dec" value="12" />
+		        </Picker>
+		        <Text style={{color: '#8235ff', top: 25, fontSize: 32, left: 10}}>/</Text>
+		        <Picker
+              style={[styles.onePicker, {left: 15, width: 40}]} itemStyle={styles.onePickerItem}
+		          selectedValue={this.state.month}
+		          onValueChange={(itemValue) => this.setState({month: itemValue})}
+		        >
+		          <Picker.Item label="2020" value="2020" />
+		          <Picker.Item label="2021" value="2021" />
+		          <Picker.Item label="2022" value="2022" />
+		          <Picker.Item label="2023" value="2023" />
+		          <Picker.Item label="2024" value="2024" />
+		          <Picker.Item label="2025" value="2025" />
+		          <Picker.Item label="2026" value="2026" />
+		          <Picker.Item label="2027" value="2027" />
+		          <Picker.Item label="2028" value="2028" />
+		          <Picker.Item label="2029" value="2029" />
+		          <Picker.Item label="2030" value="2030" />
+		        </Picker>
                 <View style = {{flex: 0.8}}></View>
                 <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {flex: 1, width: '36%', marginTop: 25,}]} onChangeText={text => this.cardSec(text)} value = {this.state.cardSec} onFocus = {this.clearCardSec} onBlur={this.resetCardSec}></TextInput>
                 </View>
@@ -335,9 +371,6 @@ export default class Profile extends React.Component{
   cardNumber(text){
     this.setState({cardNumber: text});
   }
-  cardExp(text){
-    this.setState({cardExp: text});
-  }
   cardSec(text){
     this.setState({cardSec: text});
   }
@@ -369,7 +402,7 @@ addPay = () => {
   paymentPress = () => {
     if(this.state.paymentButtonText == 'x')
     {
-        this.setState({paymentString: 'Add Payment Method', paymentButtonText: '+', cardName: 'Name',cardNumber: 'Card Number', cardExp: 'Exp', cardSec: 'Security', cardWidth: 0, cardHeight: 0});
+        this.setState({paymentString: 'Add Payment Method', paymentButtonText: '+', cardName: 'Name',cardNumber: 'Card Number', cardSec: 'Security', cardWidth: 0, cardHeight: 0});
         var pRef = firestoreDB.collection("users").doc(this.state.email);
 
         // Set the "capital" field of the city 'DC'
@@ -423,5 +456,16 @@ const styles = StyleSheet.create({
         flexDirection:'column',
         flexWrap: 'wrap',
         flex: 1
-    }
+    },
+   onePicker: {
+    height: 44,
+    borderColor: 'white',
+    borderWidth: 0,
+    top: 25,
+  },
+  onePickerItem: {
+    height: 40,
+    color: 'black',
+    fontSize: 15,
+  },
 });
