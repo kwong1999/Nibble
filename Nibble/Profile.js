@@ -224,7 +224,7 @@ export default class Profile extends React.Component{
       <View style = {{flex:1}}>
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
       <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{zIndex: 999, backgroundColor:'#8134FF', borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: '87%', left: '78%'}}>
-              <Image source={require('./Vector.png')}/>
+              <Image source={require('./house.png')}/>
       </TouchableOpacity>
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
       <View style={styles.viewContainer}>
