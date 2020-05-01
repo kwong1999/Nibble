@@ -8,6 +8,17 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import opencage from 'opencage-api-client';
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
+
+const fetchFonts = () => {
+return Font.loadAsync({
+      'Inter-Regular': require('./assets/Inter-Regular.otf'),
+      'Inter-Bold': require('./assets/Inter-Bold.otf'),
+      'Inter-Italic': require('./assets/Inter-Italic.otf'),
+      });
+};
+
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
@@ -35,6 +46,7 @@ export default class OrderHistory extends React.Component{
     this.state = {
       email: '@empty',
       orders: [],
+      dataloaded: false,
       };
        console.disableYellowBox = true;
 
@@ -117,13 +129,22 @@ export default class OrderHistory extends React.Component{
   };
 
   render(){
+     const {dataloaded} = this.state;
+    if(!dataloaded)
+    {
+      return (
+        <AppLoading
+        startAsync={fetchFonts}
+        onFinish={() => this.setState({dataloaded: true})} />
+        );
+    } 
     return(
       <View style = {{flex:1}}>
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
         <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{backgroundColor:'#8134FF', z: 9999, borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center'}}>
                 <Image source={require('./house.png')}/>
               </TouchableOpacity>
-        <Text style={{borderWidth: 10, borderColor: '#FFFFFF'}}>@{this.state.email}</Text>
+        <Text style={{borderWidth: 10, borderColor: '#FFFFFF', fontFamily: 'Inter-Regular'}}>@{this.state.email}</Text>
         <View style={{backgroundColor: '#EDE1FF',  height: 1.5, width: 300}}>
           </View>
           <SafeAreaView style = {{marginLeft: '6%', minHeight: '14%', maxHeight: '100%', marginTop:'12%'}}>
@@ -151,7 +172,7 @@ export default class OrderHistory extends React.Component{
     <Text> </Text>
     <View style={styles.container1}>
     <View style={{width: '60%'}}>
-     <Text style={{fontWeight:'bold', fontSize: 18}}>{item.rest}</Text>
+     <Text style={{fontWeight:'bold', fontSize: 18, fontFamily: 'Inter-Bold'}}>{item.rest}</Text>
      <Text> </Text>
      <FlatList
               data={item.items}
@@ -162,7 +183,7 @@ export default class OrderHistory extends React.Component{
     </View>
     <View style={{width: '20%'}}>
     <Text> </Text>
-    <Text style={{textDecorationLine: "line-through", color: '#A8A1B3', top: 40}}>{ "$" + (item.oldPrice).toFixed(2)}  ></Text>
+    <Text style={{textDecorationLine: "line-through", color: '#A8A1B3', top: 40, fontFamily: 'Inter-Regular'}}>{ "$" + (item.oldPrice).toFixed(2)}  ></Text>
       </View>
       <View style={{width: '20%'}}>
       <Image source={require('./info.png')}/>
@@ -180,7 +201,7 @@ export default class OrderHistory extends React.Component{
 renderItem = ({item}) => {
   return(
   <View>
-    <Text style={{ fontSize: 14}}>{item.itemName}    x{item.quantity}</Text>
+    <Text style={{ fontSize: 14, fontFamily: 'Inter-Regular'}}>{item.itemName}    x{item.quantity}</Text>
   </View>
   );
 }
@@ -200,6 +221,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#8235ff',
     width: .8*screenWidth,
+    fontFamily: 'Inter-Regular'
   },
   container1: {
     flex: 1,

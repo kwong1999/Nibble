@@ -6,8 +6,16 @@ import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Ima
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { CommonActions } from '@react-navigation/native';
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
 
-import Signup from './Signup'
+import Signup from './Signup';
+
+const fetchFonts = () => {
+return Font.loadAsync({
+      'Inter-Regular': require('./assets/Inter-Regular.otf')
+      });
+};
 
 
 const firebaseConfig = {
@@ -32,7 +40,10 @@ export default class Onboard extends React.Component{
     this.storeData = this.storeData.bind(this);
     //this.storeData();
     console.disableYellowBox = true;
-
+    this.state = {
+      dataloaded: false,
+    };
+   
   };
 
   storeData = async () => {
@@ -46,15 +57,23 @@ export default class Onboard extends React.Component{
         // Error saving data
       }
     };
-
   render(){
+    const {dataloaded} = this.state;
+    if(!dataloaded)
+    {
+      return (
+        <AppLoading
+        startAsync={fetchFonts}
+        onFinish={() => this.setState({dataloaded: true})} />
+        );
+    } 
     return(
       <View style = {{flex:10, backgroundColor: '#8134FF', alignItems: 'center'}}>
         <View><Image source = {require('./logo.png')} style = {{marginTop: 130}}/></View>
         <View style = {{flex: 9, top:400}}>
           <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Login')} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold'}}>Log In</Text></TouchableOpacity>
           <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Signup')} style = {[styles.button, {top: 20, backgroundColor: '#FFFFFF'}]}><Text style = {{color:'#8134FF', fontSize: 18, fontWeight: 'bold'}}>Sign up</Text></TouchableOpacity>
-          <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Home', {email: 'null'})} style = {[{marginTop: 40, alignItems: 'center',}]}><Text style = {{color:'#FFFFFF', fontSize: 14, fontWeight: 'bold'}}>Skip for now</Text></TouchableOpacity>
+          <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Home', {email: 'null'})} style = {[{marginTop: 40, alignItems: 'center', fontFamily: 'Inter-Regular'}]}><Text style = {{color:'#FFFFFF', fontSize: 14, fontWeight: 'bold'}}>Skip for now</Text></TouchableOpacity>
         </View>
       </View>
       );
@@ -80,6 +99,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: 327,
-    height: 50
+    height: 50,
+    fontFamily: 'Inter-Regular',
   }
 });

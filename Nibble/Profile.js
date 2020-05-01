@@ -10,6 +10,16 @@ import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import opencage from 'opencage-api-client';
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
+
+const fetchFonts = () => {
+return Font.loadAsync({
+      'Inter-Regular': require('./assets/Inter-Regular.otf'),
+      'Inter-Bold': require('./assets/Inter-Bold.otf'),
+      'Inter-Italic': require('./assets/Inter-Italic.otf'),
+      });
+};
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
@@ -57,6 +67,7 @@ export default class Profile extends React.Component{
       cardWidth: 0,
       month: 1,
       year: 1,
+      dataloaded: false,
       };
       //this.getInfo = this.getInfo.bind(this);
       this._getLocationAsync();
@@ -216,6 +227,15 @@ export default class Profile extends React.Component{
   };
 
   render(){
+  	const {dataloaded} = this.state;
+    if(!dataloaded)
+    {
+      return (
+        <AppLoading
+        startAsync={fetchFonts}
+        onFinish={() => this.setState({dataloaded: true})} />
+        );
+    } 
   	let {image} = this.state;
     return(
       <View style = {{flex:1}}>
@@ -239,42 +259,42 @@ export default class Profile extends React.Component{
                 <View style={{width: '10%'}}>
                 </View>
                 <View style={{width: '50%'}}>
-                  <Text style={{marginTop: 30, marginRight: 20, fontWeight: 'bold', fontSize: 25}}>{this.state.name}</Text>
-                  <Text style={{fontStyle: 'italic', fontSize: 12, marginTop: 5,}}> joined {this.state.month}, {this.state.year} </Text>
+                  <Text style={{marginTop: 30, marginRight: 20, fontWeight: 'bold', fontSize: 25, fontFamily: 'Inter-Bold'}}>{this.state.name}</Text>
+                  <Text style={{fontStyle: 'italic', fontSize: 12, marginTop: 5, fontFamily: 'Inter-Italic'}}> joined {this.state.month}, {this.state.year} </Text>
                   </View>
               </View>
               <View style={{flex: 1, width: 310, alignSelf: 'center', marginTop: -40}}>
                  <View style={{backgroundColor: '#EDE1FF', alignSelf: 'center', height: 1.5, width: 310,marginBottom: 20}}></View>
                  <View style = {{flexDirection: 'row', justifyContent:'space-between'}}>
-                   <Text style={{fontSize: 12,}}>Email </Text>
-                   <Text style={{fontWeight: 'bold', fontSize: 14, textAlign: 'right',}}>{this.state.email}</Text>
+                   <Text style={{fontSize: 12, fontFamily: 'Inter-Regular'}}>Email </Text>
+                   <Text style={{fontWeight: 'bold', fontSize: 14, textAlign: 'right', fontFamily: 'Inter-Bold'}}>{this.state.email}</Text>
                  </View>
                  <View style={{backgroundColor: '#EDE1FF', alignSelf: 'center', height: 1.5, width: 310, marginTop: 20, marginBottom: 20}}></View>
                  <View style = {{flexDirection: 'row', justifyContent:'space-between'}}>
-                   <Text style={{fontSize: 12,}}>Phone Number </Text>
-                   <Text style={{fontWeight: 'bold', fontSize: 14, textAlign: 'right',}}>{this.state.phoneNumber}</Text>
+                   <Text style={{fontSize: 12, fontFamily: 'Inter-Regular'}}>Phone Number </Text>
+                   <Text style={{fontWeight: 'bold', fontSize: 14, textAlign: 'right', fontFamily: 'Inter-Bold'}}>{this.state.phoneNumber}</Text>
                  </View>
                  <View style={{backgroundColor: '#EDE1FF', alignSelf: 'center', height: 1.5, width: 310, marginTop: 20, marginBottom: 20}}></View>
                  <View style = {{flexDirection: 'row', justifyContent:'space-between'}}>
-                   <Text style={{fontSize: 12,}}>Current Location </Text>
-                   <Text style={{fontWeight: 'bold', fontSize: 12, textAlign: 'right',}}>{this.state.address}</Text>
+                   <Text style={{fontSize: 12, fontFamily: 'Inter-Regular'}}>Current Location </Text>
+                   <Text style={{fontWeight: 'bold', fontSize: 12, textAlign: 'right', fontFamily: 'Inter-Bold'}}>{this.state.address}</Text>
                  </View>
                  <View style={{backgroundColor: '#EDE1FF', alignSelf: 'center', height: 1.5, width: 310, marginTop: 20, marginBottom: 18}}></View>
                  <View style = {{flexDirection: 'row', justifyContent:'space-between'}}>
-                   <Text style={{fontSize: 12,}}>View Order history</Text>
+                   <Text style={{fontSize: 12, fontFamily: 'Inter-Regular'}}>View Order history</Text>
                    <TouchableOpacity onPress={() => this.props.navigation.navigate('OrderHistory')}>
-                     <Text style = {{fontSize: 16}}>></Text>
+                     <Text style = {{fontSize: 16, fontFamily: 'Inter-Regular'}}>></Text>
                    </TouchableOpacity>
                  </View>
                  <View style={{backgroundColor: '#EDE1FF', alignSelf: 'center', height: 1.5, width: 310, marginTop: 18, marginBottom: 18}}></View>
                  <View style = {{flexDirection: 'row'}}>
                  <View style={{width: '95%', flexDirection: 'row'}}>
                  <Image source={require('./Union.png')} style={{height: this.state.cardHeight, width: this.state.cardWidth}}/>
-                   <Text style={{fontSize: 12, left: 5}}>  {this.state.paymentString}</Text>
+                   <Text style={{fontSize: 12, left: 5, fontFamily: 'Inter-Regular'}}>  {this.state.paymentString}</Text>
                    </View>
                    <View style={{width: '5%'}}>
                    <TouchableOpacity onPress={this.paymentPress}>
-                     <Text style= {{fontSize: 16}}> {this.state.paymentButtonText}</Text>
+                     <Text style= {{fontSize: 16, fontFamily: 'Inter-Regular'}}> {this.state.paymentButtonText}</Text>
                    </TouchableOpacity>
                    </View>
                  </View>
@@ -344,7 +364,7 @@ export default class Profile extends React.Component{
                 </View>
               <Text> </Text>
               <TouchableOpacity onPress = {this.addPay} style={{backgroundColor:'#8134FF', borderRadius: 12, width: 100, height:35, flexDirection:'row', marginBottom: 0, alignItems: 'center', justifyContent: 'center'}}>
-                      <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>ADD</Text>
+                      <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF', fontFamily: 'Inter-Bold'}}>ADD</Text>
                 </TouchableOpacity>
               <Text> </Text>
         <Text> </Text>
@@ -477,6 +497,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#8235ff',
     width: .8*screenWidth,
+    fontFamily: 'Inter-Regular'
   },
   container1: {
     flex: 1,
@@ -500,5 +521,6 @@ const styles = StyleSheet.create({
     height: 45,
     color: 'black',
     fontSize: 15,
+    fontFamily: 'Inter-Regular'
   },
 });

@@ -7,6 +7,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
+
+const fetchFonts = () => {
+return Font.loadAsync({
+      'Inter-Regular': require('./assets/Inter-Regular.otf'),
+      'Inter-Bold': require('./assets/Inter-Bold.otf')
+
+      });
+};
 
 const firebaseConfig = {
   apiKey: "<>",
@@ -40,6 +50,7 @@ export default class Signup extends React.Component{
       secondStyle: styles.inactiveBorder,
       securePass: false,
       secureCon: false,
+      dataloaded: false,
       // firstStyle: {width: 327, borderRadius: 22, top: 20, borderWidth:3, borderColor: '#8134FF', alignItems: 'center'}
     };
     this.first = React.createRef();
@@ -66,14 +77,23 @@ export default class Signup extends React.Component{
 
   }
   render(){
+     const {dataloaded} = this.state;
+    if(!dataloaded)
+    {
+      return (
+        <AppLoading
+        startAsync={fetchFonts}
+        onFinish={() => this.setState({dataloaded: true})} />
+        );
+    } 
     var firstStyle = styles.inactiveBorder;
     return(
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
         <View style={styles.viewContainer}>
           <View style={{flexDirection:'row'}}>
-            <Text style = {{opacity: 0.7}}>Already have an account? </Text>
-            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Login')}}><Text style = {{color:'#8134FF', fontWeight:'bold'}}>Log in</Text></TouchableOpacity>
+            <Text style = {{opacity: 0.7, fontFamily: 'Inter-Regular'}}>Already have an account? </Text>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Login')}}><Text style = {{color:'#8134FF', fontWeight:'bold', fontFamily: 'Inter-Bold'}}>Log in</Text></TouchableOpacity>
           </View>
           <TouchableOpacity activeOpacity = {1} onPress= {this.setFirstActive} style = {[this.state.firstStyle, {marginTop: 20}]}>
             <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.firstName(text)} value = {this.state.firstName} onFocus = {this.clearFirst} onBlur={this.resetFirst}/>
@@ -231,7 +251,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: 327,
-    height: 50
+    height: 50,
+    fontFamily: 'Inter-Regular'
   },
   activeBorder: {
     width: 327, borderRadius: 22, top: 20, borderWidth:6, borderColor: '#8134FF', alignItems: 'center'
@@ -253,6 +274,7 @@ const styles = StyleSheet.create({
     width: '80%',
     paddingLeft: 5,
     borderBottomWidth: 2,
-    borderBottomColor: '#6200f5'
+    borderBottomColor: '#6200f5',
+    fontFamily: 'Inter-Regular',
   }
 });
