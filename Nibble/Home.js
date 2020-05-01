@@ -938,6 +938,7 @@ export default class Menu extends React.Component{
   purchase = () => {
   	this.setState({placeOrderColor: '#5ED634', placeOrderText:'\u2705\tSuccess'});
     var totalPrice = 0;
+    this.updateRewards();
     setTimeout(() => {this.setState({checkoutOpacity: 0, openOrder: true,})}, 1000);
   	for(var i=0; i < this.state.order.length; i++)
   	{
@@ -958,27 +959,24 @@ export default class Menu extends React.Component{
           price: this.state.order[i].price,
           oldPrice: this.state.order[i].oldPrice,
   		  });
-        // firestoreDB.collection("users").doc(this.state.username).update({
-        //   rewards: currRewards,
-        // });
   	}
-    //this.updateRewards();
+    
   }
 
- /* updateRewards = async () => {
+  updateRewards = async () => {
     var currRewards = await AsyncStorage.getItem('rewards');
 
     currRewards = parseInt(currRewards);
     currRewards = currRewards + (Math.floor(this.state.orderTotal/10) * 10);
 
-    try {
-      AsyncStorage.setItem('rewards', currRewards.toString());
+   try {
+       AsyncStorage.setItem('rewards', currRewards.toString());
 
     } catch (error) {
       // Error saving data
-    }
+    } 
   };
-*/
+
 
   turnModalOn = (name, image, address, watchers, time, dist, live) =>{
     this.getItems(name);
