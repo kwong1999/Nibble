@@ -290,7 +290,7 @@ export default class Profile extends React.Component{
                  <View style = {{flexDirection: 'row'}}>
                  <View style={{width: '95%', flexDirection: 'row'}}>
                  <Image source={require('./Union.png')} style={{height: this.state.cardHeight, width: this.state.cardWidth, marginRight: this.state.cardHeight}}/>
-                   <Text style={{fontSize: 12, left: 5, fontFamily: 'Inter-Regular'}}>  {this.state.paymentString}</Text>
+                   <Text style={{fontSize: 12, fontFamily: 'Inter-Regular'}}>{this.state.paymentString}</Text>
                    </View>
                    <View style={{width: '5%'}}>
                    <TouchableOpacity onPress={this.paymentPress}>
