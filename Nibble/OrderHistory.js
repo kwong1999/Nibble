@@ -8,6 +8,17 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import opencage from 'opencage-api-client';
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
+
+const fetchFonts = () => {
+return Font.loadAsync({
+      'Inter-Regular': require('./assets/Inter-Regular.otf'),
+      'Inter-Bold': require('./assets/Inter-Bold.otf'),
+      'Inter-Italic': require('./assets/Inter-Italic.otf'),
+      });
+};
+
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
@@ -35,6 +46,7 @@ export default class OrderHistory extends React.Component{
     this.state = {
       email: '@empty',
       orders: [],
+      dataloaded: false,
       };
        console.disableYellowBox = true;
 
@@ -117,6 +129,15 @@ export default class OrderHistory extends React.Component{
   };
 
   render(){
+     const {dataloaded} = this.state;
+    if(!dataloaded)
+    {
+      return (
+        <AppLoading
+        startAsync={fetchFonts}
+        onFinish={() => this.setState({dataloaded: true})} />
+        );
+    } 
     return(
       <View style = {{flex:1}}>
         <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{zIndex: 999, backgroundColor:'#8134FF', borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: '87%', left: '78%'}}>
@@ -190,6 +211,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#8235ff',
     width: .8*screenWidth,
+    fontFamily: 'Inter-Regular'
   },
   container1: {
     flex: 1,

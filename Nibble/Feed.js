@@ -11,6 +11,20 @@ import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import opencage from 'opencage-api-client';
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
+
+const fetchFonts = () => {
+return Font.loadAsync({
+      'Inter-Regular': require('./assets/Inter-Regular.otf'),
+      'Inter-Bold': require('./assets/Inter-Bold.otf'),
+      'Inter-Italic': require('./assets/Inter-Italic.otf'),
+      });
+};
+
+
+
+
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
@@ -48,7 +62,8 @@ export default class Feed extends React.Component{
         {name: 'Eric Zhan', description: 'loved some chicken at', restaurant: 'Chik-fil-a', image: require('./eric.png'), time: '12m'},
         {name: 'Chan Lee', description: 'was thirsty for some', restaurant: 'Pot of Cha', image: require('./chan.png'), time: '15m'},
         {name: 'Zade Kaylani', description: 'enjoyed a chai at', restaurant: 'Cafe Dulce', image: require('./zade.png'), time: '28m'}
-      ]
+      ],
+      dataloaded: false,
       };
       //this.getInfo = this.getInfo.bind(this);
 
@@ -66,6 +81,15 @@ export default class Feed extends React.Component{
   // };
 
   render(){
+    const {dataloaded} = this.state;
+    if(!dataloaded)
+    {
+      return (
+        <AppLoading
+        startAsync={fetchFonts}
+        onFinish={() => this.setState({dataloaded: true})} />
+        );
+    } 
     return(
         <View style = {{flex: 1, alignItems:'center'}}>
         <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{zIndex: 999, backgroundColor:'#8134FF', borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: '87%', left: '78%'}}>
@@ -79,7 +103,7 @@ export default class Feed extends React.Component{
                 <Image style = {{position: 'absolute', left: 130, top: 26}} source={require("./rewardStar.png")}/>
                 <Text style = {{color: '#FFFFFF', fontWeight: 'bold', fontSize: 18, left: '20%'}}>Claim{'\n'}Rewards</Text>
                 <View style = {{right: '20%',height: '60%', width: '17%', borderRadius: 50, borderWidth: 4, borderColor:'#FFFFFF', justifyContent: 'center', alignItems:'center'}}>
-                  <Text style = {{fontWeight: 'bold', fontSize: 14, color: '#FFFFFF'}}>{this.state.rewardPoints}</Text>
+                  <Text style = {{fontWeight: 'bold', fontSize: 14, color: '#FFFFFF', fontFamily: 'Inter-Bold'}}>{this.state.rewardPoints}</Text>
                 </View>
               </View>
             </LinearGradient>
@@ -110,8 +134,8 @@ export default class Feed extends React.Component{
     return(
       <View style = {styles.statsBox}>
         <Image source={require('./statsIcon.png')}/>
-        <Text style = {{fontSize: 36, fontWeight: 'bold', color: '#8336FF'}}>{item.number}</Text>
-        <Text style = {{textAlign: 'center', fontSize: 14, color: '#9462E8'}}>{item.description}</Text>
+        <Text style = {{fontSize: 36, fontWeight: 'bold', color: '#8336FF', fontFamily: 'Inter-Bold'}}>{item.number}</Text>
+        <Text style = {{textAlign: 'center', fontSize: 14, color: '#9462E8', fontFamily: 'Inter-Regular'}}>{item.description}</Text>
       </View>
     );
   }
@@ -124,12 +148,12 @@ export default class Feed extends React.Component{
         <View style = {{flexDirection:'row', alignItems: 'center'}}>
           <Image resizeMode = "contain" style = {{height:30, width: 30}} source ={item.image}/>
           <View style = {{marginLeft: 10, flexDirection:"row", flexWrap:"wrap",width:200,padding:10}}>
-            <Text style = {{fontWeight: 'bold'}}>{item.name}
-            <Text style = {{fontWeight:'normal'}}> {item.description} </Text>
-            <Text style = {{fontWeight: 'bold'}}>{item.restaurant}</Text></Text>
+            <Text style = {{fontWeight: 'bold', fontFamily: 'Inter-Bold'}}>{item.name}
+            <Text style = {{fontWeight:'normal', fontFamily: 'Inter-Regular'}}> {item.description} </Text>
+            <Text style = {{fontWeight: 'bold', fontFamily: 'Inter-Bold'}}>{item.restaurant}</Text></Text>
           </View>
         </View>
-        <View style = {{marginLeft: '90%'}}><Text style = {{fontSize: 12, fontStyle: 'italic', fontWeight: '200'}}>{item.time}</Text></View>
+        <View style = {{marginLeft: '90%'}}><Text style = {{fontSize: 12, fontStyle: 'italic', fontWeight: '200', fontFamily: 'Inter-Italic'}}>{item.time}</Text></View>
       </View>
     );
   }

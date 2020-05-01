@@ -7,6 +7,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
+
+const fetchFonts = () => {
+return Font.loadAsync({
+      'Inter-Regular': require('./assets/Inter-Regular.otf'),
+      'Inter-Bold': require('./assets/Inter-Bold.otf')
+
+      });
+};
 
 const firebaseConfig = {
   apiKey: "<>",
@@ -35,6 +45,7 @@ export default class Signup extends React.Component{
       firstStyle: styles.inactiveBorder,
       secondStyle: styles.activeBorder,
       secure: false,
+      dataloaded: false,
     };
 
     this.setFirstActive = this.setFirstActive.bind(this);
@@ -50,14 +61,23 @@ export default class Signup extends React.Component{
 
   }
   render(){
+     const {dataloaded} = this.state;
+    if(!dataloaded)
+    {
+      return (
+        <AppLoading
+        startAsync={fetchFonts}
+        onFinish={() => this.setState({dataloaded: true})} />
+        );
+    } 
     var firstStyle = styles.inactiveBorder;
     return(
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
         <View><Image source = {require('./signupPic.png')} style = {{left: '15%', marginTop: 40}}/></View>
         <View style={{flexDirection:'row'}}>
-          <Text style = {{opacity: 0.7}}>Don't have an account? </Text>
-          <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Signup')}}><Text style = {{color:'#8134FF', fontWeight:'bold'}}>Sign up</Text></TouchableOpacity>
+          <Text style = {{opacity: 0.7, fontFamily: 'Inter-Regular'}}>Don't have an account? </Text>
+          <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Signup')}}><Text style = {{color:'#8134FF', fontWeight:'bold', fontFamily: 'Inter-Bold'}}>Sign up</Text></TouchableOpacity>
         </View>
         <TouchableOpacity activeOpacity = {1} onPress= {this.setFirstActive} style = {this.state.firstStyle}>
           <TextInput clearButtonMode="while-editing" autoCapitalize='none' onFocus = {()=>{this.setFirstActive();  this.clearEmail();}} style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.email(text)} value = {this.state.email} onBlur={this.resetEmail}/>
@@ -65,8 +85,8 @@ export default class Signup extends React.Component{
           <Text> </Text>
           <Text> </Text>
         </TouchableOpacity>
-        <TouchableOpacity style = {{marginTop: 20}}><Text style = {{color: '#8134FF', fontSize: 13, opacity: 0.8, fontWeight:'bold'}}>Forgot Password</Text></TouchableOpacity>
-        <TouchableOpacity onPress = {this.loginConfirm} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold'}}>Log in</Text></TouchableOpacity>
+        <TouchableOpacity style = {{marginTop: 20}}><Text style = {{color: '#8134FF', fontSize: 13, opacity: 0.8, fontWeight:'bold', fontFamily: 'Inter-Bold'}}>Forgot Password</Text></TouchableOpacity>
+        <TouchableOpacity onPress = {this.loginConfirm} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold', fontFamily: 'Inter-Bold'}}>Log in</Text></TouchableOpacity>
       </ScrollView>
 
       </KeyboardAvoidingView>
@@ -171,6 +191,7 @@ const styles = StyleSheet.create({
     width: '80%',
     paddingLeft: 5,
     borderBottomWidth: 2,
-    borderBottomColor: '#c39aff'
+    borderBottomColor: '#c39aff',
+    fontFamily: 'Inter-Regular'
   }
 });

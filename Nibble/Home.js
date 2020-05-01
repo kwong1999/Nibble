@@ -8,9 +8,22 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import opencage from 'opencage-api-client';
+import Signup from './Signup';
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
+
+const fetchFonts = () => {
+return Font.loadAsync({
+      'Inter-Regular': require('./assets/Inter-Regular.otf'),
+      'Inter-Bold': require('./assets/Inter-Bold.otf'),
+      'Inter-Italic': require('./assets/Inter-Italic.otf'),
+
+
+      });
+};
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
-import Signup from './Signup';
+
 
 const firebaseConfig = {
   apiKey: "<>",
@@ -79,7 +92,8 @@ export default class Menu extends React.Component{
         cardSec: 'CVV',
         lastFour: '',
         month: '',
-        year: ''
+        year: '',
+        dataloaded: false,
       };
 
       this._getLocationAsync();
@@ -255,6 +269,15 @@ export default class Menu extends React.Component{
   };
 
   render(){
+  	const {dataloaded} = this.state;
+    if(!dataloaded)
+    {
+      return (
+        <AppLoading
+        startAsync={fetchFonts}
+        onFinish={() => this.setState({dataloaded: true})} />
+        );
+    } 
     //Getting the location
      let text = 'Waiting..';
      if (this.state.location) {
@@ -330,22 +353,22 @@ export default class Menu extends React.Component{
           />
           <View style = {{flex: 1, flexDirection: 'row'}}>
             <View style = {{width: '75%'}}>
-              <Text style={{fontSize: 32, fontWeight: "bold", marginLeft: "5%", marginTop: "3%"}}>{this.state.modalRest}</Text>
-              <Text style={{fontSize: 13, marginLeft: "6%", marginTop: "2%"}}>{this.state.modalAddress}  •  {this.state.modalDist} miles</Text>
+              <Text style={{fontSize: 32, fontWeight: "bold", marginLeft: "5%", marginTop: "3%", fontFamily: 'Inter-Bold'}}>{this.state.modalRest}</Text>
+              <Text style={{fontSize: 13, marginLeft: "6%", marginTop: "2%", fontFamily: 'Inter-Regular'}}>{this.state.modalAddress}  •  {this.state.modalDist} miles</Text>
               <View style = {{flexDirection: "row"}}>
                 <Image source = {require('./watchIcon.png')}
                   style = {{marginLeft: "5.5%", marginTop: "2.5%"}}
                 />
-                <Text style={{fontSize: 13, marginLeft: "1.2%", marginTop: "2%"}}>{this.state.modalWatching}</Text>
+                <Text style={{fontSize: 13, marginLeft: "1.2%", marginTop: "2%", fontFamily: 'Inter-Regular'}}>{this.state.modalWatching}</Text>
               </View>
             </View>
             <View style = {{flex: 1, flexDirection: 'row', marginTop: '5%', flexWrap: 'wrap',}}>
-              <View><Text style = {{color:'#FF3434', fontSize: 18, fontWeight: 'bold'}}>NOT LIVE</Text></View>
-              <View><Text style = {{fontStyle: 'italic', fontSize: 11}}>live at {convertedTime}</Text></View>
+              <View><Text style = {{color:'#FF3434', fontSize: 18, fontWeight: 'bold', fontFamily: 'Inter-Bold'}}>NOT LIVE</Text></View>
+              <View><Text style = {{fontStyle: 'italic', fontSize: 11, fontFamily: 'Inter-Italic'}}>    live at {convertedTime}</Text></View>
             </View>
           </View>
           <View style = {{flex: 0.5, height: 25, flexDirection: 'row', top: '14%', flexWrap: 'wrap', marginLeft: "5%"}}>
-            <View><Text style = {{fontSize: 13,}}>what to expect!</Text></View>
+            <View><Text style = {{fontSize: 13, fontFamily: 'Inter-Regular'}}>what to expect!</Text></View>
           </View>
           <SafeAreaView style = {{flex:6.5, top: 40}}>
             <FlatList contentContainerStyle = {{flex: 1, flexDirection: 'row', flexWrap:'wrap', marginLeft: '5%'}}
@@ -379,13 +402,13 @@ export default class Menu extends React.Component{
               />
               <View style = {{flexDirection: 'row'}}>
                 <View style = {{flex: 4}}>
-                  <Text style={{fontSize: 32, fontWeight: "bold", marginLeft: "5%", marginTop: "3%"}}>{this.state.modalRest}</Text>
-                  <Text style={{fontSize: 13, marginLeft: "5%", marginTop: "2%"}}>{this.state.modalAddress}  •  {this.state.modalDist} miles</Text>
+                  <Text style={{fontSize: 32, fontWeight: "bold", marginLeft: "5%", marginTop: "3%", fontFamily: 'Inter-Bold'}}>{this.state.modalRest}</Text>
+                  <Text style={{fontSize: 13, marginLeft: "5%", marginTop: "2%", fontFamily: 'Inter-Regular'}}>{this.state.modalAddress}  •  {this.state.modalDist} miles</Text>
                   <View style = {{flexDirection: "row"}}>
                     <Image source = {require('./watchIcon.png')}
                       style = {{marginLeft: "5%", marginTop: "2.5%"}}
                     />
-                    <Text style={{fontSize: 13, marginLeft: "1.2%", marginTop: "2%"}}>{this.state.modalWatching}</Text>
+                    <Text style={{fontSize: 13, marginLeft: "1.2%", marginTop: "2%", fontFamily: 'Inter-Regular'}}>{this.state.modalWatching}</Text>
                   </View>
                 </View>
                 <View style = {{flex:1}}>
@@ -412,8 +435,8 @@ export default class Menu extends React.Component{
                 <View style = {[styles.checkoutModal, {opacity: this.state.checkoutOpacity}]}>
                   <Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16}}>{this.state.modalRest}</Text>
                   <View style = {{backgroundColor: '#EDE1FF', height: 26, width: '100%', alignItems: 'center', justifyContent:'center', marginTop: 10, flexDirection: 'row'}}>
-                    <Text style = {{color: '#330382', fontSize: 12}}>Savings</Text>
-                    <Text style = {{color: '#330382', fontSize: 12, fontWeight: 'bold'}}>       {"$" + this.state.totalSavings.toFixed(2)}</Text>
+                    <Text style = {{color: '#330382', fontSize: 12, fontFamily: 'Inter-Regular'}}>Savings</Text>
+                    <Text style = {{color: '#330382', fontSize: 12, fontWeight: 'bold', fontFamily: 'Inter-Bold'}}>       {"$" + this.state.totalSavings.toFixed(2)}</Text>
                   </View>
                   <SafeAreaView style = {{marginLeft: '6%', minHeight: '12%', maxHeight: '20%', marginTop:'12%'}}>
                     <FlatList
@@ -425,17 +448,17 @@ export default class Menu extends React.Component{
                   </SafeAreaView>
                   <View style = {{backgroundColor: '#EDE1FF', height: 2, width: '80%'}}></View>
                   <View style = {styles.tax}>
-                    <Text style = {{width: '55%', fontSize: 12}}>Tax</Text>
-                    <Text style = {{fontSize: 12}}>{"$" + (this.state.orderTotal*0.08).toFixed(2)}</Text>
+                    <Text style = {{width: '55%', fontSize: 12, fontFamily: 'Inter-Regular'}}>Tax</Text>
+                    <Text style = {{fontSize: 12, fontFamily: 'Inter-Regular'}}>{"$" + (this.state.orderTotal*0.08).toFixed(2)}</Text>
                     <Text>{'\n\n'}</Text>
                   </View>
                   <View style ={{flexDirection: 'row', alignSelf: 'left', left: '15%',}}>
                     <Image source = {require('./card.png')}
                     />
-                  <Text style = {{fontSize: 14, top: -3, fontWeight: '600'}}>   {this.state.lastFour}</Text>
+                  <Text style = {{fontSize: 14, top: -3, fontWeight: '600', fontFamily: 'Inter-Bold'}}>   {this.state.lastFour}</Text>
                   </View>
                   <TouchableOpacity onPress = {this.checkPayment} style={{backgroundColor:this.state.placeOrderColor, top: 15, borderRadius: 12, width: 260, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>{this.state.placeOrderText}</Text>
+                    <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF', fontFamily: 'Inter-Bold'}}>{this.state.placeOrderText}</Text>
                   </TouchableOpacity>
                   <Text>{'\n'}</Text>
                 </View>
@@ -446,7 +469,7 @@ export default class Menu extends React.Component{
                   backdropOpacity = {0.5}
                 >
                   <View style = {[styles.paymentModal, {opacity: this.state.paymentOpacity}]}>
-                    <Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16}}>Add Payment Method</Text>
+                    <Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16, fontFamily: 'Inter-Bold'}}>Add Payment Method</Text>
                     <View style = {{marginTop: '10%'}}>
                       <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 0, color: '#000000'}]} onChangeText={text => this.cardName(text)} value = {this.state.cardName} onFocus = {this.clearCardName} onBlur = {this.resetCardName}></TextInput>
                       <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, color: '#000000'}]} onChangeText={text => this.cardNumber(text)}  value = {this.state.cardNumber} onFocus={this.clearCardNumber} onBlur = {this.resetCardNumber}></TextInput>
@@ -492,7 +515,7 @@ export default class Menu extends React.Component{
                       </View>
                     </View>
                     <TouchableOpacity onPress = {this.addPayment} style={{position: 'absolute', top: '80%', backgroundColor:'#8134FF', borderRadius: 12, width: 98, height:37, alignItems: 'center', justifyContent: 'center'}}>
-                      <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>Add</Text>
+                      <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF', fontFamily: 'Inter-Bold'}}>Add</Text>
                     </TouchableOpacity>
                   </View>
                 </Modal>
@@ -505,14 +528,14 @@ export default class Menu extends React.Component{
                     <View style = {styles.orderModal}>
                       <View style= {styles.container1}>
                       <View style={{width:'70%'}}>
-                        <Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16}}>    {this.state.modalRest}</Text>
+                        <Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16, fontFamily: 'Inter-Bold'}}>    {this.state.modalRest}</Text>
                       </View>
                       <View style={{width:'30%'}}>
-                        <Text style = {{color: '#000000', marginTop: '20%', fontSize: 10}}>    Order#{this.state.orderNumb}</Text>
+                        <Text style = {{color: '#000000', marginTop: '20%', fontSize: 10, fontFamily:'Inter-Regular'}}>    Order#{this.state.orderNumb}</Text>
                       </View>
                       </View>
                       <View style = {{backgroundColor: '#FFFCE6', height: 26, width: '100%', alignItems: 'center', justifyContent:'center', marginTop: 10, flexDirection: 'row'}}>
-                        <Text style = {{color: '#62580E', fontSize: 12}}>       Pick up before {convertedHours}</Text>
+                        <Text style = {{color: '#62580E', fontSize: 12, fontFamily: 'Inter-Regular'}}>       Pick up before {convertedHours}</Text>
                       </View>
                       <SafeAreaView style = {{marginLeft: '6%', minHeight: '14%', maxHeight: '30%', marginTop:'12%'}}>
                         <FlatList
@@ -525,7 +548,7 @@ export default class Menu extends React.Component{
                       <Text>{'\n'}</Text>
                       <View style={{alignItems: 'center'}}>
                       <TouchableOpacity onPress = {this.turnModalOff} style={{backgroundColor:'#8134FF', borderRadius: 12, width: 260, height:35, flexDirection:'row', marginBottom: 20, alignItems: 'center', justifyContent: 'center'}}>
-                        <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF'}}>Return Home</Text>
+                        <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#FFFFFF', fontFamily: 'Inter-Bold'}}>Return Home</Text>
                       </TouchableOpacity>
                       </View>
                        <Text>{'\n'}</Text>
@@ -534,7 +557,7 @@ export default class Menu extends React.Component{
               </Modal>
               <View style = {[styles.checkOutButton, {opacity: this.state.checkoutButtonOpacity}]}>
                 <TouchableOpacity onPress = {this.checkout}>
-                  <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Check Out</Text>
+                  <Text style={{color:'#FFFFFF', fontWeight: 'bold', fontFamily: 'Inter-Bold'}}>Check Out</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -543,8 +566,8 @@ export default class Menu extends React.Component{
         <View style={styles.sideSpace}></View>
         <View style={styles.sidebar}></View>
         <View style={styles.mainMenu}>
-	        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center',top: 5, marginBottom: 5}}>
-	          <Text style = {{fontSize: 12}}>{address}</Text>
+	        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+	          <Text style={{fontFamily: 'Inter-Regular'}}>{address}</Text>
 	        </View>
         <View style = {{flex: 20}}>
           <FlatList style = {{flex: 1}}
@@ -747,8 +770,8 @@ export default class Menu extends React.Component{
                 <Text style={{fontSize: 12}}>{item.description}</Text>
               </View>
               <View style={styles.dealPrice}>
-                <Text style={{textDecorationLine: "line-through"}}>{item.originalPrice}  > </Text>
-                <Text>{item.newPrice}</Text>
+                <Text style={{textDecorationLine: "line-through", fontFamily: 'Inter-Regular'}}>{item.originalPrice}  > </Text>
+                <Text style={{fontFamily: 'Inter-Regular'}}>{item.newPrice}</Text>
               </View>
             </View>
           </View>
@@ -774,7 +797,7 @@ export default class Menu extends React.Component{
               <View style={styles.quantityNumberBox}>
                 <Text style={styles.quantityNumberText}> {this.state.currentOrderQuantity} </Text>
                 <TouchableOpacity onPress={() => {this.addItem(item.name, this.state.modalRest, this.state.currentOrderQuantity, item.newPrice, item.originalPrice);}}>
-                    <Text style={{fontSize: 11, fontWeight: 'bold', color: '#FFFFFF', marginTop: 60}}>ADD   </Text>
+                    <Text style={{fontSize: 11, fontWeight: 'bold', color: '#FFFFFF', marginTop: 60, fontFamily: 'Inter-Bold'}}>ADD   </Text>
                 </TouchableOpacity>
               </View>
                <TouchableOpacity style={styles.signPlus} onPress={() => this.setState({currentOrderQuantity: this.state.currentOrderQuantity +1})}>
@@ -802,7 +825,7 @@ export default class Menu extends React.Component{
             </View>
             <View style={{width: '90%'}}>
               <View style={styles.dealDesc}>
-                <Text style={{fontSize: 12}}>{item.description}</Text>
+                <Text style={{fontSize: 12, fontFamily: 'Inter-Regular'}}>{item.description}</Text>
               </View>
             </View>
           </View>
@@ -821,7 +844,7 @@ export default class Menu extends React.Component{
         number = this.state.order[i].quantity;
       }
     }
-    return(<View><Text style = {{fontSize: 12, color: '#FFFFFF'}}>{number}</Text></View>);
+    return(<View><Text style = {{fontSize: 12, color: '#FFFFFF', fontFamily:'Inter-Regular'}}>{number}</Text></View>);
   }
 
 //sad
@@ -830,10 +853,10 @@ export default class Menu extends React.Component{
     return(
     <View style = {styles.orderItem}>
       <View style = {{width: '55%', flexDirection: 'row'}}>
-        <Text style={{fontWeight:'bold'}}>{item.name}</Text>
-        <Text style={{fontSize: 12, paddingTop:1.5}}>   x{item.quantity}</Text>
+        <Text style={{fontWeight:'bold', fontFamily: 'Inter-Bold'}}>{item.name}</Text>
+        <Text style={{fontSize: 12, paddingTop:1.5, fontFamily: 'Inter-Regular'}}>   x{item.quantity}</Text>
       </View>
-      <Text style = {{marginLeft:'20%', fontSize:13}}>{"$"+(item.price*item.quantity).toFixed(2)}</Text>
+      <Text style = {{marginLeft:'20%', fontSize:13, fontFamily: 'Inter-Regular'}}>{"$"+(item.price*item.quantity).toFixed(2)}</Text>
     </View>);
   };
   renderOrderFinal = ({item}) => {
@@ -841,8 +864,8 @@ export default class Menu extends React.Component{
     return(
     <View style = {styles.orderItem}>
       <View style = {{width: '55%', flexDirection: 'row'}}>
-        <Text style={{fontWeight:'bold'}}>{item.name}</Text>
-        <Text style={{fontSize: 12, paddingTop:1.5}}>   x{item.quantity}</Text>
+        <Text style={{fontWeight:'bold', fontFamily: 'Inter-Bold'}}>{item.name}</Text>
+        <Text style={{fontSize: 12, paddingTop:1.5, fontFamily: 'Inter-Regular'}}>   x{item.quantity}</Text>
       </View>
     </View>);
   };
@@ -1003,7 +1026,7 @@ export default class Menu extends React.Component{
           oldPrice: this.state.order[i].oldPrice,
   		  });
   	}
-    //this.updateRewards();
+   // this.updateRewards();
   }
 
   /*updateRewards = async () => {
@@ -1096,6 +1119,7 @@ const styles = StyleSheet.create({
     // fontFamily: 'Roboto',
     fontStyle: 'normal',
     fontWeight: 'bold',
+    fontFamily: 'Inter-Bold'
   },
   timeHeaderLive: {
     marginLeft: 0.05 * screenWidth,
@@ -1103,16 +1127,19 @@ const styles = StyleSheet.create({
     // fontFamily: 'Roboto',
     fontStyle: 'normal',
     fontWeight: 'bold',
-    color: '#8134FF'
+    color: '#8134FF',
+    fontFamily: 'Inter-Bold'
   },
   restaurantName:{
     fontWeight: 'bold',
+    fontFamily: 'Inter-Bold',
     fontSize: 18
   },
   watch:{
     fontSize: 10.5,
     fontWeight: '200',
     fontStyle: 'italic',
+    fontFamily: 'Inter-Italic'
   },
   container: {
     flex: 1,
@@ -1143,10 +1170,12 @@ const styles = StyleSheet.create({
     borderColor: '#8134FF'
   },
   title: {
-    fontSize: 16
+    fontSize: 16,
+    fontFamily: 'Inter-Regular'
   },
   item:{
-    fontSize: 12
+    fontSize: 12,
+    fontFamily: 'Inter-Regular'
   },
   container1: {
     flex: 1,
@@ -1212,7 +1241,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 2,
     flexWrap: 'wrap',
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
+    fontFamily: 'Inter-Regular'
   },
   dealBoxNotPressed:{
     height: 110,
@@ -1315,7 +1345,8 @@ dealBoxOrderedPressed:{
     fontSize: 18,
     fontWeight: "bold",
     marginLeft: "4%",
-    marginTop: "22%"
+    marginTop: "22%",
+    fontFamily: 'Inter-Bold'
   },
   modalTimeLive:
   {
@@ -1323,7 +1354,8 @@ dealBoxOrderedPressed:{
     fontWeight: "bold",
     marginLeft: "4%",
     marginTop: "22%",
-    color: '#8134FF'
+    color: '#8134FF',
+    fontFamily: 'Inter-Bold'
   },
   emptySideQuantity:
   {
@@ -1350,6 +1382,7 @@ dealBoxOrderedPressed:{
     fontSize: 20,
     top: 35,
     fontWeight: "bold",
+    fontFamily: 'Inter-Bold'
 
   },
   signText:
@@ -1357,13 +1390,15 @@ dealBoxOrderedPressed:{
     color: '#FFFFFF',
     fontSize: 18,
     top: 35,
+    fontFamily: 'Inter-Regular'
   },
   removeText:
   {
     color: '#FFFFFF',
     fontSize: 15,
     top: 35,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontFamily: 'Inter-Bold'
   },
   addText:
   {
@@ -1371,6 +1406,7 @@ dealBoxOrderedPressed:{
     color: '#FFFFFF',
     marginTop: 60,
     fontWeight: "bold",
+    fontFamily: 'Inter-Bold'
 
   },
   checkOutButton:
@@ -1383,7 +1419,8 @@ dealBoxOrderedPressed:{
     height: 40,
     width: '80%',
     marginLeft: '10%',
-    borderRadius: 12
+    borderRadius: 12,
+    fontFamily: 'Inter-Regular'
   },
   checkoutModal:
   {
@@ -1482,7 +1519,8 @@ dealBoxOrderedPressed:{
     borderBottomWidth: 2,
     borderBottomColor: '#8032ff',
     width: .7*screenWidth,
-    color: '#000000'
+    color: '#000000',
+    fontFamily: 'Inter-Regular'
   },
   paymentModal:
   {
@@ -1512,6 +1550,7 @@ dealBoxOrderedPressed:{
    color: 'black',
    fontSize: 15,
    borderWidth: 0,
+   fontFamily: 'Inter-Regular' 
 
  },
 });
