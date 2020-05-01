@@ -305,7 +305,7 @@ export default class Menu extends React.Component{
 		    {
 		    	convertedTime = '12:00 AM';
 		    }
-		    else 
+		    else
 		    {
 		    	convertedTime = int.toString() + ':00 AM';
 		    }
@@ -327,7 +327,7 @@ export default class Menu extends React.Component{
 	    {
 	    	convertedHours = '12:00 AM';
 	    }
-	    else 
+	    else
 	    {
 	    	convertedHours = hours.toString() + ':00 AM';
 	    }
@@ -369,14 +369,14 @@ export default class Menu extends React.Component{
             <View><Text style = {{fontSize: 13, fontFamily: 'Inter-Regular'}}>what to expect!</Text></View>
           </View>
           <SafeAreaView style = {{flex:6.5, top: 40}}>
-            <FlatList contentContainerStyle = {{flex: 1, flexDirection: 'row', marginLeft: '5%', width: screenWidth, numColumns: 2}}
+            <FlatList contentContainerStyle = {{flex: 1, flexDirection: 'row', flexWrap:'wrap', marginLeft: '5%'}}
               data={this.state.ITEMS}
               renderItem={this.renderNotLiveDeals}
               keyExtractor={(item, index) => index.toString()}
               showsVerticalScrollIndicator={false}
             />
           </SafeAreaView>
-          <View style = {{flex: 2.5, alignItems:'center'}}><Text>come back at 8:30 for tonight’s nibbles </Text>
+          <View style = {{flex: 2.5, alignItems:'center'}}><Text>come back at {convertedTime} for tonight’s nibbles </Text>
           <Image source = {require('./happyface.png')}
             style = {{marginTop: "2.5%"}}
           />
@@ -763,8 +763,8 @@ export default class Menu extends React.Component{
                 <FlatList data={itemInArray} extraData={this.state.refresh} renderItem={this.renderQuantity} keyExtractor={(item, index) => index.toString()}/>
               </View>
             </View>
-            <View style={{width: '70%'}}>
-              <View style={styles.dealDesc}>
+            <View style={{width: 0.58*screenWidth}}>
+              <View style={[styles.dealDesc, {}]}>
                 <Text style={{fontSize: 12}}>{item.description}</Text>
               </View>
               <View style={styles.dealPrice}>

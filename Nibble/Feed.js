@@ -67,19 +67,18 @@ export default class Feed extends React.Component{
       //this.getInfo = this.getInfo.bind(this);
 
   }
-  componentDidMount(){
-    //this.getRewards();
-  }
 
-  getRewards = async () => {
-    try {
-      var currRewards = await AsyncStorage.getItem('rewards');
-      currRewards = parseInt(currRewards);
-      this.setState({rewardPoints: currRewards});
-    } catch (error) {
-      // Error saving data
-    }
-  };
+  // getRewards = async () => {
+  //   console.log("hello im in the feed");
+  //   try {
+  //     var currRewards = await AsyncStorage.getItem('rewards');
+  //     currRewards = parseInt(currRewards);
+  //     this.setState({rewardPoints: currRewards});
+  //   } catch (error) {
+  //     // Error saving data
+  //   }
+  // };
+
   render(){
     const {dataloaded} = this.state;
     if(!dataloaded)
@@ -115,17 +114,17 @@ export default class Feed extends React.Component{
             <FlatList
               data={this.state.STATS}
               renderItem={this.renderStats}
+              keyExtractor={(item, index) => index.toString()}
               horizontal = {true}
               showsHorizontalScrollIndicator={false}
             />
           </ScrollView>
-          <ScrollView style = {{marginTop: 0}}>
             <FlatList
               data={this.state.FEED}
               renderItem={this.renderFeed}
+              keyExtractor={(item, index) => index.toString()}
               showsVerticalScrollIndicator={false}
             />
-          </ScrollView>
         </View>
       );
   }
