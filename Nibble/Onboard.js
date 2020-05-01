@@ -30,7 +30,7 @@ export default class Onboard extends React.Component{
   constructor(props){
     super(props);
     this.storeData = this.storeData.bind(this);
-    this.storeData();
+    //this.storeData();
     console.disableYellowBox = true;
 
   };

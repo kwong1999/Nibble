@@ -60,7 +60,6 @@ export default class Feed extends React.Component{
     try {
       var currRewards = await AsyncStorage.getItem('rewards');
       currRewards = parseInt(currRewards);
-      console.log("feed rewards", currRewards);
       this.setState({rewardPoints: currRewards});
     } catch (error) {
       // Error saving data

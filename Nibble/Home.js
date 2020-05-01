@@ -109,8 +109,6 @@ export default class Menu extends React.Component{
       this.addItem = this.addItem.bind(this);
       console.disableYellowBox = true;
 
-
-
     }
 
   initTimes = () => {
@@ -405,8 +403,8 @@ export default class Menu extends React.Component{
                   <View style = {[styles.paymentModal, {opacity: this.state.paymentOpacity}]}>
                     <Text style = {{color: '#8134FF', marginTop: '6%', fontWeight:'bold', fontSize: 16}}>Add Payment Method</Text>
                     <View style = {{marginTop: '10%'}}>
-                      <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 0}]} onChangeText={text => this.cardName(text)} value = {this.state.cardName} onFocus = {this.clearCardName} onBlur = {this.resetCardName}></TextInput>
-                      <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.cardNumber(text)}  value = {this.state.cardNumber} onFocus={this.clearCardNumber} onBlur = {this.resetCardNumber}></TextInput>
+                      <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 0, color: '#000000'}]} onChangeText={text => this.cardName(text)} value = {this.state.cardName} onFocus = {this.clearCardName} onBlur = {this.resetCardName}></TextInput>
+                      <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, color: '#000000'}]} onChangeText={text => this.cardNumber(text)}  value = {this.state.cardNumber} onFocus={this.clearCardNumber} onBlur = {this.resetCardNumber}></TextInput>
                       <View style = {{flex: 2.8, flexDirection: 'row'}}>
                       <Picker
                       style={[styles.onePicker, {left: 5, width: 25}]} itemStyle={styles.onePickerItem}
@@ -445,7 +443,7 @@ export default class Menu extends React.Component{
                         <Picker.Item label="2030" value="2030" />
                         </Picker>
                         <View style = {{flex: 0.8}}></View>
-                        <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {flex: 1, width: '36%', marginTop: 25,}]} onChangeText={text => this.cardSec(text)} value = {this.state.cardSec} onFocus = {this.clearCardSec} onBlur = {this.resetCardSec}></TextInput>
+                        <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {flex: 1, width: '36%', marginTop: 25, color: '#000000'}]} onChangeText={text => this.cardSec(text)} value = {this.state.cardSec} onFocus = {this.clearCardSec} onBlur = {this.resetCardSec}></TextInput>
                       </View>
                     </View>
                     <TouchableOpacity onPress = {this.addPayment} style={{position: 'absolute', top: '80%', backgroundColor:'#8134FF', borderRadius: 12, width: 98, height:37, alignItems: 'center', justifyContent: 'center'}}>
@@ -580,7 +578,7 @@ export default class Menu extends React.Component{
     {
     	convertedTime = '12:00 AM';
     }
-    else 
+    else
     {
     	convertedTime = int.toString() + ':00 AM';
     }
@@ -962,23 +960,23 @@ export default class Menu extends React.Component{
         //   rewards: currRewards,
         // });
   	}
-    //this.updateRewards();
+    this.updateRewards();
   }
 
- /* updateRewards = async () => {
+  updateRewards = async () => {
     var currRewards = await AsyncStorage.getItem('rewards');
 
     currRewards = parseInt(currRewards);
     currRewards = currRewards + (Math.floor(this.state.orderTotal/10) * 10);
 
     try {
-      AsyncStorage.setItem('rewards', currRewards.toString());
+      await AsyncStorage.setItem('rewards', currRewards.toString());
 
     } catch (error) {
       // Error saving data
     }
   };
-*/
+
 
   turnModalOn = (name, image, address, watchers, time, dist, live) =>{
     this.getItems(name);

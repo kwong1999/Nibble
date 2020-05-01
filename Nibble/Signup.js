@@ -128,15 +128,12 @@ export default class Signup extends React.Component{
   }
 
   storeData = async (name, phoneNumber, email, month, year) => {
-    console.log("added!");
 
     try {
-      console.log("added!");
 
       AsyncStorage.setItem('email', email);
       AsyncStorage.setItem('rewards', '0');
 
-      console.log("added!");
 
     } catch (error) {
       // Error saving data
