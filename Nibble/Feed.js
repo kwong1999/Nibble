@@ -57,6 +57,7 @@ export default class Feed extends React.Component{
         {number: '18%', description: 'of students ate chinese food'}
       ],
       FEED: [
+        {name: 'Zade Kaylani', description: 'gifted a reward to', restaurant: 'Conner Chyung', image: require('./zade.png'), time: '2m'},
         {name: 'Katie Wong', description: 'felt like enjoying thai today at', restaurant: 'Trio', image: require('./katie.png'), time: '5m'},
         {name: 'Eric Zhan', description: 'loved some chicken at', restaurant: 'Chik-fil-a', image: require('./eric.png'), time: '12m'},
         {name: 'Chan Lee', description: 'was thirsty for some', restaurant: 'Pot of Cha', image: require('./chan.png'), time: '15m'},
@@ -67,19 +68,18 @@ export default class Feed extends React.Component{
       //this.getInfo = this.getInfo.bind(this);
 
   }
-  componentDidMount(){
-    //this.getRewards();
-  }
 
-  getRewards = async () => {
-    try {
-      var currRewards = await AsyncStorage.getItem('rewards');
-      currRewards = parseInt(currRewards);
-      this.setState({rewardPoints: currRewards});
-    } catch (error) {
-      // Error saving data
-    }
-  };
+  // getRewards = async () => {
+  //   console.log("hello im in the feed");
+  //   try {
+  //     var currRewards = await AsyncStorage.getItem('rewards');
+  //     currRewards = parseInt(currRewards);
+  //     this.setState({rewardPoints: currRewards});
+  //   } catch (error) {
+  //     // Error saving data
+  //   }
+  // };
+
   render(){
     const {dataloaded} = this.state;
     if(!dataloaded)
@@ -93,7 +93,7 @@ export default class Feed extends React.Component{
     return(
         <View style = {{flex: 1, alignItems:'center'}}>
         <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{zIndex: 999, backgroundColor:'#8134FF', borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: '87%', left: '78%'}}>
-                <Image source={require('./house.png')}/>
+              <Image style = {{height: 20, width: 20, resizeMode: 'contain'}} source={require('./house.png')}/>
         </TouchableOpacity>
           <TouchableOpacity style = {styles.rewardsBox}>
             <LinearGradient start = {[0,0]} colors={['#8134FF', '#AD7CFE']} style = {{width: '100%', height:'100%', borderRadius: 10}}>
@@ -109,23 +109,23 @@ export default class Feed extends React.Component{
             </LinearGradient>
           </TouchableOpacity>
           <View style = {{marginTop: 50}}>
-            <Text style = {{color: '#160039', fontSize: 14, opacity: 0.7, fontStyle: 'italic', fontFamily: 'Inter-Italic'}}>$5 off at 500 points</Text>
+            <Text style = {{color: '#160039', fontSize: 14, opacity: 0.7, fontStyle: 'italic'}}>$5 off at 50 points</Text>
           </View>
-          <ScrollView style = {{left: 10, marginTop: 20}}>
+          <ScrollView style = {{left: 10, marginTop: 20, zIndex: 999}}>
             <FlatList
               data={this.state.STATS}
               renderItem={this.renderStats}
+              keyExtractor={(item, index) => index.toString()}
               horizontal = {true}
               showsHorizontalScrollIndicator={false}
             />
           </ScrollView>
-          <ScrollView style = {{marginTop: 0}}>
-            <FlatList
+          <FlatList style = {{top: 20}}
               data={this.state.FEED}
               renderItem={this.renderFeed}
+              keyExtractor={(item, index) => index.toString()}
               showsVerticalScrollIndicator={false}
-            />
-          </ScrollView>
+          />
         </View>
       );
   }
@@ -139,6 +139,7 @@ export default class Feed extends React.Component{
       </View>
     );
   }
+  
   renderFeed = ({item}) => {
     var imageString = item.image;
     return(
@@ -181,5 +182,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 20,
     marginLeft: 20,
+    zIndex: 999
   }
 });
