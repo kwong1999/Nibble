@@ -960,7 +960,7 @@ export default class Menu extends React.Component{
         //   rewards: currRewards,
         // });
   	}
-    this.updateRewards();
+    //this.updateRewards();
   }
 
   updateRewards = async () => {
