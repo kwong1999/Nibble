@@ -353,7 +353,7 @@ export default class Menu extends React.Component{
               showsVerticalScrollIndicator={false}
             />
           </SafeAreaView>
-          <View style = {{flex: 2.5, alignItems:'center'}}><Text>come back at 8:30 for tonight’s nibbles </Text>
+          <View style = {{flex: 2.5, alignItems:'center'}}><Text>come back at {convertedTime} for tonight’s nibbles </Text>
           <Image source = {require('./happyface.png')}
             style = {{marginTop: "2.5%"}}
           />
