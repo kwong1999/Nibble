@@ -1001,10 +1001,10 @@ export default class Menu extends React.Component{
           oldPrice: this.state.order[i].oldPrice,
   		  });
   	}
-    this.updateRewards();
+    //this.updateRewards();
   }
 
-  updateRewards = async () => {
+  /*updateRewards = async () => {
 
     var currRewards = await AsyncStorage.getItem('rewards');
 
@@ -1017,7 +1017,7 @@ export default class Menu extends React.Component{
     } catch (error) {
       // Error saving data
     }
-  };
+  };*/
 
 
 

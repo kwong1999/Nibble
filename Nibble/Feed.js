@@ -53,7 +53,7 @@ export default class Feed extends React.Component{
 
   }
   componentDidMount(){
-    this.getRewards();
+    //this.getRewards();
   }
 
   getRewards = async () => {
