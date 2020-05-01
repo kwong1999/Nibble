@@ -102,6 +102,7 @@ export default class Signup extends React.Component{
     var name = this.state.firstName + ' ' + this.state.lastName;
     var Smonth = new Date().getMonth() + 1;
     var Syear = new Date().getFullYear();
+    var RandomNumber = Math.floor(Math.random() * 100) + 1 ;
     firestoreDB.collection('users').doc(this.state.email).get()
     .then((docSnapshot) => {
     if (!docSnapshot.exists) {
@@ -112,7 +113,7 @@ export default class Signup extends React.Component{
       month: Smonth,
       year: Syear,
       payment: 'null',
-      rewards: 0
+      rewards: RandomNumber
     });
     this.storeData(name, this.state.phoneNumber, this.state.email, Smonth, Syear);
 

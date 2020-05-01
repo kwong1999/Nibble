@@ -263,11 +263,54 @@ export default class Menu extends React.Component{
       const {address} = this.state;
       let timeR = this.state.TIMES.filter(item => item.restaurants.length > 0);
       var modalTimeStyle = styles.modalTime;
+      var convertedTime ='';
       if(this.state.modalTime.localeCompare('LIVE') ==0)
       {
         modalTimeStyle = styles.modalTimeLive;
       }
+    else
+    {
+    	var rHours= this.state.modalTime.substr(0, this.state.modalTime.indexOf(':'));
+    	var int = parseInt(rHours, 10);
+		    if(int == 12)
+		    {
+		    	convertedTime = '12:00 PM';
+		    }
+		    else if(int > 12)
+		    {
+		    	convertedTime = (int-12).toString() + ':00 PM';
+		    }
+		    else if(int == 0)
+		    {
+		    	convertedTime = '12:00 AM';
+		    }
+		    else 
+		    {
+		    	convertedTime = int.toString() + ':00 AM';
+		    }
+
+      }
       var hours = new Date().getHours();
+      var min = new Date().getMinutes();
+      hours = hours + 1;
+      var convertedHours = '';
+      if(hours == 12)
+	    {
+	    	convertedHours = '12:00 PM';
+	    }
+	    else if(hours > 12)
+	    {
+	    	convertedHours = (hours-12).toString() + ':00 PM';
+	    }
+	    else if(hours == 0)
+	    {
+	    	convertedHours = '12:00 AM';
+	    }
+	    else 
+	    {
+	    	convertedHours = hours.toString() + ':00 AM';
+	    }
+
 
 
     return(
@@ -298,7 +341,7 @@ export default class Menu extends React.Component{
             </View>
             <View style = {{flex: 1, flexDirection: 'row', marginTop: '5%', flexWrap: 'wrap',}}>
               <View><Text style = {{color:'#FF3434', fontSize: 18, fontWeight: 'bold'}}>NOT LIVE</Text></View>
-              <View><Text style = {{fontStyle: 'italic', fontSize: 11}}>    live at {this.state.modalTime}</Text></View>
+              <View><Text style = {{fontStyle: 'italic', fontSize: 11}}>    live at {convertedTime}</Text></View>
             </View>
           </View>
           <View style = {{flex: 0.5, height: 25, flexDirection: 'row', top: '14%', flexWrap: 'wrap', marginLeft: "5%"}}>
@@ -469,7 +512,7 @@ export default class Menu extends React.Component{
                       </View>
                       </View>
                       <View style = {{backgroundColor: '#FFFCE6', height: 26, width: '100%', alignItems: 'center', justifyContent:'center', marginTop: 10, flexDirection: 'row'}}>
-                        <Text style = {{color: '#62580E', fontSize: 12}}>       Pick up before {hours}:00</Text>
+                        <Text style = {{color: '#62580E', fontSize: 12}}>       Pick up before {convertedHours}</Text>
                       </View>
                       <SafeAreaView style = {{marginLeft: '6%', minHeight: '14%', maxHeight: '30%', marginTop:'12%'}}>
                         <FlatList
@@ -938,7 +981,7 @@ export default class Menu extends React.Component{
   purchase = () => {
   	this.setState({placeOrderColor: '#5ED634', placeOrderText:'\u2705\tSuccess'});
     var totalPrice = 0;
-    this.updateRewards();
+    //this.updateRewards();
     setTimeout(() => {this.setState({checkoutOpacity: 0, openOrder: true,})}, 1000);
   	for(var i=0; i < this.state.order.length; i++)
   	{
@@ -963,7 +1006,7 @@ export default class Menu extends React.Component{
     
   }
 
-  updateRewards = async () => {
+  /*updateRewards = async () => {
     var currRewards = await AsyncStorage.getItem('rewards');
 
     currRewards = parseInt(currRewards);
@@ -975,7 +1018,7 @@ export default class Menu extends React.Component{
     } catch (error) {
       // Error saving data
     } 
-  };
+  };*/
 
 
   turnModalOn = (name, image, address, watchers, time, dist, live) =>{
@@ -1436,6 +1479,7 @@ dealBoxOrderedPressed:{
     borderBottomWidth: 2,
     borderBottomColor: '#8032ff',
     width: .7*screenWidth,
+    color: '#000000'
   },
   paymentModal:
   {
