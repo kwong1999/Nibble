@@ -221,7 +221,7 @@ export default class Profile extends React.Component{
       <View style = {{flex:1}}>
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
       <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{zIndex: 999, backgroundColor:'#8134FF', borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: '87%', left: '78%'}}>
-              <Image source={require('./house.png')}/>
+              <Image style = {{height: 20, width: 20, resizeMode: 'contain'}} source={require('./house.png')}/>
       </TouchableOpacity>
       <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
       <View style={styles.viewContainer}>
@@ -269,8 +269,8 @@ export default class Profile extends React.Component{
                  <View style={{backgroundColor: '#EDE1FF', alignSelf: 'center', height: 1.5, width: 310, marginTop: 18, marginBottom: 18}}></View>
                  <View style = {{flexDirection: 'row'}}>
                  <View style={{width: '95%', flexDirection: 'row'}}>
-                 <Image source={require('./Union.png')} style={{height: this.state.cardHeight, width: this.state.cardWidth}}/>
-                   <Text style={{fontSize: 12, left: 5}}>  {this.state.paymentString}</Text>
+                 <Image source={require('./Union.png')} style={{height: this.state.cardHeight, width: this.state.cardWidth, marginRight: this.state.cardHeight}}/>
+                   <Text style={{fontSize: 12,}}>{this.state.paymentString}</Text>
                    </View>
                    <View style={{width: '5%'}}>
                    <TouchableOpacity onPress={this.paymentPress}>

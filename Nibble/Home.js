@@ -209,6 +209,8 @@ export default class Menu extends React.Component{
 
   getItems(restName) {
       var tempArray = [];
+      if(restName == "CAVA")
+        restName = "Cava"
       firestoreDB.collection("restaurants").doc(restName).collection("deals").get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         var data = doc.data();
@@ -339,7 +341,7 @@ export default class Menu extends React.Component{
             </View>
             <View style = {{flex: 1, flexDirection: 'row', marginTop: '5%', flexWrap: 'wrap',}}>
               <View><Text style = {{color:'#FF3434', fontSize: 18, fontWeight: 'bold'}}>NOT LIVE</Text></View>
-              <View><Text style = {{fontStyle: 'italic', fontSize: 11}}>    live at {convertedTime}</Text></View>
+              <View><Text style = {{fontStyle: 'italic', fontSize: 11}}>live at {convertedTime}</Text></View>
             </View>
           </View>
           <View style = {{flex: 0.5, height: 25, flexDirection: 'row', top: '14%', flexWrap: 'wrap', marginLeft: "5%"}}>
@@ -541,8 +543,8 @@ export default class Menu extends React.Component{
         <View style={styles.sideSpace}></View>
         <View style={styles.sidebar}></View>
         <View style={styles.mainMenu}>
-	        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-	          <Text>{address}</Text>
+	        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center',top: 5, marginBottom: 5}}>
+	          <Text style = {{fontSize: 12}}>{address}</Text>
 	        </View>
         <View style = {{flex: 20}}>
           <FlatList style = {{flex: 1}}
@@ -634,9 +636,9 @@ export default class Menu extends React.Component{
        		<View style={styles.mainMenu}>
 	      	<View style={styles.container1}>
 		      	<View style={styles.timeBox}>
-		        	<Text style={timeStyle}>{convertedTime}</Text>
+		        	<Text style={[timeStyle, {fontWeight: '700'}]}>{convertedTime}</Text>
 		        </View>
-		        <View style={styles.lBox}>
+		        <View style={[styles.lBox, {alignItems:'flex-end'}]}>
 		        	<Text style= {styles.watch}>{liveString}</Text>
 		        </View>
         	</View>
@@ -740,7 +742,7 @@ export default class Menu extends React.Component{
                 <FlatList data={itemInArray} extraData={this.state.refresh} renderItem={this.renderQuantity} keyExtractor={(item, index) => index.toString()}/>
               </View>
             </View>
-            <View style={{width: 0.58*screenWidth}}>
+            <View style={{width: 0.55*screenWidth}}>
               <View style={[styles.dealDesc, {}]}>
                 <Text style={{fontSize: 12}}>{item.description}</Text>
               </View>
@@ -1045,8 +1047,8 @@ export default class Menu extends React.Component{
   }
   goToSignup()
   {
-    this.props.navigation.navigate('Signup');
     this.setState({openModal:false, openCheckout: false});
+    this.props.navigation.navigate('Signup');
   }
 
   cardName(text){
@@ -1108,7 +1110,8 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   watch:{
-    fontSize: 10,
+    fontSize: 10.5,
+    fontWeight: '200',
     fontStyle: 'italic',
   },
   container: {
@@ -1125,7 +1128,7 @@ const styles = StyleSheet.create({
     borderColor: '#EDE1FF',
     shadowColor: '#b189ff',
     shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 1,
+    shadowOpacity: .1,
     shadowRadius: 2,
     elevation: 1
   },
@@ -1228,7 +1231,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
     shadowColor: '#b189ff',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
+    shadowOpacity: .1,
     shadowRadius: 2,
   },
   dealBoxOrdered:{
@@ -1300,7 +1303,7 @@ dealBoxOrderedPressed:{
     zIndex: 1,
     shadowColor: '#b189ff',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
+    shadowOpacity: .1,
     shadowRadius: 2,
   },
   dealPrice:{

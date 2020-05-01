@@ -78,7 +78,7 @@ export default class Signup extends React.Component{
           <TouchableOpacity activeOpacity = {1} onPress= {this.setFirstActive} style = {[this.state.firstStyle, {marginTop: 20}]}>
             <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.firstName(text)} value = {this.state.firstName} onFocus = {this.clearFirst} onBlur={this.resetFirst}/>
             <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.lastName(text)}  value = {this.state.lastName} onFocus={this.clearLast} onBlur={this.resetLast}/>
-            <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.phoneNumber(text)} value = {this.state.phoneNumber} onFocus={this.clearPhone} onBlur={this.resetPhone}/>
+            <TextInput clearButtonMode="while-editing" autoCompleteType = 'tel' style = {[styles.textInput, {marginTop: 25, marginBottom: 35}]} onChangeText={text => this.phoneNumber(text)} value = {this.state.phoneNumber} onFocus={this.clearPhone} onBlur={this.resetPhone}/>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity = {1} onPress= {this.setSecondActive} style = {[this.state.secondStyle, {marginTop: 50}]}>
             <TextInput clearButtonMode="while-editing" autoCapitalize = "none" style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.email(text)} value = {this.state.email} onFocus={this.clearEmail} onBlur={this.resetEmail}/>
