@@ -570,7 +570,7 @@ export default class Menu extends React.Component{
         <View style={styles.sidebar}></View>
         <View style={styles.mainMenu}>
 	        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-	          <Text style={{fontFamily: 'Inter-Regular'}}>{address}</Text>
+	          <Text style={{fontSize: 12, fontFamily: 'Inter-Regular'}}>{address}</Text>
 	        </View>
         <View style = {{flex: 20}}>
           <FlatList style = {{flex: 1}}
@@ -1157,9 +1157,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#EDE1FF',
     shadowColor: '#b189ff',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: .1,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: .2,
+    shadowRadius: 8,
     elevation: 1
   },
   liveBox:{
@@ -1263,9 +1263,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     zIndex: 1,
     shadowColor: '#b189ff',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: .1,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: .2,
+    shadowRadius: 8,
   },
   dealBoxOrdered:{
     height: 110,
@@ -1335,9 +1335,9 @@ dealBoxOrderedPressed:{
     borderWidth: 2,
     zIndex: 1,
     shadowColor: '#b189ff',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: .1,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: .2,
+    shadowRadius: 8,
   },
   dealPrice:{
     marginTop: 14,
@@ -1513,8 +1513,8 @@ dealBoxOrderedPressed:{
 
     shadowColor: '#b189ff',
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   textInput: {
     fontSize: 12,
