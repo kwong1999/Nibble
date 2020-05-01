@@ -75,7 +75,6 @@ export default class OrderHistory extends React.Component{
               tempArray[i].items.push(itemObj);
             }
             tempArray[i].price = (tempArray[i].price + (p*quant));
-            console.log(tempArray[i].price);
             tempArray[i].oldPrice = (tempArray[i].oldPrice + (oldP*quant));
             inOrder = true;
             //console.log(orderObj);
@@ -89,7 +88,6 @@ export default class OrderHistory extends React.Component{
           var orderObj = {rest: restName, items: [], price: (p*quant), oldPrice: (oldP*quant), id: tempArray.length};
           orderObj.items.push(itemObj);
           tempArray.push(orderObj);
-          console.log(p);
           this.setState({orders: tempArray});
 
         }
@@ -105,7 +103,6 @@ export default class OrderHistory extends React.Component{
   getEmail = async () => {
     try {
       const storageEmail = await AsyncStorage.getItem('email');
-      console.log("email:" + storageEmail);
       if (storageEmail != null || storageEmail !='null') {
         // We have data!!
         this.setState({email: storageEmail});
@@ -185,7 +182,7 @@ renderItem = ({item}) => {
   <View>
     <Text style={{ fontSize: 14}}>{item.itemName}    x{item.quantity}</Text>
   </View>
-  ); 
+  );
 }
 
 

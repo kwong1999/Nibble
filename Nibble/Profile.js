@@ -148,7 +148,6 @@ export default class Profile extends React.Component{
             console.log("No such document!");
         }
     }).catch(function(error) {
-        console.log("Error getting document:", error);
     });
 
   }
@@ -429,7 +428,6 @@ addPay = () => {
         })
         .catch(function(error) {
             // The document probably doesn't exist.
-            console.error("Error updating document: ", error);
         });
 
 }
@@ -451,7 +449,6 @@ addPay = () => {
         })
         .catch(function(error) {
             // The document probably doesn't exist.
-            console.error("Error updating document: ", error);
         });
 
 

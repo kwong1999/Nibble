@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /Users/eric/.yarn/bin/yarnpkg add expo-linear-gradient@~8.1.0
+  /usr/local/bin/node /Users/eric/.yarn/bin/yarnpkg add expo-image-picker@~8.1.0
 
 PATH: 
   /Users/eric/.yarn/bin:/Users/eric/.config/yarn/global/node_modules/.bin:/Library/Frameworks/Python.framework/Versions/3.8/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin:/Users/eric/Downloads/apache-ant-1.9.14/bin
@@ -14,7 +14,17 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: EACCES: permission denied, unlink '/Users/eric/Documents/lavalab/Nibble/Nibble/node_modules/.bin/atob'
+  Error: write EPIPE
+      at afterWriteDispatched (internal/stream_base_commons.js:154:25)
+      at writeGeneric (internal/stream_base_commons.js:145:3)
+      at Socket._writeGeneric (net.js:780:11)
+      at Socket._write (net.js:792:8)
+      at doWrite (_stream_writable.js:441:12)
+      at writeOrBuffer (_stream_writable.js:425:5)
+      at Socket.Writable.write (_stream_writable.js:316:11)
+      at Object.clearLine (readline.js:1274:17)
+      at clearLine (/Users/eric/.yarn/lib/cli.js:49657:12)
+      at ConsoleReporter.warn (/Users/eric/.yarn/lib/cli.js:96790:43)
 
 npm manifest: 
   {
@@ -33,6 +43,7 @@ npm manifest:
       "@react-navigation/stack": "^5.2.9",
       "expo": "^37.0.5",
       "expo-image-picker": "~8.1.0",
+      "expo-linear-gradient": "~8.1.0",
       "expo-location": "~8.1.0",
       "expo-permissions": "~8.1.0",
       "firebase": "7.9.0",
@@ -41,6 +52,7 @@ npm manifest:
       "react-dom": "~16.9.0",
       "react-draggable": "^4.3.0",
       "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.0.tar.gz",
+      "react-native-debugger": "^1.1.0",
       "react-native-fs": "^2.16.6",
       "react-native-gesture-handler": "~1.6.0",
       "react-native-image-picker": "^2.3.1",
