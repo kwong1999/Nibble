@@ -140,25 +140,21 @@ export default class OrderHistory extends React.Component{
     } 
     return(
       <View style = {{flex:1}}>
-      <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
-        <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{backgroundColor:'#8134FF', z: 9999, borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center'}}>
-                <Image source={require('./house.png')}/>
-              </TouchableOpacity>
-        <Text style={{borderWidth: 10, borderColor: '#FFFFFF', fontFamily: 'Inter-Regular'}}>@{this.state.email}</Text>
-        <View style={{backgroundColor: '#EDE1FF',  height: 1.5, width: 300}}>
-          </View>
-          <SafeAreaView style = {{marginLeft: '6%', minHeight: '14%', maxHeight: '100%', marginTop:'12%'}}>
-            <FlatList
-              data={this.state.orders}
-              renderItem={this.renderOrders}
-              keyExtractor={item => item.id}
-              showsVerticalScrollIndicator={false}
-            />
-          </SafeAreaView>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-      </ScrollView>
+        <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{zIndex: 999, backgroundColor:'#8134FF', borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: '87%', left: '78%'}}>
+              <Image style = {{height: 20, width: 20, resizeMode: 'contain'}} source={require('./house.png')}/>
+        </TouchableOpacity>
+        <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
+          <Text style={{borderColor: '#FFFFFF', marginTop: 20}}>@{this.state.email}</Text>
+          <View style={{backgroundColor: '#EDE1FF',  height: 1.5, width: 300, marginTop: 20}}></View>
+            <SafeAreaView>
+              <FlatList
+                data={this.state.orders}
+                renderItem={this.renderOrders}
+                keyExtractor={item => item.id}
+                showsVerticalScrollIndicator={false}
+              />
+            </SafeAreaView>
+        </ScrollView>
       </View>
 
 
@@ -168,40 +164,34 @@ export default class OrderHistory extends React.Component{
   renderOrders = ({item}) => {
 
     return(
-    <View>
-    <Text> </Text>
-    <View style={styles.container1}>
-    <View style={{width: '60%'}}>
-     <Text style={{fontWeight:'bold', fontSize: 18, fontFamily: 'Inter-Bold'}}>{item.rest}</Text>
-     <Text> </Text>
-     <FlatList
-              data={item.items}
-              renderItem={this.renderItem}
-              keyExtractor={item => item.id}
-              showsVerticalScrollIndicator={false}
-            />
-    </View>
-    <View style={{width: '20%'}}>
-    <Text> </Text>
-    <Text style={{textDecorationLine: "line-through", color: '#A8A1B3', top: 40, fontFamily: 'Inter-Regular'}}>{ "$" + (item.oldPrice).toFixed(2)}  ></Text>
+    <View style={[styles.container1, {width: 300, marginTop: 20}]}>
+      <View style={{width: '60%'}}>
+        <Text style={{fontWeight:'bold', fontSize: 18}}>{item.rest}</Text>
+        <Text> </Text>
+        <FlatList
+                  data={item.items}
+                  renderItem={this.renderItem}
+                  keyExtractor={item => item.id}
+                  showsVerticalScrollIndicator={false}
+                />
       </View>
-      <View style={{width: '20%'}}>
-      <Image source={require('./info.png')}/>
-      <Text style = {{fontSize:13, top: 40}}>{"$"+(item.price).toFixed(2)}</Text>
+      <View style = {{flexDirection: 'row', width: '40%', justifyContent: 'flex-end'}}>
+        <Image style = {{}} source={require('./info.png')}/>
       </View>
-    </View>
-    <Text> </Text>
-    <Text> </Text>
-    <View style={{backgroundColor: '#EDE1FF',  height: 1.5, width: 300}}>
+      <View style = {{justifyContent: 'flex-end', alignItems: 'right', width: '100%', flexDirection: 'row'}}>
+        <Text style={{textDecorationLine: "line-through", color: '#A8A1B3', fontSize: 12}}>{ "$" + (item.oldPrice).toFixed(2)}  ></Text>
+        <Text style = {{fontSize: 12}}>{"$"+(item.price).toFixed(2)}</Text>
       </View>
+      <View style={{backgroundColor: '#EDE1FF',  height: 1.5, width: 300, marginTop: 20}}></View>
 
-    </View>);
+    </View>
+    );
   };
 
 renderItem = ({item}) => {
   return(
-  <View>
-    <Text style={{ fontSize: 14, fontFamily: 'Inter-Regular'}}>{item.itemName}    x{item.quantity}</Text>
+  <View style ={{height: 18}}>
+    <Text style={{fontSize: 12}}>{item.itemName}    x{item.quantity}</Text>
   </View>
   );
 }
@@ -227,7 +217,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignItems: 'flex-start', // if you want to fill rows left to right
-
+    alignItems: 'flex-start', // if you want to fill rows left to right\
   },
 });
