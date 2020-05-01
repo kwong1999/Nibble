@@ -253,6 +253,9 @@ export default class Menu extends React.Component{
     //   });
     // }
     const { status, permissions } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status != 'granted') {
+      return;
+    } 
     let location = await Location.getCurrentPositionAsync({});
     const key = '5c3d93713edb442c825f89b7bc7d3aa4';
     const { latitude , longitude } = location.coords;
@@ -473,7 +476,7 @@ export default class Menu extends React.Component{
                       <TextInput clearButtonMode="while-editing" style = {[styles.textInput, {marginTop: 25, color: '#000000'}]} onChangeText={text => this.cardNumber(text)}  value = {this.state.cardNumber} onFocus={this.clearCardNumber} onBlur = {this.resetCardNumber}></TextInput>
                       <View style = {{flex: 2.8, flexDirection: 'row'}}>
                       <Picker
-                      style={[styles.onePicker, {left: 5, width: 25}]} itemStyle={styles.onePickerItem}
+                      style={[styles.onePicker, {left: 5, width: 35}]} itemStyle={styles.onePickerItem}
                       selectedValue={this.state.month}
                       onValueChange={(itemValue) => this.setState({month: itemValue})}
                       >
@@ -492,7 +495,7 @@ export default class Menu extends React.Component{
                       </Picker>
                       <Text style={{color: '#8235ff', top: 25, fontSize: 32, left: 10}}>/</Text>
                         <Picker
-                        style={[styles.onePicker, {left: 15, width: 40}]} itemStyle={styles.onePickerItem}
+                        style={[styles.onePicker, {left: 15, width: 50}]} itemStyle={styles.onePickerItem}
                         selectedValue={this.state.year}
                         onValueChange={(itemValue) => this.setState({year: itemValue})}
                         >
@@ -660,7 +663,8 @@ export default class Menu extends React.Component{
 		        	<Text style={timeStyle}>{convertedTime}</Text>
 		        </View>
 		        <View style={styles.lBox}>
-		        	<Text style= {styles.watch}>{liveString}</Text>
+		        	<Text style= {styles.watch}>            
+		        	{liveString}</Text>
 		        </View>
         	</View>
 	        <SafeAreaView>
@@ -874,10 +878,10 @@ export default class Menu extends React.Component{
       this.goToSignup();
     }
     price = price.substring(1, price.length);
-    var priceNumber = parseInt(price, 10);
+    var priceNumber = parseFloat(price, 10);
 
     oldPrice = oldPrice.substring(1, oldPrice.length);
-    var oldPriceNumber = parseInt(oldPrice, 10);
+    var oldPriceNumber = parseFloat(oldPrice, 10);
 
     var item = {name: name, restName: restName, quantity: quantity, price: priceNumber, oldPrice: oldPriceNumber};
 
@@ -1484,7 +1488,7 @@ dealBoxOrderedPressed:{
   },
   sideBox:
   {
-  	width: '1.2%',
+  	width: '1%',
   	backgroundColor: '#8134FF',
   	position: 'absolute',
   	left: 0,

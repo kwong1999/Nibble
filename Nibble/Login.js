@@ -17,6 +17,8 @@ return Font.loadAsync({
 
       });
 };
+const screenWidth = Math.round(Dimensions.get('window').width);
+const screenHeight = Math.round(Dimensions.get('window').height);
 
 const firebaseConfig = {
   apiKey: "<>",
@@ -73,7 +75,8 @@ export default class Signup extends React.Component{
     var firstStyle = styles.inactiveBorder;
     return(
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
-      <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
+      <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center', height: 1000}}>
+        <View style={styles.viewContainer}>
         <View><Image source = {require('./signupPic.png')} style = {{left: '15%', marginTop: 40}}/></View>
         <View style={{flexDirection:'row'}}>
           <Text style = {{opacity: 0.7, fontFamily: 'Inter-Regular'}}>Don't have an account? </Text>
@@ -87,6 +90,7 @@ export default class Signup extends React.Component{
         </TouchableOpacity>
         <TouchableOpacity style = {{marginTop: 20}}><Text style = {{color: '#8134FF', fontSize: 13, opacity: 0.8, fontWeight:'bold', fontFamily: 'Inter-Bold'}}>Forgot Password</Text></TouchableOpacity>
         <TouchableOpacity onPress = {this.loginConfirm} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold', fontFamily: 'Inter-Bold'}}>Log in</Text></TouchableOpacity>
+      </View>
       </ScrollView>
 
       </KeyboardAvoidingView>
@@ -193,5 +197,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#c39aff',
     fontFamily: 'Inter-Regular'
-  }
+  },
+  viewContainer:{
+      flexDirection: 'column',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        flex: 1
+    },
 });

@@ -89,7 +89,7 @@ export default class Signup extends React.Component{
     var firstStyle = styles.inactiveBorder;
     return(
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
-      <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center'}}>
+      <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center', height: 5000}}>
         <View style={styles.viewContainer}>
           <View style={{flexDirection:'row'}}>
             <Text style = {{opacity: 0.7, fontFamily: 'Inter-Regular'}}>Already have an account? </Text>

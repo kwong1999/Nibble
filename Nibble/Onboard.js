@@ -17,6 +17,9 @@ return Font.loadAsync({
       });
 };
 
+const screenWidth = Math.round(Dimensions.get('window').width);
+const screenHeight = Math.round(Dimensions.get('window').height);
+
 
 const firebaseConfig = {
   apiKey: "<>",
@@ -70,7 +73,7 @@ export default class Onboard extends React.Component{
     return(
       <View style = {{flex:10, backgroundColor: '#8134FF', alignItems: 'center'}}>
         <View><Image source = {require('./logo.png')} style = {{marginTop: 130}}/></View>
-        <View style = {{flex: 9, top:400}}>
+        <View style = {{flex: 9, top:screenHeight* .5}}>
           <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Login')} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold'}}>Log In</Text></TouchableOpacity>
           <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Signup')} style = {[styles.button, {top: 20, backgroundColor: '#FFFFFF'}]}><Text style = {{color:'#8134FF', fontSize: 18, fontWeight: 'bold'}}>Sign up</Text></TouchableOpacity>
           <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Home', {email: 'null'})} style = {[{marginTop: 40, alignItems: 'center', fontFamily: 'Inter-Regular'}]}><Text style = {{color:'#FFFFFF', fontSize: 14, fontWeight: 'bold'}}>Skip for now</Text></TouchableOpacity>
