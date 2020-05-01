@@ -664,14 +664,8 @@ export default class Menu extends React.Component{
 		      	<View style={styles.timeBox}>
 		        	<Text style={[timeStyle, {fontWeight: '700'}]}>{convertedTime}</Text>
 		        </View>
-<<<<<<< HEAD
-		        <View style={styles.lBox}>
-		        	<Text style= {styles.watch}>            
-		        	{liveString}</Text>
-=======
 		        <View style={[styles.lBox, {alignItems:'flex-end'}]}>
 		        	<Text style= {styles.watch}>{liveString}</Text>
->>>>>>> 129cc735dc712d6905d17b6c8a86d565c9646448
 		        </View>
         	</View>
 	        <SafeAreaView>

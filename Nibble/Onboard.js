@@ -72,13 +72,8 @@ export default class Onboard extends React.Component{
     } 
     return(
       <View style = {{flex:10, backgroundColor: '#8134FF', alignItems: 'center'}}>
-<<<<<<< HEAD
         <View><Image source = {require('./logo.png')} style = {{marginTop: 130}}/></View>
         <View style = {{flex: 9, top:screenHeight* .5}}>
-=======
-        <View><Image source = {require('./highLogo.png')} style = {{marginTop: 130, height: 100, width: 150, resizeMode: 'contain'}}/></View>
-        <View style = {{flex: 9, top:360}}>
->>>>>>> 129cc735dc712d6905d17b6c8a86d565c9646448
           <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Login')} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold'}}>Log In</Text></TouchableOpacity>
           <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Signup')} style = {[styles.button, {top: 20, backgroundColor: '#FFFFFF'}]}><Text style = {{color:'#8134FF', fontSize: 18, fontWeight: 'bold'}}>Sign up</Text></TouchableOpacity>
           <TouchableOpacity onPress = {()=>this.props.navigation.navigate('Home', {email: 'null'})} style = {[{marginTop: 40, alignItems: 'center', fontFamily: 'Inter-Regular'}]}><Text style = {{color:'#FFFFFF', fontSize: 14, fontWeight: 'bold'}}>Skip for now</Text></TouchableOpacity>
