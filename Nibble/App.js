@@ -6,6 +6,7 @@ import { createStackNavigator, createSwitchNavigator } from '@react-navigation/s
 import { CommonActions } from '@react-navigation/native';
 
 import Home from './Home';
+import Menu from './Home 2'; 
 import Onboard from './Onboard';
 import Signup from './Signup';
 import Profile from './Profile';
