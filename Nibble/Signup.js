@@ -85,11 +85,11 @@ export default class Signup extends React.Component{
         startAsync={fetchFonts}
         onFinish={() => this.setState({dataloaded: true})} />
         );
-    } 
+    }
     var firstStyle = styles.inactiveBorder;
     return(
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
-      <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center', height: 5000}}>
+      <ScrollView contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center',}}>
         <View style={styles.viewContainer}>
           <View style={{flexDirection:'row'}}>
             <Text style = {{opacity: 0.7, fontFamily: 'Inter-Regular'}}>Already have an account? </Text>
@@ -263,7 +263,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
     flex: 1,
-    top: 30
+    top: 30,
+    marginBottom: 35
   },
   inactiveBorder:{
     width: 327, borderRadius: 22, top: 20, borderWidth:6, borderColor: '#c39aff', alignItems: 'center'

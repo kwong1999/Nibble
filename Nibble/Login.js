@@ -19,6 +19,7 @@ return Font.loadAsync({
 };
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
+const keyboardVerticalOffset = Platform.OS === 'ios' ? 50 : 0
 
 const firebaseConfig = {
   apiKey: "<>",
@@ -71,29 +72,32 @@ export default class Signup extends React.Component{
         startAsync={fetchFonts}
         onFinish={() => this.setState({dataloaded: true})} />
         );
-    } 
+    }
     var firstStyle = styles.inactiveBorder;
     return(
-      <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
-      <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center', height: 1000}}>
-        <View style={styles.viewContainer}>
-        <View><Image source = {require('./signupPic.png')} style = {{left: '15%', marginTop: 40}}/></View>
-        <View style={{flexDirection:'row'}}>
-          <Text style = {{opacity: 0.7, fontFamily: 'Inter-Regular'}}>Don't have an account? </Text>
-          <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Signup')}}><Text style = {{color:'#8134FF', fontWeight:'bold', fontFamily: 'Inter-Bold'}}>Sign up</Text></TouchableOpacity>
-        </View>
-        <TouchableOpacity activeOpacity = {1} onPress= {this.setFirstActive} style = {this.state.firstStyle}>
-          <TextInput clearButtonMode="while-editing" autoCapitalize='none' onFocus = {()=>{this.setFirstActive();  this.clearEmail();}} style = {[styles.textInput, {marginTop: 20}]} onChangeText={text => this.email(text)} value = {this.state.email} onBlur={this.resetEmail}/>
-          <TextInput clearButtonMode="while-editing" secureTextEntry={this.state.secure} onFocus = {() => {this.setFirstActive(); this.setState({secure: true}); this.clearPassword();}} style = {[styles.textInput, {marginTop: 25}]} onChangeText={text => this.password(text)}  value = {this.state.password} onBlur ={this.resetPassword}/>
-          <Text> </Text>
-          <Text> </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style = {{marginTop: 20}}><Text style = {{color: '#8134FF', fontSize: 13, opacity: 0.8, fontWeight:'bold', fontFamily: 'Inter-Bold'}}>Forgot Password</Text></TouchableOpacity>
-        <TouchableOpacity onPress = {this.loginConfirm} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold', fontFamily: 'Inter-Bold'}}>Log in</Text></TouchableOpacity>
-      </View>
-      </ScrollView>
 
+      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={keyboardVerticalOffset} style = {{flex: 1, height: 5000, alignItems: 'center'}}>
+        <ScrollView>
+          <View style={styles.viewContainer}>
+            <View style ={{flex:1}}><Image source = {require('./signupPic.png')} style = {{left: '15%', marginTop: 20}}/></View>
+            <View style={{flex:0.1, flexDirection:'row', marginTop: 20}}>
+              <Text style = {{opacity: 0.7, fontFamily: 'Inter-Regular'}}>Don't have an account? </Text>
+              <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Signup')}}><Text style = {{color:'#8134FF', fontWeight:'bold', fontFamily: 'Inter-Bold'}}>Sign up</Text></TouchableOpacity>
+            </View>
+            <View style = {{flex:0.4, alignItems: 'center'}}>
+              <TouchableOpacity activeOpacity = {1} onPress= {this.setFirstActive} style = {[this.state.firstStyle, {flex:1, height: 140}]}>
+                <View style = {{alignItems: 'center', width: '100%', flex: 1}}><TextInput clearButtonMode="while-editing" autoCapitalize='none' onFocus = {()=>{this.setFirstActive();  this.clearEmail();}} style = {[styles.textInput, {marginTop: 10}]} onChangeText={text => this.email(text)} value = {this.state.email} onBlur={this.resetEmail}/></View>
+                <View style = {{alignItems: 'center', width: '100%', flex: 1}}><TextInput clearButtonMode="while-editing" secureTextEntry={this.state.secure} onFocus = {() => {this.setFirstActive(); this.setState({secure: true}); this.clearPassword();}} style = {[styles.textInput, {marginBottom: 20}]} onChangeText={text => this.password(text)}  value = {this.state.password} onBlur ={this.resetPassword}/></View>
+              </TouchableOpacity>
+              <TouchableOpacity style = {{marginTop: 10}}><Text style = {{color: '#8134FF', fontSize: 13, opacity: 0.8, fontWeight:'bold', fontFamily: 'Inter-Bold'}}>Forgot Password</Text></TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+        <View style = {{position: 'absolute', alignItems:'center', bottom: 20}}>
+          <TouchableOpacity onPress = {this.loginConfirm} style = {[styles.button]}><Text style = {{color:'#FFFFFF', fontSize: 18, fontWeight: 'bold', fontFamily: 'Inter-Bold'}}>Log in</Text></TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
+
     );
   }
 
@@ -172,7 +176,6 @@ export default class Signup extends React.Component{
 
 const styles = StyleSheet.create({
   button: {
-    top: 140,
     borderWidth: 3,
     backgroundColor: '#8134FF',
     borderColor: '#FFFFFF',
@@ -183,11 +186,11 @@ const styles = StyleSheet.create({
     height: 50
   },
   activeBorder: {
-    width: 327, borderRadius: 22, top: 20, borderWidth:4, borderColor: '#8134FF', alignItems: 'center', marginBottom: 20
+    width: 327, borderRadius: 22, top: 10, borderWidth:4, borderColor: '#8134FF', alignItems: 'center', marginBottom: 20
   },
 
   inactiveBorder:{
-    width: 327, borderRadius: 22, top: 20, borderWidth:4, borderColor: '#c39aff', alignItems: 'center', marginBottom: 20,
+    width: 327, borderRadius: 22, top: 10, borderWidth:4, borderColor: '#c39aff', alignItems: 'center', marginBottom: 20,
   },
   textInput: {
     fontSize: 14,
@@ -199,9 +202,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Regular'
   },
   viewContainer:{
-      flexDirection: 'column',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        flex: 1
+      alignItems: 'center',
+      flex: 1,
     },
 });
