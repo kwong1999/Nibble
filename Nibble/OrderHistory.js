@@ -124,7 +124,7 @@ export default class OrderHistory extends React.Component{
       {
       }
     } catch (error) {
-
+        console.log("caught error in OrderHistory in the getEmail function");
     }
   };
 
@@ -137,7 +137,7 @@ export default class OrderHistory extends React.Component{
         startAsync={fetchFonts}
         onFinish={() => this.setState({dataloaded: true})} />
         );
-    } 
+    }
     return(
       <View style = {{flex:1}}>
         <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{zIndex: 999, backgroundColor:'#8134FF', borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: '87%', left: '78%'}}>

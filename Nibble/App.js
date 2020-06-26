@@ -6,7 +6,7 @@ import { createStackNavigator, createSwitchNavigator } from '@react-navigation/s
 import { CommonActions } from '@react-navigation/native';
 
 import Home from './Home';
-import Menu from './Home 2'; 
+import Menu from './Test';
 import Onboard from './Onboard';
 import Signup from './Signup';
 import Profile from './Profile';
@@ -16,7 +16,6 @@ import Feed from './Feed'
 //import RestCard from './RestCard'
 
 const Stack = createStackNavigator();
-
 
 function App() {
   var nav = AsyncStorage.getItem('email');
@@ -80,7 +79,7 @@ function App() {
               title= "Profile" onPress ={async()=>{console.log("hello"); const storageEmail = await AsyncStorage.getItem('email'); var nav = (storageEmail=='null') ? 'Signup' : 'Profile'; navigation.navigate(nav);}}>
               <Image style = {{height:15, width: 15, resizeMode:'contain'}} source={require("./highPerson.png")}/>
             </TouchableOpacity>
-          ), 
+          ),
           headerStyle: {
             shadowOpacity: 0.3,
             shadowColor: '#b189ff',

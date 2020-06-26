@@ -257,7 +257,7 @@ export default class Menu extends React.Component{
     const { status, permissions } = await Permissions.askAsync(Permissions.LOCATION);
     if (status != 'granted') {
       return;
-    } 
+    }
     let location = await Location.getCurrentPositionAsync({});
     const key = '5c3d93713edb442c825f89b7bc7d3aa4';
     const { latitude , longitude } = location.coords;
@@ -275,12 +275,14 @@ export default class Menu extends React.Component{
   	const {dataloaded} = this.state;
     if(!dataloaded)
     {
+      console.log("data wasnt loaded for home");
+
       return (
         <AppLoading
         startAsync={fetchFonts}
         onFinish={() => this.setState({dataloaded: true})} />
         );
-    } 
+    }
     //Getting the location
      let text = 'Waiting..';
      if (this.state.location) {
@@ -1553,7 +1555,7 @@ dealBoxOrderedPressed:{
    color: 'black',
    fontSize: 15,
    borderWidth: 0,
-   fontFamily: 'Inter-Regular' 
+   fontFamily: 'Inter-Regular'
 
  },
 });

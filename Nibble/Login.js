@@ -60,18 +60,19 @@ export default class Signup extends React.Component{
     this.resetEmail = this.resetEmail.bind(this);
     this.resetPassword = this.resetPassword.bind(this);
 
-
   }
   render(){
      const {dataloaded} = this.state;
     if(!dataloaded)
     {
+      console.log("data wasnt loaded for login");
+
       return (
         <AppLoading
         startAsync={fetchFonts}
         onFinish={() => this.setState({dataloaded: true})} />
         );
-    } 
+    }
     var firstStyle = styles.inactiveBorder;
     return(
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>

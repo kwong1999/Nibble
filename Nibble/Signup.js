@@ -80,12 +80,14 @@ export default class Signup extends React.Component{
      const {dataloaded} = this.state;
     if(!dataloaded)
     {
+      console.log("data wasnt loaded for signup");
+
       return (
         <AppLoading
         startAsync={fetchFonts}
         onFinish={() => this.setState({dataloaded: true})} />
         );
-    } 
+    }
     var firstStyle = styles.inactiveBorder;
     return(
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
