@@ -23,6 +23,14 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Onboard">
+        <Stack.Screen name="Menu" component={Menu} options={{headerShown: false, title: 'nibble', headerTintColor: '#8134FF', cardStyle: { backgroundColor: '#FFFFFF' }, headerLeft: null, headerStyle: {
+          shadowOpacity: 0.3,
+          shadowColor: '#b189ff',
+          shadowOffset: {
+            height: 0, width: 0
+          },
+          shadowRadius: 10,
+          },}}/>
         <Stack.Screen name="Onboard" component={Onboard} options={({navigation}) => ({headerShown:false, title: ' ', headerTintColor: '#8134FF', cardStyle: { backgroundColor: '#FFFFFF' }, headerRight: () => (
             <TouchableOpacity
               title= "Profile">

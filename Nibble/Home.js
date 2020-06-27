@@ -560,8 +560,8 @@ export default class Menu extends React.Component{
                       </View>
                   </Modal>
               </Modal>
-              <View style = {[styles.checkOutButton, {opacity: this.state.checkoutButtonOpacity}]}>
-                <TouchableOpacity onPress = {this.checkout}>
+              <View style = {{opacity: this.state.checkoutButtonOpacity, bottom: '15%', justifyContent: 'center', alignItems: 'center', height: 40, width: '100%', borderRadius: 12,}}>
+                <TouchableOpacity onPress = {this.checkout} style = {[styles.checkOutButton]}>
                   <Text style={{color:'#FFFFFF', fontWeight: 'bold', fontFamily: 'Inter-Bold'}}>Check Out</Text>
                 </TouchableOpacity>
               </View>
@@ -1417,13 +1417,11 @@ dealBoxOrderedPressed:{
   checkOutButton:
   {
     fontSize: 20,
-    bottom: '15%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#8134FF',
     height: 40,
     width: '80%',
-    marginLeft: '10%',
     borderRadius: 12,
     fontFamily: 'Inter-Regular'
   },

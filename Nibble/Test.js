@@ -1,67 +1,72 @@
-import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, TouchableHighlight, TouchableOpacity, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
+import * as React from 'react';
+import * as firebase from 'firebase';
+import '@firebase/firestore';
+import Modal from 'react-native-modal';
+import { View, Text, Button, SafeAreaView, FlatList, StyleSheet, Dimensions, Image, TouchableWithoutFeedback, TouchableOpacity, ScrollView, TextInput, Picker, KeyboardAvoidingView, AsyncStorage} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
+import opencage from 'opencage-api-client';
+import Signup from './Signup';
 
-export default class Menu extends Component {
-  _onPressButton() {
-    alert('You tapped the button!')
-  }
 
-  _onLongPressButton() {
-    alert('You long-pressed the button!')
+export default class Menu extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      checkoutButtonOpacity: 0,
+      openCheckout: false,
+      dataloaded: false
+    };
   }
 
 
   render() {
     return (
-      <View style={styles.container}>
-        <TouchableHighlight onPress={this._onPressButton} underlayColor="white">
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>TouchableHighlight</Text>
-          </View>
-        </TouchableHighlight>
-        <TouchableOpacity onPress={this._onPressButton}>
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>TouchableOpacity</Text>
-          </View>
+
+      <View style = {{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8F1111'}}>
+
+      <View style = {[styles.checkOutButton], {marginBottom: 25, marginLeft: 65}}>
+        <TouchableOpacity onPress = {this.func} >
+          <Text> toggle </Text>
         </TouchableOpacity>
-        <TouchableNativeFeedback
-            onPress={this._onPressButton}
-            background={Platform.OS === 'android' ? TouchableNativeFeedback.SelectableBackground() : ''}>
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>TouchableNativeFeedback {Platform.OS !== 'android' ? '(Android only)' : ''}</Text>
-          </View>
-        </TouchableNativeFeedback>
-        <TouchableWithoutFeedback
-            onPress={this._onPressButton}
-            >
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>TouchableWithoutFeedback</Text>
-          </View>
-        </TouchableWithoutFeedback>
-        <TouchableHighlight onPress={this._onPressButton} onLongPress={this._onLongPressButton} underlayColor="white">
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Touchable with Long Press</Text>
-          </View>
-        </TouchableHighlight>
+      </View>
+
+      <View style = {{width: '100%', marginLeft: 65, opacity: this.state.checkoutButtonOpacity}}>
+        <TouchableOpacity onPress = {this.checkout} style = {[styles.checkOutButton]}>
+          <Text> Hello </Text>
+        </TouchableOpacity>
+      </View>
+
       </View>
     );
   }
+
+  func = () => {
+    this.setState({checkoutButtonOpacity: 1});
+  }
+
+  checkout = () => {
+    this.setState({checkoutButtonOpacity: 0});
+  }
 }
 
+
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: 60,
-    alignItems: 'center'
-  },
-  button: {
-    marginBottom: 30,
-    width: 260,
+
+  checkOutButton:
+  {
+    fontSize: 20,
+    bottom: '15%',
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#2196F3'
+    backgroundColor: '#8134FF',
+    height: 40,
+    width: '80%',
+    borderRadius: 12,
   },
-  buttonText: {
-    textAlign: 'center',
-    padding: 20,
-    color: 'white'
-  }
+
 });

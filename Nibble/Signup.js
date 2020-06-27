@@ -53,6 +53,7 @@ export default class Signup extends React.Component{
       dataloaded: false,
       // firstStyle: {width: 327, borderRadius: 22, top: 20, borderWidth:3, borderColor: '#8134FF', alignItems: 'center'}
     };
+
     this.first = React.createRef();
     this.last = React.createRef();
     this.phone = React.createRef();
@@ -72,7 +73,6 @@ export default class Signup extends React.Component{
     this.resetPassword = this.resetPassword.bind(this);
     this.resetConfirm = this.resetConfirm.bind(this);
 
-
      console.disableYellowBox = true;
 
   }
@@ -91,7 +91,7 @@ export default class Signup extends React.Component{
     var firstStyle = styles.inactiveBorder;
     return(
       <KeyboardAvoidingView keyboardVerticalOffset = {80} behavior={Platform.OS == "ios" ? "padding" : "height"} style = {{flex: 1, height: 5000}}>
-      <ScrollView contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center',}}>
+      <ScrollView overScrollMode = 'always' contentContainerStyle = {{backgroundColor: '#FFFFFF', alignItems:'center', height: 5000}}>
         <View style={styles.viewContainer}>
           <View style={{flexDirection:'row'}}>
             <Text style = {{opacity: 0.7, fontFamily: 'Inter-Regular'}}>Already have an account? </Text>
@@ -265,8 +265,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
     flex: 1,
-    top: 30,
-    marginBottom: 35
+    top: 30
   },
   inactiveBorder:{
     width: 327, borderRadius: 22, top: 20, borderWidth:6, borderColor: '#c39aff', alignItems: 'center'
