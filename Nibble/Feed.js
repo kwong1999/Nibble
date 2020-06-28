@@ -90,11 +90,9 @@ export default class Feed extends React.Component{
     }
     return(
         <View style = {{flex: 1, alignItems:'center'}}>
-        // home button
         <TouchableOpacity onPress = {() => this.props.navigation.navigate('Home')} style={{zIndex: 999, backgroundColor:'#8134FF', borderRadius: 1000, width: 60, height: 60, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: '87%', left: '78%'}}>
               <Image style = {{height: 20, width: 20, resizeMode: 'contain'}} source={require('./house.png')}/>
         </TouchableOpacity>
-        // claim rewards button
           <TouchableOpacity style = {styles.rewardsBox}>
             <LinearGradient start = {[0,0]} colors={['#8134FF', '#AD7CFE']} style = {{width: '100%', height:'100%', borderRadius: 10}}>
               <View style ={{flexDirection: 'row', alignItems:'center', height: '100%', width: '100%', justifyContent:'space-between'}}>
@@ -113,8 +111,7 @@ export default class Feed extends React.Component{
             <Text style = {{color: '#160039', fontSize: 14, opacity: 0.7, fontStyle: 'italic'}}>$5 off at 50 points</Text>
           </View>
 
-          // scroll view of food stats
-          <ScrollView style = {{left: 10, marginTop: 20, zIndex: 999}}>
+          <ScrollView horizontal = {true} style = {{marginLeft: 10, marginRight: 10, marginTop: 20, zIndex: 999, height: .25*screenHeight,}}>
             <FlatList
               data={this.state.STATS}
               renderItem={this.renderStats}
@@ -123,8 +120,7 @@ export default class Feed extends React.Component{
               showsHorizontalScrollIndicator={false}
             />
           </ScrollView>
-          // feed list 
-          <FlatList style = {{top: 20}}
+          <FlatList style = {{marginTop: 20, marginBottom: 20,}}
               data={this.state.FEED}
               renderItem={this.renderFeed}
               keyExtractor={(item, index) => index.toString()}
@@ -185,7 +181,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 20,
-    marginLeft: 20,
+    marginLeft: 10,
+    marginRight: 10,
     zIndex: 999
   }
 });
